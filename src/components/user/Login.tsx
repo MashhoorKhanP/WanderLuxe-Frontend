@@ -11,12 +11,11 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setAlert, setCloseLogin, setOpenLogin, startLoading, stopLoading } from "../../store/slices/userSlice";
+import { setAlert, setCloseLogin, setOpenOTPVerification, startLoading, stopLoading } from "../../store/slices/userSlice";
 import { RootState } from "../../store/types";
 import { Close, Send } from "@mui/icons-material";
 import PasswordField from "./PasswordField";
 import GoogleOneTapLogin from "./GoogleOneTapLogin";
-
 const Login: React.FC = () => {
   const dispatch = useDispatch();
   const openLogin = useSelector((state: RootState) => state.user.openLogin);
@@ -29,9 +28,6 @@ const Login: React.FC = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
-  const handleOpenLogin = () => {
-    dispatch(setOpenLogin(true));
-  };
 
   const handleClose = () => {
     dispatch(setCloseLogin());
@@ -39,19 +35,99 @@ const Login: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event?.preventDefault();
-    //testing Loading
+    
+    const showErrorAlert = (message: string) => {
+      dispatch(setAlert({ open: true, severity: 'error', message }));
+    };
+
+    if (isRegister) {
+      const fields = [
+        { ref: fNameRef, label: 'First name' },
+        { ref: lNameRef, label: 'Last name' },
+        { ref: emailRef, label: 'Email' },
+        { ref: mobileRef, label: 'Mobile no' },
+        { ref: passwordRef, label: 'Password' },
+        { ref: confirmPasswordRef, label: 'Confirm Password' },
+      ];
+
+      for (const field of fields) {
+        const value = field.ref?.current?.value;
+        if (!value || value.trim().length === 0) {
+          showErrorAlert(`"${field.label}" is required.`);
+          return;
+        }
+      }
+
+      if (!fNameRef.current?.value.match(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/)) {
+        showErrorAlert('Please enter a valid first name.');
+        return;
+      }
+      
+      if (!lNameRef.current?.value.match(/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/)) {
+        showErrorAlert('Please enter a valid last name.');
+        return;
+      }
+  
+      if (!emailRef.current?.value.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+        showErrorAlert('Please enter a valid email address.');
+        return;
+      }
+  
+      if (confirmPasswordRef.current?.value.trim().length === 0) {
+        showErrorAlert('Please confirm your password.');
+        return;
+      }
+  
+      if (passwordRef.current?.value !== confirmPasswordRef.current?.value) {
+        showErrorAlert('Passwords do not match.');
+        return;
+      }
+      // Perform registration logic
+        dispatch(startLoading());
+
+        setTimeout(() => {
+          dispatch(stopLoading());
+          if(isRegister){
+            dispatch(setOpenOTPVerification(true));
+          } 
+          dispatch(setCloseLogin())
+        },2000);
+    }
+    
+
+      const fields = [
+        { ref: emailRef, label: 'Email' },
+        { ref: passwordRef, label: 'Password' },
+      ];
+
+      for (const field of fields) {
+        const value = field.ref?.current?.value;
+        if (!value || value.trim().length === 0) {
+          showErrorAlert(`"${field.label}" is required.`);
+          return;
+        }
+      }
+  
+      if (!emailRef.current?.value.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
+        showErrorAlert('Please enter a valid email address.');
+        return;
+      }
+      
+      if (passwordRef.current?.value !== confirmPasswordRef.current?.value) {
+        showErrorAlert('Passwords do not match.');
+        return;
+      }
+
+    // Perform Login logic
     dispatch(startLoading());
 
     setTimeout(() => {
       dispatch(stopLoading());
-    },5000);
-    
-    //testing Notification
-    const password = passwordRef.current?.value;
-    const confirmPassword = confirmPasswordRef.current?.value;
-    if(password !== confirmPassword){
-      dispatch(setAlert({open:true,severity:'error',message:'Passwords do not match'}));
-    }
+      if(isRegister){
+        dispatch(setOpenOTPVerification(true));
+      } 
+      dispatch(setCloseLogin())
+    },2000);
   };
   
   useEffect(() => {
@@ -90,8 +166,6 @@ const Login: React.FC = () => {
           label="First name"
           type="text"
           inputRef={fNameRef}
-          inputProps={{ minLength: 2 }}
-          required
         />
       </Grid>
       <Grid item xs={6}>
@@ -104,8 +178,6 @@ const Login: React.FC = () => {
           type="text"
           fullWidth
           inputRef={lNameRef}
-          inputProps={{ minLength: 2 }}
-          required
         />
       </Grid>
     
@@ -120,7 +192,6 @@ const Login: React.FC = () => {
           type="email"
           fullWidth
           inputRef={emailRef}
-          required
         />
       </Grid>
       <Grid item xs={6}>
@@ -134,7 +205,6 @@ const Login: React.FC = () => {
           fullWidth
           inputRef={mobileRef}
           inputProps={{ minLength: 2 }}
-          required
         />
       </Grid>
       <Grid item xs={6}>
@@ -162,7 +232,6 @@ const Login: React.FC = () => {
         type="email"
         fullWidth
         inputRef={emailRef}
-        required
       />
       {/* Password */}
       <PasswordField {...{ passwordRef }} />

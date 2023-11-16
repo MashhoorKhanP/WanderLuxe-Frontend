@@ -19,6 +19,7 @@ interface User {
 interface UserState{
   currentUser:User| null;//Want to update according to database
   openLogin:boolean;
+  openOTPVerification:boolean;
   alert:Alert | null;
   loading:boolean;
 }
@@ -26,6 +27,7 @@ interface UserState{
 const initialState: UserState = {
   currentUser:null,
   openLogin:false,
+  openOTPVerification:false,
   alert:null,
   loading:false
 };
@@ -38,7 +40,9 @@ const userSlice = createSlice({
       state.currentUser = action.payload;
     },
     updateUser:(state,action:PayloadAction<User>) =>{
-      state.currentUser = action.payload;
+      const updatedUser = action.payload;
+      localStorage.setItem('currentUser',JSON.stringify(updatedUser));
+      state.currentUser = {...updatedUser};
     },
     logoutUser:(state) =>{
       state.currentUser = null;
@@ -60,9 +64,20 @@ const userSlice = createSlice({
     },
     stopLoading:(state) => {
       state.loading = false;
-    }
+    },
+    setOpenOTPVerification: (state, action: PayloadAction<boolean>) => {
+      state.openOTPVerification = action.payload;
+    },
+    setCloseOTPVerification:(state) => {
+      state.openOTPVerification = false;
+    },
   },
 })
 
-export const {setCurrentUser,updateUser,logoutUser,setOpenLogin,setCloseLogin,setAlert,clearAlert,startLoading,stopLoading} = userSlice.actions;
+export const {setCurrentUser,
+  updateUser,logoutUser,
+  setOpenLogin,setCloseLogin,setAlert,
+  clearAlert,startLoading,stopLoading,
+  setOpenOTPVerification,setCloseOTPVerification
+} = userSlice.actions;
 export default userSlice.reducer;

@@ -1,9 +1,12 @@
 import React from 'react'
 import { Logout, ManageAccounts } from '@mui/icons-material';
 import { ListItemIcon, Menu, MenuItem } from '@mui/material'
-import { logoutUser, setAlert } from '../../store/slices/userSlice';
+import { logoutUser, setAlert, updateUser } from '../../store/slices/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/types';
+import Api from '../../service/axios';
+import axios,{AxiosError} from 'axios';
+import useCheckToken from '../hooks/useCheckToken';
 
 interface UserMenuProps{
   anchorUserMenu: HTMLElement | null;
@@ -11,6 +14,7 @@ interface UserMenuProps{
 }
 
 const UserMenu : React.FC<UserMenuProps> = ({anchorUserMenu,setAnchorUserMenu}) => {
+  useCheckToken;
   const dispatch = useDispatch();
   const{ currentUser} = useSelector((state:RootState) => state.user);
 
@@ -24,23 +28,28 @@ const UserMenu : React.FC<UserMenuProps> = ({anchorUserMenu,setAnchorUserMenu}) 
 
   const testAuthorization = async () => { //here test authorization for auth and just check it is userfull for profile routing
   
-    const url = import.meta.env.VITE_SERVER_URL + '/api/user/signup';
+    const url = '/user/signup';
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: `Bearer ${currentUser?.token}` // Use non-null assertion here
+      const response = await Api.post(
+        url,
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${currentUser?.token}`
+          }
         }
-      });
-      const data = await response.json();
+      );
+      const data = await response.data;
       console.log(data);
       if(!data.success){
+        if(response.status === 401) dispatch(logoutUser());
         throw new Error(data.message)
       }
     } catch (error) {
-      const typedError = error as Error;
-      dispatch(setAlert({ open: true, severity: 'error', message: typedError.message }));
+      console.error(error);
+      const axiosError = error as AxiosError;
+      dispatch(setAlert({ open: true, severity: 'error', message: axiosError.message }));
     }
   };
   

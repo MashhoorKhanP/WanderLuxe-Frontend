@@ -4,7 +4,7 @@ import { AppBar, Box, Button, Container, IconButton, Toolbar, Typography } from 
 import { useDispatch, useSelector } from 'react-redux'
 import UserIcons from './user/UserIcons';
 import { RootState } from '../store/types';
-import { setOpenLogin, updateUser } from '../store/slices/userSlice';
+import { setOpenLogin } from '../store/slices/userSlice';
 
 
 const Navbar: React.FC= () => {

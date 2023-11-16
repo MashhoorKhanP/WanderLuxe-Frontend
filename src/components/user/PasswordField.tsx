@@ -25,7 +25,6 @@ const PasswordField: React.FC<PasswordFieldProps> = ({passwordRef,id='password',
         fullWidth
         inputRef={passwordRef}
         inputProps={{minLength:2}}
-        required
         InputProps={{
           endAdornment:(
             <InputAdornment position="end">

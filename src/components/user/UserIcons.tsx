@@ -4,8 +4,10 @@ import { FavoriteBorder } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/types";
 import UserMenu from "./UserMenu";
+import useCheckToken from "../hooks/useCheckToken";
 
 const UserIcons: React.FC = () => {
+  useCheckToken;
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [anchorUserMenu, setAnchorUserMenu] = useState<HTMLElement | null>(
     null

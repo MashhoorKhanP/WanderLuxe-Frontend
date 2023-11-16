@@ -4,6 +4,8 @@
     "jsx":"react-jsx",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "moduleResolution": "node",
+    "resolveJsonModule": true,
+      "importHelpers": true,
     /* Projects */
     // "incremental": true,                              /* Save .tsbuildinfo files to allow for incremental compilation of projects. */
     // "composite": true,                                /* Enable constraints that allow a TypeScript project to be used with project references. */
