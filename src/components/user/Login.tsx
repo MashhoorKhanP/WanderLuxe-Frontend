@@ -16,11 +16,14 @@ import { RootState } from "../../store/types";
 import { Close, Send } from "@mui/icons-material";
 import PasswordField from "./PasswordField";
 import GoogleOneTapLogin from "./GoogleOneTapLogin";
+import { register } from "../../actions/user";
+
+
 const Login: React.FC = () => {
   const dispatch = useDispatch();
-  const openLogin = useSelector((state: RootState) => state.user.openLogin);
   const [title, setTitle] = useState('');
   const [isRegister, setIsRegister] = useState(false);
+  const openLogin = useSelector((state: RootState) => state.user.openLogin);
   const fNameRef = useRef<HTMLInputElement>(null);
   const lNameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -72,6 +75,16 @@ const Login: React.FC = () => {
         showErrorAlert('Please enter a valid email address.');
         return;
       }
+
+      if (!mobileRef.current?.value.match(/^[6-9]\d{9}$/)) {
+        showErrorAlert('Please enter a valid mobile number.');
+        return;
+      }
+
+      // if (!passwordRef.current?.value.match(/^(?=.*[0-9]).{6,}$/)) {
+      //   showErrorAlert('Please provide a strong password, Minimum 6 length!');
+      //   return;
+      // }
   
       if (confirmPasswordRef.current?.value.trim().length === 0) {
         showErrorAlert('Please confirm your password.');
@@ -82,16 +95,21 @@ const Login: React.FC = () => {
         showErrorAlert('Passwords do not match.');
         return;
       }
-      // Perform registration logic
-        dispatch(startLoading());
+      // Perform registration logic  
+      const firstName = fNameRef.current?.value;
+      const lastName = lNameRef.current?.value;
+      const email = emailRef.current?.value;
+      const mobile = mobileRef.current?.value;
+      const password = passwordRef.current?.value;
 
-        setTimeout(() => {
-          dispatch(stopLoading());
-          if(isRegister){
-            dispatch(setOpenOTPVerification(true));
-          } 
-          dispatch(setCloseLogin())
-        },2000);
+      register({firstName,lastName,email,password,mobile})
+        // dispatch(startLoading());
+
+        // setTimeout(() => {
+        //   dispatch(stopLoading());
+        // },2000);
+
+        // dispatch(setCloseLogin())
     }
     
 
@@ -112,22 +130,22 @@ const Login: React.FC = () => {
         showErrorAlert('Please enter a valid email address.');
         return;
       }
-      
+
       if (passwordRef.current?.value !== confirmPasswordRef.current?.value) {
         showErrorAlert('Passwords do not match.');
         return;
       }
 
     // Perform Login logic
-    dispatch(startLoading());
+    
+      const email = emailRef.current?.value;
+      const password = passwordRef.current?.value;
+      //  dispatch(startLoading());
 
-    setTimeout(() => {
-      dispatch(stopLoading());
-      if(isRegister){
-        dispatch(setOpenOTPVerification(true));
-      } 
-      dispatch(setCloseLogin())
-    },2000);
+    // setTimeout(() => {
+    //   dispatch(stopLoading());
+    // },2000);
+    // dispatch(setCloseLogin())
   };
   
   useEffect(() => {
@@ -189,7 +207,7 @@ const Login: React.FC = () => {
           variant="standard"
           id="email"
           label="Email"
-          type="email"
+          type="text"
           fullWidth
           inputRef={emailRef}
         />

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Backdrop, CircularProgress } from '@mui/material'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { RootState } from '../store/types';
 
 const Loading:React.FC= () => {

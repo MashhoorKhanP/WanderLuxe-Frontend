@@ -1,6 +1,6 @@
 import { Close, Done, Send } from '@mui/icons-material'
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField } from '@mui/material'
-import React, { useRef } from 'react'
+import React from 'react'
 import { setCloseOTPVerification, setOpenOTPVerification } from '../../store/slices/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../store/types'
@@ -9,7 +9,6 @@ import { MuiOtpInput } from 'mui-one-time-password-input'
 const OtpVerification:React.FC = () => {
   const dispatch = useDispatch();
   const openOtpVerification = useSelector((state:RootState) => state.user.openOTPVerification);
-  const otpRef = useRef<HTMLInputElement>(null)
 
   const handleClose = () => {
     dispatch(setCloseOTPVerification());
