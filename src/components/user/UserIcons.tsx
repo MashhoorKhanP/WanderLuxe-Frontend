@@ -14,13 +14,16 @@ const UserIcons: React.FC = () => {
   );
   return (
     <Box>
-      <IconButton size="large" color="inherit">
+      <Tooltip title="Wishlist">
+        <IconButton size="large" color="inherit">
         <Badge color="error" badgeContent={15}>
           <FavoriteBorder
             sx={{ display: { color: "#000000", fontSize: 26 } }}
           />
         </Badge>
       </IconButton>
+      </Tooltip>
+      
       <Tooltip title="User Profile">
         <IconButton onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
           <Avatar

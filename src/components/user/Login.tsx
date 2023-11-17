@@ -11,16 +11,15 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setAlert, setCloseLogin, setOpenOTPVerification, startLoading, stopLoading } from "../../store/slices/userSlice";
+import { registerUser, setAlert, setCloseLogin, setOpenOTPVerification, startLoading, stopLoading } from "../../store/slices/userSlice";
 import { RootState } from "../../store/types";
 import { Close, Send } from "@mui/icons-material";
 import PasswordField from "./PasswordField";
 import GoogleOneTapLogin from "./GoogleOneTapLogin";
-import { register } from "../../actions/user";
-
+import { AppDispatch } from "../../store/store";
 
 const Login: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [title, setTitle] = useState('');
   const [isRegister, setIsRegister] = useState(false);
   const openLogin = useSelector((state: RootState) => state.user.openLogin);
@@ -36,7 +35,7 @@ const Login: React.FC = () => {
     dispatch(setCloseLogin());
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit =async (event: React.FormEvent) => {
     event?.preventDefault();
     
     const showErrorAlert = (message: string) => {
@@ -101,8 +100,14 @@ const Login: React.FC = () => {
       const email = emailRef.current?.value;
       const mobile = mobileRef.current?.value;
       const password = passwordRef.current?.value;
-
-      register({firstName,lastName,email,password,mobile})
+      
+      try{
+        await dispatch(registerUser({firstName,lastName,email,password,mobile}));
+        
+        console.log('Entered inside handle submit and reached here')
+      }catch(error){
+        console.error('Registration failed',error);
+      }
         // dispatch(startLoading());
 
         // setTimeout(() => {
@@ -184,6 +189,7 @@ const Login: React.FC = () => {
           label="First name"
           type="text"
           inputRef={fNameRef}
+          fullWidth
         />
       </Grid>
       <Grid item xs={6}>
