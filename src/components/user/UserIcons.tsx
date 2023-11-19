@@ -9,6 +9,7 @@ import useCheckToken from "../hooks/useCheckToken";
 const UserIcons: React.FC = () => {
   useCheckToken;
   const { currentUser } = useSelector((state: RootState) => state.user);
+  console.log(currentUser?.firstName)
   const [anchorUserMenu, setAnchorUserMenu] = useState<HTMLElement | null>(
     null
   );

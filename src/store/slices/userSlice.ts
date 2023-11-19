@@ -1,6 +1,7 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {AnyAction, createAsyncThunk, createSlice, PayloadAction, ThunkAction} from '@reduxjs/toolkit';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { RootState } from '../types';
+import { AppThunk } from '../store';
 
 interface Alert {
   open: boolean;
@@ -29,6 +30,11 @@ interface RequestBody {
   mobile?: string;
   password?: string;
   // ... other properties
+}
+
+interface LoginRequestBody{
+  email:string;
+  password:string;
 }
 
 interface UserState{
@@ -73,13 +79,20 @@ export const fetchData = async ({ url, method, token = '', body = null }: FetchD
 
   try {
     const response = await axios(axiosConfig);
+    console.log('API Response:', response);
+
     const data = await response.data;
+
     console.log('API Response Data:', data);
-    if (!data.success) {
-      if (response.status === 401) {
-        throw new Error(data.message);
-      }
+
+     if (!response || response.status !== 200) {
+      throw new Error('Request failed with status ' + response?.status);
     }
+
+    if (!data || !data.success) {
+      throw new Error(data?.message || 'Request failed with an unspecified error.');
+    }
+    console.log(data ,'and',data.result)
     return data.result;
   } catch (error) {
     const typedError = error as AxiosError;
@@ -111,9 +124,9 @@ export const registerUser = createAsyncThunk(
 
 export const verifyUser = createAsyncThunk(
   'user/verifyUser',
-  async(otp:OTP,{dispatch,getState}) => {
+  async(otp:OTP,thunkAPI) => {
     try{
-      const state = getState() as RootState;
+      const state = thunkAPI.getState() as RootState;
       const token = state.user.currentUser?.token || '';
 
       const result = await fetchData({
@@ -133,6 +146,71 @@ export const verifyUser = createAsyncThunk(
   }
 )
 
+export const loginUser =createAsyncThunk(
+  'user/loginUser',
+  async(userData:LoginRequestBody,{dispatch,getState}) =>{
+    let result;
+    try{
+        result = await fetchData({
+        url: import.meta.env.VITE_SERVER_URL + '/api/user/login',
+        method:'POST',
+        body:userData,
+      });
+      console.log('Result before returning:', result);
+      return result;
+    }catch(error){
+      console.error('Error logging in:',error);
+      throw error;
+    }
+  }
+  //Complete my login login give me full code
+)
+
+export const resendOTPSlice = createSlice({
+  name:'resendOTP',
+  initialState:{
+    loading:false
+  },
+  reducers:{
+    resendOTPPending:(state) =>{
+      state.loading = true;
+    },
+    resendOTPFulfilled:(state) =>{
+      state.loading = false;
+    },
+    resendOTPRejected:(state) =>{
+      state.loading = false;
+    },
+  },
+});
+
+export const resendOTP = (email: string): AppThunk => async (dispatch, getState: () => RootState) => {
+  try {
+    dispatch(resendOTPPending());
+
+    const state = getState();
+    const token = state.user?.currentUser?.token || '';
+
+    const result = await fetchData({
+      url: import.meta.env.VITE_SERVER_URL + '/api/user/resend-otp',
+      method: 'POST',
+      token,
+      body: { email },
+    });
+
+    dispatch(resendOTPFulfilled());
+    dispatch(setAlert({ open: true, severity: 'success', message: 'New OTP has been sent to your email address!' }));
+
+    return result;
+  } catch (error) {
+    dispatch(resendOTPRejected());
+    dispatch(setAlert({ open: true, severity: 'error', message: 'Error resending OTP.' }));
+    console.error('Error resending OTP:', error);
+    throw error;
+  }
+};
+
+
 
 
 const userSlice = createSlice({
@@ -149,6 +227,7 @@ const userSlice = createSlice({
     },
     logoutUser:(state) =>{
       state.currentUser = null;
+      localStorage.removeItem('currentUser');
     },
     setOpenLogin: (state, action: PayloadAction<boolean>) => {
       state.openLogin = action.payload;
@@ -176,6 +255,8 @@ const userSlice = createSlice({
     },
   },
   extraReducers:(builder) => {
+
+    //Register User
     builder.addCase(registerUser.pending,(state) => {
       // You can dispatch startLoading here if needed
       state.loading=true;
@@ -187,7 +268,7 @@ const userSlice = createSlice({
       state.openOTPVerification= true;
       // state.currentUser = action.payload;
       // console.log('state.currentUser',state.currentUser); 
-      /**I think this is used when login  i don't need set currentUser now its only
+      /**I don't need set currentUser now its only
        after otp verification */
     });
     builder.addCase(registerUser.rejected,(state,action) =>{
@@ -200,18 +281,21 @@ const userSlice = createSlice({
         console.error('Registration failed with non-Error rejection:', action.error);
       }
     });
+
+    //Verify User
     builder.addCase(verifyUser.pending,(state) =>{
       state.loading = true;
     });
 
-    builder.addCase(verifyUser.fulfilled,(state,action) =>{
+    builder.addCase(verifyUser.fulfilled, (state, action) => {
       state.loading = false;
-      state.alert = { open: true, severity: 'success', message: 'OTP verification successful!'}
-      state.alert = { open: true, severity: 'success', message: 'User registration successful!'}
-
-      state.openOTPVerification=false;
+      state.alert = { open: true, severity: 'success', message: 'OTP verification successful!' };
+      state.openOTPVerification = false;
+      state.openLogin = true;
+      state.alert = { open: true, severity: 'success', message: 'Registration successful, Now login to your account!' };
+    
     });
-
+    
     builder.addCase(verifyUser.rejected,(state,action) =>{
       state.loading = false;
       if(action.error instanceof Error){
@@ -221,8 +305,37 @@ const userSlice = createSlice({
         console.error('OTP verification failed with non-Error rejection:', action.error)
       }
     })
+
+    //Login User
+    builder.addCase(loginUser.pending,(state) =>{
+      state.loading = true;
+    });
+
+    builder.addCase(loginUser.fulfilled,(state,action) =>{
+      state.loading = false;
+      const currentUser = action.payload.message;
+      console.log('JSON.Stingify of current user',JSON.stringify(currentUser));
+       // Store currentUser in localStorage
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+      // Don't directly modify state.currentUser, create a new object
+      state.currentUser = currentUser;
+
+      state.alert = { open: true, severity: 'success', message: 'Login successful!' };
+      console.log('reached here userSlice , next is to openLogin = false')
+      state.openLogin = false;
+    });
+    builder.addCase(loginUser.rejected,(state,action) =>{
+      state.loading = false;
+      if(action.error instanceof Error){
+        state.alert = { open: true, severity: 'error', message: action.error.message};
+        console.error('Login failed:',action.error);
+      }else{
+        console.error('Login failed with non-Error rejection:', action.error);
+      }
+    });
   },
-})
+});
 
 export const {setCurrentUser,
   updateUser,logoutUser,
@@ -230,5 +343,5 @@ export const {setCurrentUser,
   clearAlert,startLoading,stopLoading,
   setOpenOTPVerification,setCloseOTPVerification
 } = userSlice.actions;
-
+export const {resendOTPPending,resendOTPFulfilled,resendOTPRejected} = resendOTPSlice.actions;
 export default userSlice.reducer;

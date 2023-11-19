@@ -1,7 +1,7 @@
 import { Close } from '@mui/icons-material'
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField } from '@mui/material'
+import { Backdrop, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField } from '@mui/material'
 import React, { useEffect, useState ,useRef} from 'react'
-import { setAlert, setCloseOTPVerification, setOpenOTPVerification, verifyUser } from '../../store/slices/userSlice'
+import { resendOTP, setAlert, setCloseOTPVerification, setOpenOTPVerification, verifyUser } from '../../store/slices/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../store/types'
 import { MuiOtpInput } from 'mui-one-time-password-input'
@@ -10,7 +10,10 @@ import { AppDispatch } from '../../store/store'
 const OtpVerification:React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const openOtpVerification = useSelector((state:RootState) => state.user.openOTPVerification);
+  const userState = useSelector((state: RootState) => state.user); // Get user state
   const otpRef = useRef<HTMLInputElement>(null);
+  
+  const currentUserEmail = userState.currentUser?.email;
 
   const [timer,setTimer] = useState(60);
   const [resendDisabled,setResendDisabled] = useState(false);
@@ -21,44 +24,58 @@ const OtpVerification:React.FC = () => {
     setOTPValue(value);
   }
   
-  useEffect(() =>{
-    let interval : NodeJS.Timeout;
+  useEffect(() => {
+    let interval: NodeJS.Timeout | undefined;
 
-    if(timer > 0) {
-       interval = setInterval(() => {
-        setTimer((prevTimer) => prevTimer -1);
-       },1000);
-    }else{
-      setResendDisabled(false);
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    } else {
+      setResendDisabled(true); // Set resendDisabled when timer reaches 0
+      clearInterval(interval); // Stop the interval to prevent further updates
     }
 
-    return () => clearInterval(interval)
-  },[timer])
+    return () => clearInterval(interval);
+  }, [timer]);
 
-  const handleResend = () =>{
-    setTimer(60);
-    setResendDisabled(true);
+  const handleResend = async() => {
+    try {
+      // Dispatch the resendOTP action and wait for the result
+      const result = await dispatch(resendOTP(currentUserEmail || ''));
+  
+      // Handle the result as needed (perhaps show a success message)
+      console.log('Resend OTP Result:', result);
 
-    setTimeout(() =>{
-      setResendDisabled(false);
-    },3000);
+      // Reset the timer to its initial value
+      setTimer(60);
+    } catch (error) {
+      // Handle any errors that occurred during the resendOTP action
+      console.error('Error resending OTP:', error);
+    } finally {
+      // Enable the Resend OTP button after a delay (if needed)
+      setTimeout(() => {
+        setResendDisabled(false);
+      }, 3000);
+    }
   };
 
   const handleClose = () => {
     dispatch(setCloseOTPVerification());
-  }
+  };
 
   const handleVerifyOTP = (event:React.FormEvent) =>{
     event.preventDefault();
 
-    const otp = otpRef.current?.value;
-
-    if(otp?.trim().length ===0){
-      dispatch(setAlert({ open: true, severity: 'error', message:'Fields should not be empty!' }));
+    if (otpValue.trim().length === 0) {
+      dispatch(setAlert({ open: true, severity: 'error', message: 'OTP field should not be empty!' }));
       return;
     }
 
-    
+    if (!/^\d{4}$/.test(otpValue)) {
+      dispatch(setAlert({ open: true, severity: 'error', message: 'Please enter a valid OTP (numeric characters only)!' }));
+      return;
+    }
 
     try{
        dispatch(verifyUser({otp:parseInt(otpValue)}))
@@ -66,8 +83,16 @@ const OtpVerification:React.FC = () => {
       console.error('Error verifying OTP:', error);
     }
   }
+
+
   return (
-    <Dialog open={openOtpVerification} onClose={handleClose}>
+    <Dialog open={openOtpVerification} onClose={(event, reason) => {
+      if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
+        // Set 'open' to false, however you would do that with your particular code.
+        dispatch(setCloseOTPVerification());
+      }
+    }}
+  >
       <DialogTitle>
         OTP Verification
         <IconButton
@@ -111,7 +136,7 @@ const OtpVerification:React.FC = () => {
         {timer > 0 ? (
           <span style={{fontWeight:'500'}}>Resend OTP in {timer} seconds</span>
         ) : (
-          <Button onClick={handleResend} disabled={resendDisabled}>
+          <Button onClick={handleResend} disabled={timer > 0 && resendDisabled}>
             Resend OTP
           </Button>
         )}

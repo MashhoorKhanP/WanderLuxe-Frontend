@@ -10,9 +10,11 @@ import { setOpenLogin } from '../store/slices/userSlice';
 const Navbar: React.FC= () => {
   const dispatch = useDispatch();
   const{ currentUser} = useSelector((state:RootState) => state.user);
+  
   const handleOpenLogin = () => {
     dispatch(setOpenLogin(true));
   }
+  
   return (
     <AppBar position="static" sx={{ backgroundColor: '#9fa3a878' }}>
       <Container maxWidth='lg'>

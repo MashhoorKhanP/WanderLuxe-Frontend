@@ -23,7 +23,7 @@ interface DecodedToken {
 const GoogleOneTapLogin:React.FC = () => {
   const dispatch = useDispatch();
   const [disable,setDisabled] = useState(false);
-  
+
   const handleResponse = (response:any) => {
     const token = response.credential
     const decodedToken :DecodedToken = jwtDecode(token)

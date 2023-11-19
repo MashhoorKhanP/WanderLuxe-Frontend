@@ -25,33 +25,6 @@ const UserMenu : React.FC<UserMenuProps> = ({anchorUserMenu,setAnchorUserMenu}) 
   const handleLogout = () => {
     dispatch(logoutUser());
   };
-
-  const testAuthorization = async () => { //here test authorization for auth and just check it is userfull for profile routing
-  
-    const url = '/user/signup';
-    try {
-      const response = await Api.post(
-        url,
-        {},
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${currentUser?.token}`
-          }
-        }
-      );
-      const data = await response.data;
-      console.log(data);
-      if(!data.success){
-        if(response.status === 401) dispatch(logoutUser());
-        throw new Error(data.message)
-      }
-    } catch (error) {
-      console.error(error);
-      const axiosError = error as AxiosError;
-      dispatch(setAlert({ open: true, severity: 'error', message: axiosError.message }));
-    }
-  };
   
 
   return (
@@ -60,7 +33,7 @@ const UserMenu : React.FC<UserMenuProps> = ({anchorUserMenu,setAnchorUserMenu}) 
    onClose={handleCloseUserMenu}
    onClick={handleCloseUserMenu}
    >
-    <MenuItem onClick={testAuthorization}>
+    <MenuItem>
       <ListItemIcon>
         <ManageAccounts fontSize='small'/>
       </ListItemIcon>

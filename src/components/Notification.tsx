@@ -18,7 +18,7 @@ const Notification: React.FC = () => {
   return (
     <Snackbar
       open={alert !== null}
-      autoHideDuration={6000}
+      autoHideDuration={3000}
       onClose={(event, reason) =>
         handleClose(event as React.SyntheticEvent | MouseEvent, reason)
       }

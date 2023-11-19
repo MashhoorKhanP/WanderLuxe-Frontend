@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser, setAlert, setCloseLogin, setOpenOTPVerification, startLoading, stopLoading } from "../../store/slices/userSlice";
+import { loginUser, registerUser, setAlert, setCloseLogin, setOpenOTPVerification, startLoading, stopLoading } from "../../store/slices/userSlice";
 import { RootState } from "../../store/types";
 import { Close, Send } from "@mui/icons-material";
 import PasswordField from "./PasswordField";
@@ -35,7 +35,7 @@ const Login: React.FC = () => {
     dispatch(setCloseLogin());
   };
 
-  const handleSubmit =async (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event?.preventDefault();
     
     const showErrorAlert = (message: string) => {
@@ -43,6 +43,7 @@ const Login: React.FC = () => {
     };
 
     if (isRegister) {
+      
       const fields = [
         { ref: fNameRef, label: 'First name' },
         { ref: lNameRef, label: 'Last name' },
@@ -100,25 +101,9 @@ const Login: React.FC = () => {
       const email = emailRef.current?.value;
       const mobile = mobileRef.current?.value;
       const password = passwordRef.current?.value;
-      
-      try{
-        await dispatch(registerUser({firstName,lastName,email,password,mobile}));
-        
-        console.log('Entered inside handle submit and reached here')
-      }catch(error){
-        console.error('Registration failed',error);
-      }
-        // dispatch(startLoading());
-
-        // setTimeout(() => {
-        //   dispatch(stopLoading());
-        // },2000);
-
-        // dispatch(setCloseLogin())
-    }
-    
-
-      const fields = [
+      return dispatch(registerUser({firstName,lastName,email,password,mobile})); 
+    }else {
+       const fields = [
         { ref: emailRef, label: 'Email' },
         { ref: passwordRef, label: 'Password' },
       ];
@@ -135,23 +120,19 @@ const Login: React.FC = () => {
         showErrorAlert('Please enter a valid email address.');
         return;
       }
-
-      if (passwordRef.current?.value !== confirmPasswordRef.current?.value) {
-        showErrorAlert('Passwords do not match.');
-        return;
-      }
+      
 
     // Perform Login logic
-    
-      const email = emailRef.current?.value;
-      const password = passwordRef.current?.value;
-      //  dispatch(startLoading());
-
-    // setTimeout(() => {
-    //   dispatch(stopLoading());
-    // },2000);
-    // dispatch(setCloseLogin())
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value ?? '';
+      
+    return dispatch(loginUser({email,password}));
+     
   };
+}
+    
+
+     
   
   useEffect(() => {
     isRegister ? setTitle('Register') : setTitle('Login');
