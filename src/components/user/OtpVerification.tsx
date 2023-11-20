@@ -1,11 +1,12 @@
 import { Close } from '@mui/icons-material'
-import { Backdrop, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton } from '@mui/material'
 import React, { useEffect, useState ,useRef} from 'react'
-import { resendOTP, setAlert, setCloseOTPVerification, setOpenOTPVerification, verifyUser } from '../../store/slices/userSlice'
+import { setAlert, setCloseOTPVerification} from '../../store/slices/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../store/types'
 import { MuiOtpInput } from 'mui-one-time-password-input'
 import { AppDispatch } from '../../store/store'
+import { resendOTP, verifyUser } from '../../actions/user'
 
 const OtpVerification:React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

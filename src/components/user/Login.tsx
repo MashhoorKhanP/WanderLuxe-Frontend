@@ -11,12 +11,13 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, registerUser, setAlert, setCloseLogin, setOpenOTPVerification, startLoading, stopLoading } from "../../store/slices/userSlice";
+import { setAlert, setCloseLogin, setOpenOTPVerification, startLoading, stopLoading } from "../../store/slices/userSlice";
 import { RootState } from "../../store/types";
 import { Close, Send } from "@mui/icons-material";
 import PasswordField from "./PasswordField";
 import GoogleOneTapLogin from "./GoogleOneTapLogin";
 import { AppDispatch } from "../../store/store";
+import { loginUser, registerUser } from "../../actions/user";
 
 const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

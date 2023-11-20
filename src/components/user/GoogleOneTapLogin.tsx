@@ -4,6 +4,7 @@ import GoogleIcon from '../../assets/googleIcon.png'
 import { useDispatch } from 'react-redux'
 import { setAlert, setCloseLogin, updateUser } from '../../store/slices/userSlice'
 import { jwtDecode } from 'jwt-decode'
+import { googleregister } from '../../actions/user'
 
 declare global {
   interface Window {
@@ -28,9 +29,11 @@ const GoogleOneTapLogin:React.FC = () => {
     const token = response.credential
     const decodedToken :DecodedToken = jwtDecode(token)
     const { sub: id, email, given_name: firstName, family_name: lastName, picture: profileImage } = decodedToken;
-    dispatch(updateUser({id,email,firstName,lastName,profileImage,token,isGoogle:true}))
-    dispatch(setCloseLogin());
+    //dispatch(updateUser({id,email,firstName,lastName,profileImage,token,isGoogle:true}))
+    dispatch(googleregister({email,firstName,lastName,profileImage,password:token,isGoogle:true})as any)
+    
   }
+
   const handleGoogleLogin = () => {
     setDisabled(true);
     try{
