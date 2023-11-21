@@ -24,6 +24,7 @@ interface GoogleRequestBody {
   profileImage: string;
   password:string;
   isGoogle: boolean;
+  isVerified: boolean;
 }
 
 interface OTP{

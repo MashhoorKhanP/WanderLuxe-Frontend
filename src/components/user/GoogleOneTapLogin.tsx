@@ -30,7 +30,7 @@ const GoogleOneTapLogin:React.FC = () => {
     const decodedToken :DecodedToken = jwtDecode(token)
     const { sub: id, email, given_name: firstName, family_name: lastName, picture: profileImage } = decodedToken;
     //dispatch(updateUser({id,email,firstName,lastName,profileImage,token,isGoogle:true}))
-    dispatch(googleregister({email,firstName,lastName,profileImage,password:token,isGoogle:true})as any)
+    dispatch(googleregister({email,firstName,lastName,profileImage,password:token,isGoogle:true,isVerified:true})as any)
     
   }
 

@@ -24,6 +24,7 @@ export const fetchData = async ({ url, method, token = '', body = null }: FetchD
     method,
     url,
     headers,
+    withCredentials:true,
     data: body ? JSON.stringify(body) : undefined,
   };
 
@@ -44,7 +45,11 @@ export const fetchData = async ({ url, method, token = '', body = null }: FetchD
     //   throw new Error(data?.message || 'Request failed with an unspecified error.');
     // }
     console.log(data ,'and',data.result)
+    if(data.result === null || data.result === undefined){
+      return data;
+    }
     return data.result;
+
   } catch (error) {
     // Use the errorHandle function to handle the error
     const typedError = error as AxiosError | any;

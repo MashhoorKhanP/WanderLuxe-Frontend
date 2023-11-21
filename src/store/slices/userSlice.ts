@@ -237,6 +237,10 @@ interface User {
   lastName: string;
   profileImage: string;
   token: string;
+  message:{
+    firstName:string,
+    profileImage:string
+  };
   isGoogle: boolean;
 }
 
@@ -317,7 +321,6 @@ const userSlice = createSlice({
      
       if(action.payload){
 
-        state.openOTPVerification=false;
         state.loading = false;
         state.alert = {open: true, severity: 'success', message: 'Verification OTP has been sent to your email address!' }
         state.openLogin = false;
