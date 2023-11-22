@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
   Grid,
   IconButton,
   TextField,
@@ -131,13 +132,11 @@ const Login: React.FC = () => {
      
   };
 }
-    
 
-     
-  
   useEffect(() => {
     isRegister ? setTitle('Register') : setTitle('Login');
   },[isRegister])
+
   return (
     <Dialog open={openLogin} onClose={handleClose}>
       <DialogTitle>
@@ -154,6 +153,10 @@ const Login: React.FC = () => {
           <Close />
         </IconButton>
       </DialogTitle>
+      <DialogActions sx={{justifyContent:'center',py:'2px', pb:'20px'}}>
+        <GoogleOneTapLogin/>
+      </DialogActions>
+      <strong style={{textAlign:'center',fontWeight:'bolder', }}>OR</strong>
       <form onSubmit={handleSubmit}>
       <DialogContent>
   <DialogContentText>
@@ -254,25 +257,23 @@ const Login: React.FC = () => {
 </DialogContent>
 
 
-        <DialogActions sx={{ justifyContent: "flex-end" ,px:'19px' }}>
+        <DialogActions sx={{ justifyContent: "center" ,px:'19px' }}>
           
           {isRegister ? (
-            <Button type="submit" variant="contained" endIcon={<Send />}>
+            <Button type="submit" variant="contained" sx={{ bgcolor:'black'}} endIcon={<Send />}>
               Sign up
             </Button>
-          ) : <Button type="submit" variant="contained" endIcon={<Send />}>
+          ) : <Button type="submit" variant="contained" sx={{ bgcolor:'black'}} endIcon={<Send />}>
             Login
           </Button>}
         </DialogActions>
       </form>
+      
       <DialogActions sx={{justifyContent:'center',p:'5px 24px'}}>
         {isRegister ? "Already have an account?" : "Don't have an account?"}
         <Button onClick={()=> setIsRegister(!isRegister)} style={{ marginTop: '5px' }}>
           {isRegister ? 'Login' : 'Register'}
           </Button>
-      </DialogActions>
-      <DialogActions sx={{justifyContent:'center',py:'24px'}}>
-        <GoogleOneTapLogin/>
       </DialogActions>
     </Dialog>
   );

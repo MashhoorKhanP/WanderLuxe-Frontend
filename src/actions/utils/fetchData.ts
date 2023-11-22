@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice, PayloadAction, ThunkAction} from '@redux
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import errorHandle from '../../components/hooks/errorHandler';
 
-
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   body?: object | string;
 }

@@ -5,10 +5,11 @@ import { RootState } from '../store/types';
 
 const Loading:React.FC= () => {
   const {loading}= useSelector((state:RootState) => state.user);
-
+  const {adminLoading} = useSelector((state:RootState) => state.admin);
+  
   return (
     <Backdrop
-    open={loading}
+    open={loading || adminLoading}
     sx={{zIndex:(theme) => theme.zIndex.modal + 1}}>
       <CircularProgress color='inherit' />
     </Backdrop>

@@ -1,218 +1,8 @@
-// import { createAsyncThunk, createSlice, PayloadAction, ThunkAction} from '@reduxjs/toolkit';
-// import axios, { AxiosError, AxiosRequestConfig } from 'axios';
-// import { RootState } from '../types';
-// import { AppThunk } from '../store';
-// import errorHandle from '../../components/hooks/errorHandler';
-
-
-// interface Alert {
-//   open: boolean;
-//   severity: 'error' | 'warning' | 'info' | 'success';
-//   message: string;
-// }
-
-// interface OTP{
-//   otp:number
-// }
-
-// interface User {
-//   id: string;
-//   email: string;
-//   firstName: string;
-//   lastName: string;
-//   profileImage: string;
-//   token: string;
-//   isGoogle: boolean;
-// }
-
-// interface RequestBody {
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   mobile?: string;
-//   password?: string;
-//   // ... other properties
-// }
-
-// interface LoginRequestBody{
-//   email:string;
-//   password:string;
-// }
-
-// interface UserState{
-//   currentUser:User| null;//Want to update according to database
-//   openLogin:boolean;
-//   openOTPVerification:boolean;
-//   alert:Alert | null;
-//   loading:boolean;
-// }
-
-// interface CustomAxiosRequestConfig extends AxiosRequestConfig {
-//   body?: object | string;
-// }
-
-// const initialState: UserState = {
-//   currentUser:null,
-//   openLogin:false,
-//   openOTPVerification:false,
-//   alert:null,
-//   loading:false
-// };
-
-// interface FetchDataOptions {
-//   url: string;
-//   method: string;
-//   token?: string;
-//   body?: object | null;
-// }
-
-// export const fetchData = async ({ url, method, token = '', body = null }: FetchDataOptions) => {
-//   console.log(`Entered FetchData`)
-//   const headers = token
-//     ? { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
-//     : { 'Content-Type': 'application/json' };
-
-//   const axiosConfig: AxiosRequestConfig = {
-//     method,
-//     url,
-//     headers,
-//     data: body ? JSON.stringify(body) : undefined,
-//   };
-
-//   try {
-//     const response = await axios(axiosConfig);
-//     console.log('API Response:', response);
-
-//     const data = await response.data;
-    
-//     console.log('API Response Data:', data);
-
-//      if (!response || response.status !== 200) {
-//       throw new Error('Request failed with status ' + response?.status);
-//     }
-//     if (!data || !data.success) {
-//       // Use the errorHandle function to handle the error
-//       errorHandle(new Error(data?.message || 'Request failed with an unspecified error.'));
-//       throw new Error(data?.message || 'Request failed with an unspecified error.');
-//     }
-//     console.log(data ,'and',data.result)
-//     return data.result;
-//   } catch (error) {
-//     // Use the errorHandle function to handle the error
-//     const typedError = error as AxiosError | any;
-
-//     errorHandle(typedError.response?.data?.result);
-//     console.error("CatchBlock,typedError",typedError.response?.data?.result?.message);
-//     return null;
-//   }
-// };
-
-// //Async thunk for user register instead fetchData.ts
-// export const registerUser = createAsyncThunk(
-//   'user/register',
-//   async(userData:RequestBody,{dispatch,getState}) =>{
-//     const state = getState() as RootState;
-//     const token = state.user.currentUser?.token || '';
-
-//     console.log(`Entered registerUser`,userData)
-
-//     const result = await fetchData({
-//       url: import.meta.env.VITE_SERVER_URL + '/api/user/signup',
-//       method: 'POST',
-//       token,
-//       body: userData,
-//     });
-//     // Handle the result as needed
-//     return result;
-    
-//   }
-// )
-
-// export const verifyUser = createAsyncThunk(
-//   'user/verifyUser',
-//   async(otp:OTP,thunkAPI) => {
-//     try{
-//       const state = thunkAPI.getState() as RootState;
-//       const token = state.user.currentUser?.token || '';
-
-//       const result = await fetchData({
-//         url:import.meta.env.VITE_SERVER_URL + '/api/user/verify-otp',
-//         method:'POST',
-//         token,
-//         body:{otp:otp.otp},
-//       });
-
-//       return result;
-
-//     }catch(error){
-//       console.error('Error verifying OTP:', error);
-//       throw error;
-//     }
-    
-//   }
-// )
-
-// export const loginUser =createAsyncThunk(
-//   'user/loginUser',
-//   async(userData:LoginRequestBody,{dispatch,getState}) =>{
-    
-//     try{
-//         const result = await fetchData({
-//         url: import.meta.env.VITE_SERVER_URL + '/api/user/login',
-//         method:'POST',
-//         body:userData,
-//       });
-//       if (result?.data && result.data.message) {
-//         // If there is an error message, throw an error to trigger the rejected action
-//         throw new Error(result.data.message);
-//       }
-//       // If no error message, return the result
-//       return result;
-      
-//     }catch(error){
-//       const typedError = error as Error | AxiosError;
-
-//       console.error('Error logging in:',typedError);
-//       errorHandle(typedError)
-//       console.error('Error in loginUser:', error);
-//       // dispatch(setAlert({open: true, severity: 'error', message: typedError.message || 'Login failed' }))
-//       throw error;
-//     }
-//   }
-// )
-
-// export const resendOTP = (email: string): AppThunk => async (dispatch, getState: () => RootState) => {
-//   try {
-//     dispatch(resendOTPPending());
-
-//     const state = getState();
-//     const token = state.user?.currentUser?.token || '';
-
-//     const result = await fetchData({
-//       url: import.meta.env.VITE_SERVER_URL + '/api/user/resend-otp',
-//       method: 'POST',
-//       token,
-//       body: { email },
-//     });
-
-//     dispatch(resendOTPFulfilled());
-//     dispatch(setAlert({ open: true, severity: 'success', message: 'New OTP has been sent to your email address!' }));
-
-//     return result;
-//   } catch (error) {
-//     dispatch(resendOTPRejected());
-//     dispatch(setAlert({ open: true, severity: 'error', message: 'Error resending OTP.' }));
-//     console.error('Error resending OTP:', error);
-//     throw error;
-//   }
-// };
-
-/** After making to separate files  */
-
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { googleregister, loginUser, registerUser, verifyUser } from "../../actions/user";
 import errorHandle from "../../components/hooks/errorHandler";
 import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 interface UserState{
   currentUser:User| null;//Want to update according to database
@@ -237,7 +27,7 @@ interface User {
   lastName: string;
   profileImage: string;
   token: string;
-  message:{
+  message?:{
     firstName:string,
     profileImage:string
   };
@@ -284,6 +74,8 @@ const userSlice = createSlice({
     logoutUser:(state) =>{
       state.currentUser = null;
       localStorage.removeItem('currentUser');
+      localStorage.removeItem('UserToken');
+      toast.success('Logged out successfully');
     },
     setOpenLogin: (state, action: PayloadAction<boolean>) => {
       state.openLogin = action.payload;
@@ -292,6 +84,7 @@ const userSlice = createSlice({
       state.openLogin = false;
     },
     setAlert:(state,action:PayloadAction<Alert>) => {
+      console.log(action.payload)
       state.alert = action.payload;
     },
     clearAlert:(state) => {
@@ -346,9 +139,7 @@ const userSlice = createSlice({
       }
       state.loading = false;
     });
-
     //Google Registration
-
     builder.addCase(googleregister.pending,(state) => {
       // You can dispatch startLoading here if needed
       state.loading=true;
@@ -364,6 +155,9 @@ const userSlice = createSlice({
           console.log('JSON.Stingify of current user',JSON.stringify(currentUser));
           // Store currentUser in localStorage
           localStorage.setItem('currentUser', JSON.stringify(currentUser));
+          
+          localStorage.setItem('UserToken',currentUser.token);
+
 
           // Don't directly modify state.currentUser, create a new object
           state.currentUser = currentUser;
@@ -423,6 +217,8 @@ const userSlice = createSlice({
       state.loading = false;
       const currentUser = action.payload;
       if (currentUser && currentUser.message) {
+        console.log(currentUser,'for token check')
+      localStorage.setItem('UserToken',currentUser.token);
       console.log('JSON.Stingify of current user',JSON.stringify(currentUser.message));
        // Store currentUser in localStorage
       localStorage.setItem('currentUser', JSON.stringify(currentUser.message));

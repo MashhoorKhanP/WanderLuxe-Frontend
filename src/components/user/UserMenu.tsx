@@ -1,11 +1,8 @@
 import React from 'react'
 import { Logout, ManageAccounts } from '@mui/icons-material';
 import { ListItemIcon, Menu, MenuItem } from '@mui/material'
-import { logoutUser, setAlert, updateUser } from '../../store/slices/userSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store/types';
-import Api from '../../service/axios';
-import axios,{AxiosError} from 'axios';
+import { logoutUser } from '../../store/slices/userSlice';
+import { useDispatch } from 'react-redux';
 import useCheckToken from '../hooks/useCheckToken';
 
 interface UserMenuProps{
@@ -14,9 +11,8 @@ interface UserMenuProps{
 }
 
 const UserMenu : React.FC<UserMenuProps> = ({anchorUserMenu,setAnchorUserMenu}) => {
-  useCheckToken;
+  const checkToken = useCheckToken();
   const dispatch = useDispatch();
-  const{ currentUser} = useSelector((state:RootState) => state.user);
 
   const handleCloseUserMenu = () =>{
     setAnchorUserMenu(null);
@@ -26,7 +22,7 @@ const UserMenu : React.FC<UserMenuProps> = ({anchorUserMenu,setAnchorUserMenu}) 
     dispatch(logoutUser());
   };
   
-
+  checkToken;
   return (
    <Menu anchorEl={anchorUserMenu} 
    open={Boolean(anchorUserMenu)}
