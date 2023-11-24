@@ -12,6 +12,7 @@ interface User {
   id: string;
   email: string;
   firstName: string;
+  fullName:string;
   lastName: string;                  // Comment is passed from Home.tsx
   profileImage: string;
   token: string;
@@ -33,7 +34,6 @@ const App: React.FC = () => {
   // Initialize user data from local storage
   useEffect(() => {
     const storedUser:object | any = localStorage.getItem("currentUser");
-    console.log('storedUser', storedUser);
     if (storedUser !== null) {
       try {
         const currentUser:User = JSON.parse(storedUser);
@@ -50,7 +50,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const storedAdmin:object | any = localStorage.getItem("currentAdmin")
-    console.log('storedAdmin', storedAdmin);
     if (storedAdmin !== null) {
       try {
         const currentUser:User = JSON.parse(storedAdmin);

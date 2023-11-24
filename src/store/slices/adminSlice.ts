@@ -1,17 +1,19 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import errorHandle from "../../components/hooks/errorHandler";
 import { AxiosError } from "axios";
-import { loginAdmin } from "../../actions/admin";
+import { getUsers, loginAdmin } from "../../actions/admin";
 import { toast } from "react-toastify";
 
 interface AdminState{
   currentAdmin:Admin| null;//Want to update according to database
   openLogin:boolean;
   adminLoading:boolean;
+  users:Users[];
 }
 
 const initialState: AdminState= {
   currentAdmin:null,
+  users:[],
   openLogin:false,
   adminLoading:false
 };
@@ -25,6 +27,18 @@ interface Admin {
   token: string;
 }
 
+interface Users{
+  firstName:string;
+  lastName:string;
+  fullName:string;
+  profileImage:string,
+  mobileNo:string,
+  email:string;
+  createdAt:string | Date;
+  isVerified:boolean;
+  isBlocked:boolean;
+}
+
 
 const adminSlice = createSlice({
   name:'admin',
@@ -33,10 +47,12 @@ const adminSlice = createSlice({
     setCurrentAdmin:(state,action:PayloadAction<Admin>) =>{
       state.currentAdmin = action.payload;
     },
+    // setUsers:(state,action:PayloadAction<Users>) =>{
+    //   state.users = action.payload;
+    // },
     updateAdmin:(state,action:PayloadAction<Admin>) =>{
       const updatedAdmin = action.payload;
       localStorage.setItem('currentAdmin',JSON.stringify(updatedAdmin));
-      console.log('updatedAdmin',updatedAdmin);
       state.currentAdmin = {...updatedAdmin};
     },
     logoutAdmin:(state) =>{
@@ -54,7 +70,7 @@ const adminSlice = createSlice({
   },
   extraReducers:(builder) => {
 
-    //Login Admin
+    //Admin Login
     builder.addCase(loginAdmin.pending,(state) =>{
       state.adminLoading = true;
     });
@@ -72,7 +88,7 @@ const adminSlice = createSlice({
       state.currentAdmin = currentAdmin.message;
 
       toast.success('Login Successfull');
-      console.log('reached here userSlice , next is to openLogin = false')
+      console.log('reached here adminSlice , next is to openLogin = false')
       state.openLogin = false;
     } else {
       // Handle the case where currentUser or message is null or undefined
@@ -80,6 +96,39 @@ const adminSlice = createSlice({
     }
     });
     builder.addCase(loginAdmin.rejected,(state,action) =>{
+      const error = action.error as Error | AxiosError;
+
+      if (error instanceof Error) {
+        // Handle specific error messages from the server if available
+        errorHandle(error);
+        toast.error(error.message);
+      } else {
+        // Handle non-Error rejection (if needed)
+        console.error('Login failed with non-Error rejection:', action.error);
+      }
+      state.adminLoading = false;
+    });
+    
+    //Get Users
+    builder.addCase(getUsers.pending,(state) =>{
+      state.adminLoading = true;
+    });
+
+    builder.addCase(getUsers.fulfilled,(state,action) =>{
+      state.adminLoading= false;
+      const users = action.payload;
+      if (users && users.message) {
+      console.log('JSON.Stingify of  users List',JSON.stringify(users.message));
+      console.log('user.message', users.message);
+      // Don't directly modify state.currentUser, create a new object
+      state.users= users.message;
+      state.openLogin = false;
+    } else {
+      // Handle the case where currentUser or message is null or undefined
+      console.error('Received invalid data in loginUser.fulfilled');
+    }
+    });
+    builder.addCase(getUsers.rejected,(state,action) =>{
       const error = action.error as Error | AxiosError;
 
       if (error instanceof Error) {

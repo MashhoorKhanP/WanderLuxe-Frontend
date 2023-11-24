@@ -10,7 +10,7 @@ import { setOpenLogin } from '../store/slices/userSlice';
 const Navbar: React.FC= () => {
   const dispatch = useDispatch();
   const{ currentUser} = useSelector((state:RootState) => state.user);
-  
+  console.log('Current user from navbar',currentUser)
   const handleOpenLogin = () => {
     dispatch(setOpenLogin(true));
   }

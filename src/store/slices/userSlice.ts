@@ -1,37 +1,41 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { googleregister, loginUser, registerUser, verifyUser } from "../../actions/user";
+import { googleregister, loginUser, registerUser, updateProfile, verifyUser } from "../../actions/user";
 import errorHandle from "../../components/hooks/errorHandler";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
 interface UserState{
-  currentUser:User| null;//Want to update according to database
+  currentUser:User|null;//Want to update according to database
   openLogin:boolean;
   openOTPVerification:boolean;
   alert:Alert | null;
+  profile:Profile;
   loading:boolean;
 }
 
 const initialState: UserState = {
-  currentUser:null,
-  openLogin:false,
-  openOTPVerification:false,
-  alert:null,
-  loading:false
+  currentUser: null,
+  openLogin: false,
+  openOTPVerification: false,
+  alert: null,
+  profile: { open: false, file: null, profileImage: '' },
+  loading: false,
 };
 
 interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  profileImage: string;
-  token: string;
+  id?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  fullName?:string;
+  profileImage?: string;
+  mobile?:string;
+  token?: string;
   message?:{
     firstName:string,
     profileImage:string
   };
-  isGoogle: boolean;
+  isGoogle?: boolean;
 }
 
 interface Alert {
@@ -39,6 +43,13 @@ interface Alert {
   severity: 'error' | 'warning' | 'info' | 'success';
   message: string;
 }
+
+interface Profile {
+  open?: boolean;
+  file?: File | null | undefined;
+  profileImage?: string;
+}
+
 
 export const resendOTPSlice = createSlice({
   name:'resendOTP',
@@ -70,6 +81,13 @@ const userSlice = createSlice({
       const updatedUser = action.payload;
       localStorage.setItem('currentUser',JSON.stringify(updatedUser));
       state.currentUser = {...updatedUser};
+    },
+    updateUserProfile: (state, action: PayloadAction<Partial<Profile>>) => {
+      const updatedUserProfile = action.payload;
+      console.log('UpdateUserProfile',updatedUserProfile)
+      localStorage.setItem('currentUser', JSON.stringify(updatedUserProfile));
+      state.currentUser = { ...state.currentUser, ...updatedUserProfile }; // Update only the relevant part of currentUser
+      state.profile = { ...state.profile, ...updatedUserProfile }; // Update profile state
     },
     logoutUser:(state) =>{
       state.currentUser = null;
@@ -251,7 +269,7 @@ const userSlice = createSlice({
 });
 
 export const {setCurrentUser,
-  updateUser,logoutUser,
+  updateUser,updateUserProfile,logoutUser,
   setOpenLogin,setCloseLogin,setAlert,
   clearAlert,startLoading,stopLoading,
   setOpenOTPVerification,setCloseOTPVerification

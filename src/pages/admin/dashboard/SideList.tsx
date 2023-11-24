@@ -15,7 +15,6 @@ import Coupons from './coupons/Coupons';
 import Offers from './offers/Offers';
 import Banners from './banners/Banners';
 import { logoutAdmin } from '../../../store/slices/adminSlice';
-import { current } from '@reduxjs/toolkit';
 
 const drawerWidth = 240;
 
@@ -69,14 +68,20 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 interface SideListProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  updateTitle: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const SideList: React.FC<SideListProps> = ({ open, setOpen }) => {
+const SideList: React.FC<SideListProps> = ({ open, setOpen ,updateTitle }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentAdmin} = useSelector((state: RootState) => state.admin); //change currentAdmin make slice 
   const [selectedLink, setSelectedLink] = useState('')
-
+  const handleItemClick = (link: string, title: string) => {
+    setOpen(false);
+    setSelectedLink(link);
+    updateTitle(title);
+    navigate(link);
+  };
   const list = useMemo(() => [
     {title:'Dashboard', icon:<Dashboard/>, link:'dashboard', component:<Main {...{setSelectedLink, link:'dashboard'}} />},
     {title:'Users', icon:<PeopleAlt/>, link:'users', component:<Users {...{setSelectedLink, link:'users'}}/>},
@@ -111,7 +116,7 @@ const SideList: React.FC<SideListProps> = ({ open, setOpen }) => {
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
                 }}
-                onClick={() => navigate(item.link)}
+                onClick={() => handleItemClick(item.link,item.title)}
                 selected={selectedLink === item.link}
               >
                 <ListItemIcon

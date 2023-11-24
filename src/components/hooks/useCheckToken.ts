@@ -12,15 +12,12 @@ const useCheckToken = () => {
   const navigate = useNavigate();
   const currentUserToken = localStorage.getItem('UserToken')
   const currentAdminToken = localStorage.getItem('AdminToken')//change currentAdmin make slice 
-  console.log(currentAdminToken)
-
+  
   useEffect(() => {
     if (currentUserToken) {
-      console.log('currentUserToken', currentUserToken)
       const decodedToken: any = jwtDecode(currentUserToken);
-      console.log('DecodeToken.expiry',decodedToken.exp)
       if (decodedToken.exp * 1000 < new Date().getTime()) {
-        toast.warning('Sessions expired, Please log in again');
+        toast.warning('Sessions timeout, Please log in again');
         dispatch(logoutUser());
       }
     }
@@ -28,10 +25,9 @@ const useCheckToken = () => {
 
   useEffect(() => {
     if (currentAdminToken) {
-      console.log('currentAdmin.token',currentAdminToken);
       const decodedToken: any = jwtDecode(currentAdminToken);
       if (decodedToken.exp * 1000 < new Date().getTime()) {
-        toast.warning('Sessions expired, Please log in again');
+        toast.warning('Sessions timeout, Please log in again');
         dispatch(logoutAdmin());
         navigate('/admin/login')
       }

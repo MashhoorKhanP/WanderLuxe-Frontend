@@ -44,9 +44,9 @@ const Dashboard: React.FC= () => {
   const checkToken = useCheckToken();
   const navigate = useNavigate()
   const { currentAdmin} = useSelector((state: RootState) => state.admin);
-  console.log('current admin', currentAdmin);
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(true);
+  const [title, setTitle] = useState("Admin Panel");
   const darkTheme = useMemo(() => createTheme({
     palette:{
       mode:dark ? 'dark' : 'light'
@@ -87,7 +87,7 @@ const Dashboard: React.FC= () => {
             </IconButton>
           </Tooltip> */}
           <Typography variant="h6" noWrap component="div" sx={{flexGrow:1}} >
-            Dashboard
+          {title}
           </Typography>
           
           <Tooltip title={dark ? 'Light Mode' : 'Dark Mode'}>
@@ -97,7 +97,7 @@ const Dashboard: React.FC= () => {
           </Tooltip>
         </Toolbar>
       </AppBar>
-      <SideList {...{ open, setOpen }} />
+      <SideList open={open} setOpen={setOpen} updateTitle={setTitle} />
     </Box>
     </ThemeProvider>
   );

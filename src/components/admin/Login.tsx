@@ -65,7 +65,6 @@ const AdminLogin: React.FC = () => {
     // Perform Login logic
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value ?? '';
-      
     dispatch(loginAdmin({email,password}));
 }
     

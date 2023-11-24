@@ -1,6 +1,7 @@
 import { configureStore, ThunkAction, Action, ThunkDispatch} from "@reduxjs/toolkit";
 import userReducer from './slices/userSlice';
 import adminReducer from './slices/adminSlice';
+import thunk from "redux-thunk";
 
 
 const store = configureStore({
@@ -8,8 +9,8 @@ const store = configureStore({
     user: userReducer,
     admin: adminReducer
   },
-  // middleware: (getDefaultMiddleware) =>
-  //   getDefaultMiddleware().concat(thunk),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(thunk),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
