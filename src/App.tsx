@@ -1,19 +1,17 @@
 import React, { useEffect } from "react";
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import Dashboard from './pages/admin/dashboard/Dashboard';
-import Home from './pages/admin/Home';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Dashboard from "./pages/admin/dashboard/Dashboard";
+import Home from "./pages/admin/Home";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../frontend/src/store/slices/userSlice";
 import AdminLogin from "./components/admin/Login";
 import { updateAdmin } from "./store/slices/adminSlice";
 
-
 interface User {
   id: string;
   email: string;
   firstName: string;
-  fullName:string;
-  lastName: string;                  // Comment is passed from Home.tsx
+  lastName: string; // Comment is passed from Home.tsx
   profileImage: string;
   token: string;
   isGoogle: boolean;
@@ -33,10 +31,10 @@ const App: React.FC = () => {
 
   // Initialize user data from local storage
   useEffect(() => {
-    const storedUser:object | any = localStorage.getItem("currentUser");
+    const storedUser: object | any = localStorage.getItem("currentUser");
     if (storedUser !== null) {
       try {
-        const currentUser:User = JSON.parse(storedUser);
+        const currentUser: User = JSON.parse(storedUser);
         // Assuming updateUser is synchronous; adjust if it's asynchronous
         dispatch(updateUser(currentUser));
       } catch (error) {
@@ -49,10 +47,10 @@ const App: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const storedAdmin:object | any = localStorage.getItem("currentAdmin")
+    const storedAdmin: object | any = localStorage.getItem("currentAdmin");
     if (storedAdmin !== null) {
       try {
-        const currentUser:User = JSON.parse(storedAdmin);
+        const currentUser: User = JSON.parse(storedAdmin);
         // Assuming updateUser is synchronous; adjust if it's asynchronous
         dispatch(updateAdmin(currentUser));
       } catch (error) {
@@ -66,17 +64,16 @@ const App: React.FC = () => {
 
   return (
     <>
-     <BrowserRouter>
-      <Routes>
-        <Route path='/user/login' element={<Home/>}/>
-        
-        
-        
-        <Route path='/admin/login' element={<AdminLogin/>}/>
-        <Route path='/admin/dashboard/*' element={<Dashboard/>}/>
-        <Route path='*' element={<Home/>}/>
-      </Routes>
-     </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/home" element={<Home />} />
+
+          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard/*" element={<Dashboard />} />
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 };

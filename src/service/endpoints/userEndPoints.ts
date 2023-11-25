@@ -1,6 +1,5 @@
 const userRoutes = {
-  signup:'/user/signup',
-  
-}
+  signup: "/user/signup",
+};
 
 export default userRoutes;

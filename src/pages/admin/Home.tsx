@@ -15,12 +15,12 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <OtpVerification/>
-      <Loading/>
-      <Notification/>
-      <Login/>
-      <Navbar/>
-      {location.pathname === '/admin/login' && (<AdminLogin/>)}
+      <OtpVerification />
+      <Loading />
+      <Notification />
+      <Login />
+      <Navbar />
+      {location.pathname === "/admin/login" && <AdminLogin />}
     </>
   );
 };

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import useCheckToken from '../hooks/useCheckToken';
 import { RootState } from '../../store/types';
 import Profile from './Profile'
+import { useNavigate } from 'react-router-dom';
 
 interface UserMenuProps{
   anchorUserMenu: HTMLElement | null;
@@ -21,7 +22,7 @@ interface ProfileOpen {
 const UserMenu : React.FC<UserMenuProps> = ({anchorUserMenu,setAnchorUserMenu}) => {
   const checkToken = useCheckToken();
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const{ currentUser} = useSelector((state:RootState) => state.user);
 
   const handleCloseUserMenu = () =>{
@@ -29,6 +30,7 @@ const UserMenu : React.FC<UserMenuProps> = ({anchorUserMenu,setAnchorUserMenu}) 
   };
 
   const handleLogout = () => {
+    navigate('/home');
     dispatch(logoutUser());
   };
 
@@ -39,7 +41,9 @@ const UserMenu : React.FC<UserMenuProps> = ({anchorUserMenu,setAnchorUserMenu}) 
       profileImage:currentUser?.profileImage,
       
     };
-    dispatch(updateUserProfile({...currentUser,...profileUpdate}))
+    navigate('/profile')
+    console.log('...Current User',{...currentUser},'...ProfileUpdate',{...profileUpdate})
+    dispatch(updateUserProfile({...currentUser?.message,...profileUpdate}))
   }
   checkToken;
   return (

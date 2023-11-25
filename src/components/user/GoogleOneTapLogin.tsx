@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux'
 import { setAlert, setCloseLogin, updateUser } from '../../store/slices/userSlice'
 import { jwtDecode } from 'jwt-decode'
 import { googleregister } from '../../actions/user'
+import { useNavigate } from 'react-router-dom'
 
 declare global {
   interface Window {
@@ -23,6 +24,7 @@ interface DecodedToken {
 
 const GoogleOneTapLogin:React.FC = () => {
   const dispatch = useDispatch();
+  const navigate =useNavigate()
   const [disable,setDisabled] = useState(false);
 
   const handleResponse = (response:any) => {
@@ -35,6 +37,7 @@ const GoogleOneTapLogin:React.FC = () => {
   }
 
   const handleGoogleLogin = () => {
+    navigate('/google-login')
     setDisabled(true);
     try{
       window.google.accounts.id.initialize({

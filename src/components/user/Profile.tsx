@@ -5,6 +5,7 @@ import { setAlert, updateUserProfile } from '../../store/slices/userSlice';
 import { updateProfile } from '../../actions/user';
 import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField, Tooltip } from '@mui/material';
 import { ArrowBack, Close, Edit, FavoriteBorder, Grading } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 interface Profile {
   open?: boolean;
@@ -14,6 +15,7 @@ interface Profile {
 
 const Profile: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const fNameRef = useRef<HTMLInputElement>(null);
   const lNameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -25,6 +27,7 @@ const Profile: React.FC = () => {
 //add useEffect here
 
   const handleClose = () => {
+    navigate('/home')
     dispatch(updateUserProfile({ ...profile, open: false }));
   };
 
@@ -38,7 +41,6 @@ const Profile: React.FC = () => {
           file,
           profileImage,
         };
-
         dispatch(updateUserProfile({ ...profile, ...profileUpdate }));
       }
     }
@@ -98,8 +100,8 @@ const Profile: React.FC = () => {
       const result = await updateProfile({ currentUser, updatedFields: { firstName, lastName, email, mobile, file: profile.file } });
 
       if(result){
-        console.log('result from Profile.tsx', result)
-        dispatch(updateUserProfile({...profile,...result}))
+        navigate('/profile');
+        dispatch(updateUserProfile({...result}))
         setIsEditMode(false);
       }
     } catch (error) {
@@ -131,9 +133,19 @@ const Profile: React.FC = () => {
             Profile Image:
           </DialogContentText>
           <DialogContentText sx={{ textAlign: 'end' }}>
-            <Tooltip title={!isEditMode ? 'Edit Profile' : 'Back to Profile'}>
-              {!isEditMode ? <Edit onClick={() => setIsEditMode(true)} /> : <ArrowBack onClick={() => setIsEditMode(false)} />}
-            </Tooltip>
+          <Tooltip title={!isEditMode ? 'Edit Profile' : 'Back to Profile'}>
+            {!isEditMode ? (
+              <Edit onClick={() => {
+                setIsEditMode(true);
+                navigate('/edit-profile');
+              }} />
+            ) : (
+              <ArrowBack onClick={() => {
+                setIsEditMode(false);
+                navigate('/profile');
+              }} />
+            )}
+          </Tooltip>
           </DialogContentText>
           <label htmlFor='profileImage'>
             <input

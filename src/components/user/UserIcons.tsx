@@ -9,7 +9,6 @@ import useCheckToken from "../hooks/useCheckToken";
 const UserIcons: React.FC = () => {
   const checkToken =useCheckToken();
   const { currentUser } = useSelector((state: RootState) => state.user);
-  console.log(currentUser?.firstName)
   const [anchorUserMenu, setAnchorUserMenu] = useState<HTMLElement | null>(
     null
   );
@@ -30,8 +29,8 @@ const UserIcons: React.FC = () => {
       <Tooltip title="User Profile">
         <IconButton onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
           <Avatar style={{backgroundColor:'#868686'}}
-            src={currentUser?.message?.profileImage /**|| currentUser?.profileImage*/}
-            alt={currentUser?.message?.firstName /**|| currentUser?.firstName*/}
+            src={currentUser?.message?.profileImage || currentUser?.profileImage}
+            alt={currentUser?.message?.firstName || currentUser?.firstName}
             sx={{
               width: 32,
               height: 32,

@@ -1,16 +1,19 @@
-import { configureStore, ThunkAction, Action, ThunkDispatch} from "@reduxjs/toolkit";
-import userReducer from './slices/userSlice';
-import adminReducer from './slices/adminSlice';
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  ThunkDispatch,
+} from "@reduxjs/toolkit";
+import userReducer from "./slices/userSlice";
+import adminReducer from "./slices/adminSlice";
 import thunk from "redux-thunk";
-
 
 const store = configureStore({
   reducer: {
     user: userReducer,
-    admin: adminReducer
+    admin: adminReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(thunk),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
@@ -21,6 +24,6 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >;
-export type AppDispatch = ThunkDispatch<RootState,unknown,Action<string>>;
+export type AppDispatch = ThunkDispatch<RootState, unknown, Action<string>>;
 
 export default store;

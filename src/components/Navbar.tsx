@@ -5,13 +5,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import UserIcons from './user/UserIcons';
 import { RootState } from '../store/types';
 import { setOpenLogin } from '../store/slices/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 const Navbar: React.FC= () => {
   const dispatch = useDispatch();
+  const navigate =useNavigate()
   const{ currentUser} = useSelector((state:RootState) => state.user);
-  console.log('Current user from navbar',currentUser)
   const handleOpenLogin = () => {
+    navigate('/login-register');
     dispatch(setOpenLogin(true));
   }
   

@@ -10,7 +10,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import SideList from "./SideList";
 import { ThemeProvider } from "@emotion/react";
 import { Tooltip } from "@mui/material";
-import { Brightness4Sharp, Brightness7} from "@mui/icons-material";
+import { Brightness4Sharp, Brightness7 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/types";
@@ -40,67 +40,76 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-const Dashboard: React.FC= () => {
+const Dashboard: React.FC = () => {
   const checkToken = useCheckToken();
-  const navigate = useNavigate()
-  const { currentAdmin} = useSelector((state: RootState) => state.admin);
+  const navigate = useNavigate();
+  const { currentAdmin } = useSelector((state: RootState) => state.admin);
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(true);
   const [title, setTitle] = useState("Admin Panel");
-  const darkTheme = useMemo(() => createTheme({
-    palette:{
-      mode:dark ? 'dark' : 'light'
-    }
-  }), [dark])
+  const darkTheme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: dark ? "dark" : "light",
+        },
+      }),
+    [dark]
+  );
 
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   checkToken;
-  useEffect(() =>{
-    if(!currentAdmin){
-      navigate('/admin/login')
+  useEffect(() => {
+    if (!currentAdmin) {
+      navigate("/admin/login");
     }
-  },[navigate,currentAdmin])
+  }, [navigate, currentAdmin]);
 
   return (
     <ThemeProvider theme={darkTheme}>
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: "none" }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          {/* <Tooltip title='Home'>
+      <Box sx={{ display: "flex" }}>
+        <CssBaseline />
+        <AppBar position="fixed" open={open}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{
+                marginRight: 5,
+                ...(open && { display: "none" }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            {/* <Tooltip title='Home'>
             <IconButton sx={{mr:1}} onClick={()=>navigate('/dashboard')}>    
               <Home/>
             </IconButton>
           </Tooltip> */}
-          <Typography variant="h6" noWrap component="div" sx={{flexGrow:1}} >
-          {title}
-          </Typography>
-          
-          <Tooltip title={dark ? 'Light Mode' : 'Dark Mode'}>
-          <IconButton onClick={() => setDark(!dark)}>
-            {dark ? <Brightness7/> : <Brightness4Sharp/>}
-          </IconButton>
-          </Tooltip>
-        </Toolbar>
-      </AppBar>
-      <SideList open={open} setOpen={setOpen} updateTitle={setTitle} />
-    </Box>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1 }}
+            >
+              {title}
+            </Typography>
+
+            <Tooltip title={dark ? "Light Mode" : "Dark Mode"}>
+              <IconButton onClick={() => setDark(!dark)}>
+                {dark ? <Brightness7 /> : <Brightness4Sharp />}
+              </IconButton>
+            </Tooltip>
+          </Toolbar>
+        </AppBar>
+        <SideList open={open} setOpen={setOpen} updateTitle={setTitle} />
+      </Box>
     </ThemeProvider>
   );
-}
+};
 
 export default Dashboard;
