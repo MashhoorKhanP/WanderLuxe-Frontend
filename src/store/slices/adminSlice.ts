@@ -9,6 +9,7 @@ interface AdminState {
   openLogin: boolean;
   adminLoading: boolean;
   users: Users[];
+  hotelImages:string[]
 }
 
 const initialState: AdminState = {
@@ -16,10 +17,11 @@ const initialState: AdminState = {
   users: [],
   openLogin: false,
   adminLoading: false,
+  hotelImages:[]
 };
 
 interface Admin {
-  id: string;
+  _id: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -37,6 +39,7 @@ interface Users {
   isVerified: boolean;
   isBlocked: boolean;
 }
+
 
 const adminSlice = createSlice({
   name: "admin",
@@ -58,6 +61,9 @@ const adminSlice = createSlice({
       localStorage.removeItem("currentAdmin");
       localStorage.removeItem("AdminToken");
       toast.success("Logged out successfully");
+    },
+    updateHotelImages:(state,action:PayloadAction<string>) => {
+      state.hotelImages = [...state.hotelImages,action.payload]; /** or if any issue check  [...state.hotelImages, ...action.payload]; */
     },
     startLoading: (state) => {
       state.adminLoading = true;
@@ -154,6 +160,7 @@ export const {
   setCurrentAdmin,
   updateAdmin,
   logoutAdmin,
+  updateHotelImages,
   startLoading,
   stopAdminLoading,
 } = adminSlice.actions;

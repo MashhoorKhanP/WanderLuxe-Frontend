@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/types';
 import { setAlert, updateUserProfile } from '../../store/slices/userSlice';
 import { updateProfile } from '../../actions/user';
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField, Tooltip } from '@mui/material';
+import { Avatar, Backdrop, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField, Tooltip } from '@mui/material';
 import { ArrowBack, Close, Edit, FavoriteBorder, Grading } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface Profile {
   open?: boolean;
@@ -21,13 +22,12 @@ const Profile: React.FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const mobileRef = useRef<HTMLInputElement>(null);
 
-  const { profile, currentUser } = useSelector((state: RootState) => state.user);
+  const{ profile, currentUser } = useSelector((state: RootState) => state.user);
   const [isEditMode, setIsEditMode] = useState(false);
   
-//add useEffect here
-
+  // if(currentUser?.message) currentUser = currentUser.message;
   const handleClose = () => {
-    navigate('/home')
+    navigate('/user/home')
     dispatch(updateUserProfile({ ...profile, open: false }));
   };
 
@@ -100,9 +100,10 @@ const Profile: React.FC = () => {
       const result = await updateProfile({ currentUser, updatedFields: { firstName, lastName, email, mobile, file: profile.file } });
 
       if(result){
-        navigate('/profile');
+        navigate('/user/profile');
         dispatch(updateUserProfile({...result}))
         setIsEditMode(false);
+        toast.success('Profile updated successfully');
       }
     } catch (error) {
       // Handle errors if necessary
@@ -111,7 +112,13 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <Dialog open={profile?.open ?? false} onClose={handleClose}>
+    <>
+    <Backdrop
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: "#fff", backdropFilter: "blur(5px)" }}
+        open={profile.open ?? false}
+        onClick={handleClose}
+      />
+    <Dialog open={profile?.open ?? false} onClose={handleClose} sx={{opacity:'90%'}}>
       <DialogTitle sx={{ pb: 0 }}>
         Profile
         <IconButton
@@ -137,12 +144,12 @@ const Profile: React.FC = () => {
             {!isEditMode ? (
               <Edit onClick={() => {
                 setIsEditMode(true);
-                navigate('/edit-profile');
+                navigate('/user/edit-profile');
               }} />
             ) : (
               <ArrowBack onClick={() => {
                 setIsEditMode(false);
-                navigate('/profile');
+                navigate('/user/profile');
               }} />
             )}
           </Tooltip>
@@ -242,6 +249,7 @@ const Profile: React.FC = () => {
         </Button>
       </DialogActions>
     </Dialog>
+    </>
   );
 };
 

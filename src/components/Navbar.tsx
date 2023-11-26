@@ -6,6 +6,7 @@ import UserIcons from './user/UserIcons';
 import { RootState } from '../store/types';
 import { setOpenLogin } from '../store/slices/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { WanderLuxeLogo } from '../assets/extraImages';
 
 
 const Navbar: React.FC= () => {
@@ -13,7 +14,7 @@ const Navbar: React.FC= () => {
   const navigate =useNavigate()
   const{ currentUser} = useSelector((state:RootState) => state.user);
   const handleOpenLogin = () => {
-    navigate('/login-register');
+    navigate('/user/login-register');
     dispatch(setOpenLogin(true));
   }
   
@@ -21,10 +22,13 @@ const Navbar: React.FC= () => {
     <AppBar position="static" sx={{ backgroundColor: '#9fa3a878' }}>
       <Container maxWidth='lg'>
        <Toolbar disableGutters>
-        <Box>
+        {/* <Box>
           <IconButton size='large' sx={{display:{color:'#000000'}}}>
             <Menu/>
           </IconButton>
+        </Box> */}
+        <Box>
+          <img src={WanderLuxeLogo} style={{width:'35px'}}/>
         </Box>
         <Typography variant='h6'
         component='h1'

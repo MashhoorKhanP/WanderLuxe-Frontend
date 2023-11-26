@@ -1,23 +1,21 @@
 import {
+  Backdrop,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Grid,
-  IconButton,
   TextField,
 } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/types";
-import { Close, Send } from "@mui/icons-material";
+import { Send } from "@mui/icons-material";
 import { loginAdmin } from "../../actions/admin";
 import PasswordField from "../user/PasswordField";
 import { AppDispatch } from "../../store/store";
 import { useNavigate } from "react-router-dom";
-import { setAlert } from "../../store/slices/userSlice";
 import { toast } from "react-toastify";
 
 const AdminLogin: React.FC = () => {
@@ -71,6 +69,7 @@ const AdminLogin: React.FC = () => {
   };
 
   return (
+    <>
     <Dialog open={true} /**onClose={handleClose}*/>
       <DialogTitle>
         Admin login
@@ -118,6 +117,7 @@ const AdminLogin: React.FC = () => {
         </DialogActions>
       </form>
     </Dialog>
+    </>
   );
 };
 

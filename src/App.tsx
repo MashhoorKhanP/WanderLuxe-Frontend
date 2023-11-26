@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Dashboard from "./pages/admin/dashboard/Dashboard";
-import Home from "./pages/admin/Home";
+import { BrowserRouter} from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../frontend/src/store/slices/userSlice";
-import AdminLogin from "./components/admin/Login";
 import { updateAdmin } from "./store/slices/adminSlice";
+import AppRouter from "./routers/Router";
 
 interface User {
-  id: string;
+  _id: string;
   email: string;
   firstName: string;
   lastName: string; // Comment is passed from Home.tsx
@@ -18,7 +16,7 @@ interface User {
 }
 
 interface Admin {
-  id: string;
+  _id: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -65,14 +63,7 @@ const App: React.FC = () => {
   return (
     <>
       <BrowserRouter>
-        <Routes>
-          <Route path="/home" element={<Home />} />
-
-          <Route path="/admin" element={<AdminLogin />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard/*" element={<Dashboard />} />
-          <Route path="*" element={<Home />} />
-        </Routes>
+        <AppRouter />
       </BrowserRouter>
     </>
   );

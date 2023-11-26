@@ -30,7 +30,7 @@ const UserMenu : React.FC<UserMenuProps> = ({anchorUserMenu,setAnchorUserMenu}) 
   };
 
   const handleLogout = () => {
-    navigate('/home');
+    navigate('/user/home');
     dispatch(logoutUser());
   };
 
@@ -41,7 +41,7 @@ const UserMenu : React.FC<UserMenuProps> = ({anchorUserMenu,setAnchorUserMenu}) 
       profileImage:currentUser?.profileImage,
       
     };
-    navigate('/profile')
+    navigate('/user/profile')
     console.log('...Current User',{...currentUser},'...ProfileUpdate',{...profileUpdate})
     dispatch(updateUserProfile({...currentUser?.message,...profileUpdate}))
   }

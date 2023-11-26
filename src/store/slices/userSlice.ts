@@ -248,6 +248,9 @@ const userSlice = createSlice({
 
     builder.addCase(verifyUser.rejected, (state, action) => {
       state.loading = false;
+      state.alert={open: true,
+        severity: "error",
+        message: 'Invalid OTP, Please confirm your OTP'}
       if (action.error instanceof Error) {
         state.alert = {
           open: true,

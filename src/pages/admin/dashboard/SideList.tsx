@@ -41,6 +41,7 @@ import Coupons from "./coupons/Coupons";
 import Offers from "./offers/Offers";
 import Banners from "./banners/Banners";
 import { logoutAdmin } from "../../../store/slices/adminSlice";
+import AddHotel from "./hotels/AddHotel";
 
 const drawerWidth = 240;
 
@@ -113,7 +114,7 @@ const SideList: React.FC<SideListProps> = ({ open, setOpen, updateTitle }) => {
       {
         title: "Dashboard",
         icon: <Dashboard />,
-        link: "dashboard",
+        link: "",
         component: <Main {...{ setSelectedLink, link: "dashboard" }} />,
       },
       {
@@ -163,9 +164,9 @@ const SideList: React.FC<SideListProps> = ({ open, setOpen, updateTitle }) => {
   );
 
   const handleLogout = () => {
-    dispatch(logoutAdmin()); // change to admin
-    navigate("/admin/login"); //setup later
+    dispatch(logoutAdmin());
   };
+
   return (
     <>
       <Drawer variant="permanent" open={open}>

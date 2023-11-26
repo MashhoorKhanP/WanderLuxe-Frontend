@@ -1,4 +1,5 @@
 import {
+  Backdrop,
   Button,
   Dialog,
   DialogActions,
@@ -41,7 +42,7 @@ const Login: React.FC = () => {
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
   const handleClose = () => {
-    navigate("/home");
+    navigate("/user/home");
     dispatch(setCloseLogin());
   };
 
@@ -102,10 +103,10 @@ const Login: React.FC = () => {
         return;
       }
 
-      // if (!passwordRef.current?.value.match(/^(?=.*[0-9]).{6,}$/)) {
-      //   showErrorAlert('Please provide a strong password, Minimum 6 length!');
-      //   return;
-      // }
+      if (!passwordRef.current?.value.match(/^(?=.*[0-9]).{6,}$/)) {
+        showErrorAlert('Please provide a strong password, Minimum 6 length!');
+        return;
+      }
 
       if (confirmPasswordRef.current?.value.trim().length === 0) {
         showErrorAlert("Please confirm your password.");
@@ -122,6 +123,7 @@ const Login: React.FC = () => {
       const email = emailRef.current?.value;
       const mobile = mobileRef.current?.value;
       const password = passwordRef.current?.value;
+      navigate('/user/otp-verification');
       return dispatch(
         registerUser({ firstName, lastName, email, password, mobile })
       );
@@ -151,7 +153,7 @@ const Login: React.FC = () => {
       // Perform Login logic
       const email = emailRef.current?.value;
       const password = passwordRef.current?.value ?? "";
-      navigate("/home");
+      navigate("/user/home");
       return dispatch(loginUser({ email, password }));
     }
   };
@@ -161,7 +163,13 @@ const Login: React.FC = () => {
   }, [isRegister]);
 
   return (
-    <Dialog open={openLogin} onClose={handleClose}>
+    <>
+     <Backdrop
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: "#fff", backdropFilter: "blur(5px)" }}
+        open={openLogin}
+        onClick={handleClose}
+      />
+    <Dialog open={openLogin} onClose={handleClose} sx={{opacity:'80%'}}>
       <DialogTitle>
         {title}
         <IconButton
@@ -308,7 +316,7 @@ const Login: React.FC = () => {
           onClick={() => {
             setIsRegister(!isRegister);
             // Navigate based on the isRegister state
-            isRegister ? navigate("/login") : navigate("/register");
+            isRegister ? navigate("/user/login") : navigate("/user/register");
           }}
           style={{ marginTop: "5px" }}
         >
@@ -316,6 +324,7 @@ const Login: React.FC = () => {
         </Button>
       </DialogActions>
     </Dialog>
+    </>
   );
 };
 

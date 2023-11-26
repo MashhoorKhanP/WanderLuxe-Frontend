@@ -47,6 +47,8 @@ const Dashboard: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(true);
   const [title, setTitle] = useState("Admin Panel");
+ 
+  console.log(currentAdmin)
   const darkTheme = useMemo(
     () =>
       createTheme({

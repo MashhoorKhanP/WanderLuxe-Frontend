@@ -99,7 +99,7 @@ const Users: React.FC<UsersProps> = ({ setSelectedLink, link }) => {
   );
 
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
+    <Box sx={{ height: 400, width: "95%" }}>
       <Typography
         variant="h4"
         component="h4"
