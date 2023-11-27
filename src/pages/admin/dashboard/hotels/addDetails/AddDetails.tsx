@@ -1,10 +1,11 @@
+import { Stack } from "@mui/material";
 
 const AddDetails: React.FC = () => {
   
   return (
-   <>
-   <div>AddDetails</div>
-   </>
+   <Stack>
+    
+   </Stack>
   );
 };
 

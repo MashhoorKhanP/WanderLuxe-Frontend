@@ -68,7 +68,7 @@ const Users: React.FC<UsersProps> = ({ setSelectedLink, link }) => {
         renderCell: (params) =>
           moment(params.row.createdAt).format("YYYY-MM-DD HH:MM:SS"),
       },
-      { field: "_id", headerName: "User ID", type: "string", width: 110 },
+      //{ field: "_id", headerName: "User ID", type: "string", width: 110},
       {
         field: "isVerified",
         headerName: "Verified",

@@ -62,6 +62,7 @@ export const fetchData = async ({
     // Use the errorHandle function to handle the error
     const typedError = error as AxiosError | any;
     console.log(typedError.response?.data?.result.success);
+    console.log(typedError.response.data?.result);
     if (!typedError.response?.data?.result.success) {
       errorHandle(typedError.response?.data?.result);
     }

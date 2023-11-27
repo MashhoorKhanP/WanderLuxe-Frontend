@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Divider,
   Grid,
   IconButton,
   TextField,
@@ -16,9 +15,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setAlert,
   setCloseLogin,
-  setOpenOTPVerification,
-  startLoading,
-  stopLoading,
 } from "../../store/slices/userSlice";
 import { RootState } from "../../store/types";
 import { Close, Send } from "@mui/icons-material";
@@ -104,7 +100,7 @@ const Login: React.FC = () => {
       }
 
       if (!passwordRef.current?.value.match(/^(?=.*[0-9]).{6,}$/)) {
-        showErrorAlert('Please provide a strong password, Minimum 6 length!');
+        showErrorAlert('Please provide a strong password, Minimum 6 length with number & chara!');
         return;
       }
 

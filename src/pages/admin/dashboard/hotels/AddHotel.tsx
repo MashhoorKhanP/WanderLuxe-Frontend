@@ -1,11 +1,15 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Stepper,Step, StepButton, Stack, Button, Box } from '@mui/material';
 import AddLocation from './addLocation/AddLocation';
 import AddDetails from './addDetails/AddDetails';
 import AddImages from './addImages/AddImages';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../store/types';
 
 const AddHotel: React.FC = () => {
+  const hotelImages = useSelector((state: RootState) => state.admin.hotelImages);
+
   const [activeStep,setActiveStep] = useState(0);
   const [steps,setSteps] = useState([
     {label:'Location',completed:false},
@@ -32,6 +36,20 @@ const AddHotel: React.FC = () => {
 
   const findUnfinished = () => {
     return steps.findIndex(step => !step.completed)
+  }
+  useEffect(() => {
+    if(hotelImages.length){
+      if(!steps[2].completed) setComplete(2,true)
+    }else{
+      if(steps[2].completed) setComplete(2,false)
+    }
+  },[hotelImages])
+
+  const setComplete = (index:number,status:boolean) => {
+    setSteps(steps => {
+      steps[index].completed = status;
+      return [...steps];
+    })
   }
 
   return (

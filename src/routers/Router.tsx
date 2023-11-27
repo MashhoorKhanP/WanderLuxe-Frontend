@@ -2,8 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import Home from "../pages/User"
 import AdminLogin from "../components/admin/Login"
 import Dashboard from "../pages/admin/dashboard/Dashboard"
-import Login from "../components/user/Login"
-import Users from "../pages/admin/dashboard/users/Users"
+import Admin from "../pages/Admin"
 
 const UserRouter :React.FC =() => {
 
@@ -30,7 +29,7 @@ const AdminRouter :React.FC =() => {
       <Route path="/login" element={<AdminLogin/>} />
       <Route path="*" element={<Navigate to="/admin/login"/>}/>
       {/* <Route path="dashboard" element={<Dashboard/>}/> */}
-      <Route path="dashboard/*" element={<Dashboard />} />
+      <Route path="dashboard/*" element={<Admin />} />
     </Routes>
   )
   

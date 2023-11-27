@@ -33,7 +33,6 @@ const Navbar: React.FC= () => {
         <Typography variant='h6'
         component='h1'
         noWrap
-        
         sx={{flexGrow:1, display:{xs:'none',md:'flex',color: '#000000'}}}
         >
           WanderLuxe

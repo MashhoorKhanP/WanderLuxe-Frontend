@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter} from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { updateUser } from "../../frontend/src/store/slices/userSlice";
+import { logoutUser, updateUser } from "../../frontend/src/store/slices/userSlice";
 import { updateAdmin } from "./store/slices/adminSlice";
 import AppRouter from "./routers/Router";
 
@@ -39,7 +39,8 @@ const App: React.FC = () => {
         console.error("Error parsing stored user data:", error);
         // Handle the error more gracefully (e.g., show a message, clear local storage)
       }
-    } else {
+    } else if (storedUser === null || storedUser === undefined) {
+      dispatch(logoutUser());
       // Handle the case where storedUser is null (no user data in local storage)
     }
   }, [dispatch]);

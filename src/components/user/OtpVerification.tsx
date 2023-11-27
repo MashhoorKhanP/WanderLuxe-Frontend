@@ -20,9 +20,11 @@ import { RootState } from "../../store/types";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import { AppDispatch } from "../../store/store";
 import { resendOTP, verifyUser } from "../../actions/user";
+import { useNavigate } from "react-router-dom";
 
 const OtpVerification: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const openOtpVerification = useSelector(
     (state: RootState) => state.user.openOTPVerification
   );
@@ -74,6 +76,7 @@ const OtpVerification: React.FC = () => {
 
   const handleClose = () => {
     dispatch(setCloseOTPVerification());
+    navigate('/user/home');
   };
 
   const handleVerifyOTP = (event: React.FormEvent) => {

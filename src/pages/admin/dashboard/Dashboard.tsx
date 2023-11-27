@@ -10,7 +10,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import SideList from "./SideList";
 import { ThemeProvider } from "@emotion/react";
 import { Tooltip } from "@mui/material";
-import { Brightness4Sharp, Brightness7 } from "@mui/icons-material";
+import { Brightness4Sharp, Brightness7, Home } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/types";
@@ -88,7 +88,7 @@ const Dashboard: React.FC = () => {
               <MenuIcon />
             </IconButton>
             {/* <Tooltip title='Home'>
-            <IconButton sx={{mr:1}} onClick={()=>navigate('/dashboard')}>    
+            <IconButton sx={{mr:1}} onClick={()=>navigate('/admin/dashboard')}>    
               <Home/>
             </IconButton>
           </Tooltip> */}
@@ -111,6 +111,7 @@ const Dashboard: React.FC = () => {
         <SideList open={open} setOpen={setOpen} updateTitle={setTitle} />
       </Box>
     </ThemeProvider>
+    
   );
 };
 

@@ -145,6 +145,11 @@ const userSlice = createSlice({
         };
         state.openLogin = false;
         state.openOTPVerification = true;
+        if(state.openOTPVerification){
+            setTimeout(() => {
+            toast.warning('OTP Expired');
+          }, 2 * 60000)
+        }
       }
       state.loading = false;
       // state.currentUser = action.payload;

@@ -18,7 +18,7 @@ const UserIcons: React.FC = () => {
     <Box>
       <Tooltip title="Wishlist">
         <IconButton size="large" color="inherit">
-        <Badge color="error" badgeContent={15}>
+        <Badge color="error" badgeContent={2}>
           <FavoriteBorder
             sx={{ display: { color: "#000000", fontSize: 26 } }}
           />

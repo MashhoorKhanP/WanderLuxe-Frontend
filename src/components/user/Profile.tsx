@@ -27,8 +27,8 @@ const Profile: React.FC = () => {
   
   // if(currentUser?.message) currentUser = currentUser.message;
   const handleClose = () => {
-    navigate('/user/home')
     dispatch(updateUserProfile({ ...profile, open: false }));
+    navigate('/user/home')
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

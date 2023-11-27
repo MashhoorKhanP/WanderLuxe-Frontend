@@ -212,7 +212,7 @@ const SideList: React.FC<SideListProps> = ({ open, setOpen, updateTitle }) => {
           <Tooltip title={currentAdmin?.firstName}>
             <Avatar
               src={currentAdmin?.profileImage}
-              {...(open && { sx: { width: 100, height: 100 } })}
+              {...(open && { sx: { width: 50, height: 50 } })}
             >
               {currentAdmin?.firstName?.charAt(0).toUpperCase()}
             </Avatar>

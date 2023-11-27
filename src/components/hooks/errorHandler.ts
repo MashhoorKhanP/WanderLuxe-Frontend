@@ -18,6 +18,10 @@ const errorHandle = (error: Error | AxiosError | {}) => {
       console.log("Entered inside the toast.error");
       // location.href = '/';
       toast.error(errorResponse.message);
+    } else if(errorResponse.message === "You have been blocked by admin!") {
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('UserToken');
+      toast.error(errorResponse.message);
     } else {
       toast.error(errorResponse.message);
     }

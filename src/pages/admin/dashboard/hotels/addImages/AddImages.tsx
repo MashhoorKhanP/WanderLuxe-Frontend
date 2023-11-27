@@ -1,6 +1,8 @@
 import { Paper } from "@mui/material";
 import React,{useState, useCallback} from 'react';
 import { useDropzone } from "react-dropzone";
+import ProgressList from "./progressList/ProgressList";
+import ImagesList from "./ImagesList";
 
 const AddImages: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -13,10 +15,11 @@ const AddImages: React.FC = () => {
     accept:{'image/*':[]}
   })
   return (
-  <Paper 
+    <>
+    <Paper 
   sx={{
     cursor:'pointer',
-    background:'#fafafa',
+    background:'#00000',
     color:'#bdbdbd',
     border:'1px dashed #ccc',
     '&:hover':{border:'1px solid #ccc'}
@@ -32,6 +35,10 @@ const AddImages: React.FC = () => {
       <em>(image with  *.jpeg, *.png, *.jpg extension will be accepted)</em>
     </div>
   </Paper>
+  <ProgressList {...{files}}/>
+  <ImagesList/>
+  </>
+  
   );
 };
 

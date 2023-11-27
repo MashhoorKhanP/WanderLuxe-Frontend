@@ -65,6 +65,9 @@ const adminSlice = createSlice({
     updateHotelImages:(state,action:PayloadAction<string>) => {
       state.hotelImages = [...state.hotelImages,action.payload]; /** or if any issue check  [...state.hotelImages, ...action.payload]; */
     },
+    deleteHotelImages:(state,action:PayloadAction<string>) => {
+      state.hotelImages = state.hotelImages.filter((image) => image !== action.payload) 
+    },
     startLoading: (state) => {
       state.adminLoading = true;
     },
@@ -161,6 +164,7 @@ export const {
   updateAdmin,
   logoutAdmin,
   updateHotelImages,
+  deleteHotelImages,
   startLoading,
   stopAdminLoading,
 } = adminSlice.actions;
