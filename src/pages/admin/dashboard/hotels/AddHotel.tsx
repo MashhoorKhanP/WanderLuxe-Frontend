@@ -9,6 +9,7 @@ import { RootState } from '../../../../store/types';
 
 const AddHotel: React.FC = () => {
   const hotelImages = useSelector((state: RootState) => state.admin.hotelImages);
+  const hotelDetails = useSelector((state: RootState) => state.admin.hotelDetails);
 
   const [activeStep,setActiveStep] = useState(0);
   const [steps,setSteps] = useState([
@@ -37,13 +38,23 @@ const AddHotel: React.FC = () => {
   const findUnfinished = () => {
     return steps.findIndex(step => !step.completed)
   }
+
   useEffect(() => {
     if(hotelImages.length){
       if(!steps[2].completed) setComplete(2,true)
     }else{
       if(steps[2].completed) setComplete(2,false)
     }
-  },[hotelImages])
+  },[hotelImages]);
+
+  useEffect(() => {
+    if(hotelDetails.hotelName.length>4 && hotelDetails.location.length > 4  && hotelDetails.distanceFromCityCenter 
+      && hotelDetails.mobile.length > 9 && hotelDetails.email.length > 9 && hotelDetails.minimumRent && hotelDetails.description.length > 14  ){
+      if(!steps[1].completed) setComplete(1,true)
+    }else{
+      if(steps[1].completed) setComplete(1,false)
+    }
+  },[hotelDetails]);
 
   const setComplete = (index:number,status:boolean) => {
     setSteps(steps => {

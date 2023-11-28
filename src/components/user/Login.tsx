@@ -12,10 +12,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setAlert,
-  setCloseLogin,
-} from "../../store/slices/userSlice";
+import { setAlert, setCloseLogin } from "../../store/slices/userSlice";
 import { RootState } from "../../store/types";
 import { Close, Send } from "@mui/icons-material";
 import PasswordField from "./PasswordField";
@@ -100,7 +97,9 @@ const Login: React.FC = () => {
       }
 
       if (!passwordRef.current?.value.match(/^(?=.*[0-9]).{6,}$/)) {
-        showErrorAlert('Please provide a strong password, Minimum 6 length with number & chara!');
+        showErrorAlert(
+          "Please provide a strong password, Minimum 6 length with number & chara!"
+        );
         return;
       }
 
@@ -119,10 +118,18 @@ const Login: React.FC = () => {
       const email = emailRef.current?.value;
       const mobile = mobileRef.current?.value;
       const password = passwordRef.current?.value;
-      navigate('/user/otp-verification');
-      return dispatch(
-        registerUser({ firstName, lastName, email, password, mobile })
+      const result = dispatch(
+        registerUser({ firstName, lastName, email, password, mobile }) //set this to a variable and check is userAlreadyExist then no navigate
       );
+      const resultUnwrapped = result.unwrap();
+      resultUnwrapped.then((thenResult) => {
+        console.log("success", thenResult);
+
+        // Check if thenResult is not null or undefined
+        if (thenResult != null) {
+          navigate("/user/otp-verification");
+        }
+      });
     } else {
       const fields = [
         { ref: emailRef, label: "Email" },
@@ -160,64 +167,110 @@ const Login: React.FC = () => {
 
   return (
     <>
-     <Backdrop
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, color: "#fff", backdropFilter: "blur(5px)" }}
+      <Backdrop
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          color: "#fff",
+          backdropFilter: "blur(5px)",
+        }}
         open={openLogin}
         onClick={handleClose}
       />
-    <Dialog open={openLogin} onClose={handleClose} sx={{opacity:'80%'}}>
-      <DialogTitle>
-        {title}
-        <IconButton
-          sx={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-          onClick={handleClose}
-        >
-          <Close />
-        </IconButton>
-      </DialogTitle>
-      <DialogActions sx={{ justifyContent: "center", py: "2px", pb: "20px" }}>
-        <GoogleOneTapLogin />
-      </DialogActions>
-      <strong style={{ textAlign: "center", fontWeight: "bolder" }}>OR</strong>
-      <form onSubmit={handleSubmit}>
-        <DialogContent>
-          <DialogContentText>
-            Please fill your details in the fields below:
-          </DialogContentText>
-          {isRegister ? (
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                {/* First Name */}
-                <TextField
-                  autoFocus
-                  margin="normal"
-                  variant="standard"
-                  id="firstName"
-                  label="First name"
-                  type="text"
-                  inputRef={fNameRef}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={6}>
-                {/* Last Name */}
-                <TextField
-                  margin="normal"
-                  variant="standard"
-                  id="lastName"
-                  label="Last name"
-                  type="text"
-                  fullWidth
-                  inputRef={lNameRef}
-                />
-              </Grid>
+      <Dialog open={openLogin} onClose={handleClose} sx={{ opacity: "80%" }}>
+        <DialogTitle>
+          {title}
+          <IconButton
+            sx={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+            onClick={handleClose}
+          >
+            <Close />
+          </IconButton>
+        </DialogTitle>
+        <DialogActions sx={{ justifyContent: "center", py: "2px", pb: "20px" }}>
+          <GoogleOneTapLogin />
+        </DialogActions>
+        <strong style={{ textAlign: "center", fontWeight: "bolder" }}>
+          OR
+        </strong>
+        <form onSubmit={handleSubmit}>
+          <DialogContent>
+            <DialogContentText>
+              Please fill your details in the fields below:
+            </DialogContentText>
+            {isRegister ? (
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  {/* First Name */}
+                  <TextField
+                    autoFocus
+                    margin="normal"
+                    variant="standard"
+                    id="firstName"
+                    label="First name"
+                    type="text"
+                    inputRef={fNameRef}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  {/* Last Name */}
+                  <TextField
+                    margin="normal"
+                    variant="standard"
+                    id="lastName"
+                    label="Last name"
+                    type="text"
+                    fullWidth
+                    inputRef={lNameRef}
+                  />
+                </Grid>
 
-              <Grid item xs={6}>
+                <Grid item xs={6}>
+                  {/* Email */}
+                  <TextField
+                    autoFocus={!isRegister}
+                    margin="normal"
+                    variant="standard"
+                    id="email"
+                    label="Email"
+                    type="text"
+                    fullWidth
+                    inputRef={emailRef}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  {/* Mobile Number */}
+                  <TextField
+                    margin="normal"
+                    variant="standard"
+                    id="mobile"
+                    label="Mobile no"
+                    type="text"
+                    fullWidth
+                    inputRef={mobileRef}
+                    inputProps={{ minLength: 2 }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  {/* Password */}
+                  <PasswordField {...{ passwordRef }} />
+                </Grid>
+                <Grid item xs={6}>
+                  {/* Confirm Password */}
+                  <PasswordField
+                    passwordRef={confirmPasswordRef}
+                    id="confirmPassword"
+                    label="Confirm Password"
+                  />
+                </Grid>
+              </Grid>
+            ) : (
+              <>
                 {/* Email */}
                 <TextField
                   autoFocus={!isRegister}
@@ -225,101 +278,61 @@ const Login: React.FC = () => {
                   variant="standard"
                   id="email"
                   label="Email"
-                  type="text"
+                  type="email"
                   fullWidth
                   inputRef={emailRef}
                 />
-              </Grid>
-              <Grid item xs={6}>
-                {/* Mobile Number */}
-                <TextField
-                  margin="normal"
-                  variant="standard"
-                  id="mobile"
-                  label="Mobile no"
-                  type="text"
-                  fullWidth
-                  inputRef={mobileRef}
-                  inputProps={{ minLength: 2 }}
-                />
-              </Grid>
-              <Grid item xs={6}>
                 {/* Password */}
                 <PasswordField {...{ passwordRef }} />
-              </Grid>
-              <Grid item xs={6}>
                 {/* Confirm Password */}
-                <PasswordField
-                  passwordRef={confirmPasswordRef}
-                  id="confirmPassword"
-                  label="Confirm Password"
-                />
-              </Grid>
-            </Grid>
-          ) : (
-            <>
-              {/* Email */}
-              <TextField
-                autoFocus={!isRegister}
-                margin="normal"
-                variant="standard"
-                id="email"
-                label="Email"
-                type="email"
-                fullWidth
-                inputRef={emailRef}
-              />
-              {/* Password */}
-              <PasswordField {...{ passwordRef }} />
-              {/* Confirm Password */}
-              {isRegister && (
-                <PasswordField
-                  passwordRef={confirmPasswordRef}
-                  id="confirmPassword"
-                  label="Confirm Password"
-                />
-              )}
-            </>
-          )}
-        </DialogContent>
+                {isRegister && (
+                  <PasswordField
+                    passwordRef={confirmPasswordRef}
+                    id="confirmPassword"
+                    label="Confirm Password"
+                  />
+                )}
+              </>
+            )}
+          </DialogContent>
 
-        <DialogActions sx={{ justifyContent: "center", px: "19px" }}>
-          {isRegister ? (
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{ bgcolor: "black" }}
-              endIcon={<Send />}
-            >
-              Sign up
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{ bgcolor: "black" }}
-              endIcon={<Send />}
-            >
-              Login
-            </Button>
-          )}
+          <DialogActions sx={{ justifyContent: "center", px: "19px" }}>
+            {isRegister ? (
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{ bgcolor: "black" }}
+                endIcon={<Send />}
+              >
+                Sign up
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{ bgcolor: "black" }}
+                endIcon={<Send />}
+              >
+                Login
+              </Button>
+            )}
+          </DialogActions>
+        </form>
+
+        <DialogActions sx={{ justifyContent: "center", p: "5px 24px" }}>
+          {isRegister ? "Already have an account?" : "Don't have an account?"}
+          <Button
+            onClick={() => {
+              setIsRegister(!isRegister);
+              // Navigate based on the isRegister state
+              isRegister ? navigate("/user/login") : navigate("/user/register");
+            }}
+            style={{ marginTop: "5px" }}
+          >
+            {isRegister ? "Login" : "Register"}
+          </Button>
         </DialogActions>
-      </form>
-
-      <DialogActions sx={{ justifyContent: "center", p: "5px 24px" }}>
-        {isRegister ? "Already have an account?" : "Don't have an account?"}
-        <Button
-          onClick={() => {
-            setIsRegister(!isRegister);
-            // Navigate based on the isRegister state
-            isRegister ? navigate("/user/login") : navigate("/user/register");
-          }}
-          style={{ marginTop: "5px" }}
-        >
-          {isRegister ? "Login" : "Register"}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      </Dialog>
     </>
   );
 };

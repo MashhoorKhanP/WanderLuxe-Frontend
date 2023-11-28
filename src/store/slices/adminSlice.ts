@@ -3,22 +3,19 @@ import errorHandle from "../../components/hooks/errorHandler";
 import { AxiosError } from "axios";
 import { getUsers, loginAdmin } from "../../actions/admin";
 import { toast } from "react-toastify";
+import { stat } from "fs";
 
 interface AdminState {
   currentAdmin: Admin | null; //Want to update according to database
   openLogin: boolean;
   adminLoading: boolean;
   users: Users[];
-  hotelImages:string[]
+  hotelImages: string[];
+  hotelDetails: HotelDetails;
+  location:{longitude:number,latitude:number}
 }
 
-const initialState: AdminState = {
-  currentAdmin: null,
-  users: [],
-  openLogin: false,
-  adminLoading: false,
-  hotelImages:[]
-};
+
 
 interface Admin {
   _id: string;
@@ -40,6 +37,38 @@ interface Users {
   isBlocked: boolean;
 }
 
+interface HotelDetails {
+  hotelName: string;
+  location: string;
+  distanceFromCityCenter: number;
+  mobile: string;
+  email: string;
+  minimumRent: number;// Adjust this type as per your requirements
+  description: string;
+  parkingPrice?:number;
+}
+
+const initialState: AdminState = {
+  currentAdmin: null,
+  users: [],
+  openLogin: false,
+  adminLoading: false,
+  hotelImages: [],
+  hotelDetails: {
+    hotelName: "",
+    location: "",
+    distanceFromCityCenter: 0,
+    mobile: "",
+    email: "",
+    minimumRent: 0,
+    description: "",
+    parkingPrice:0,
+  },
+  location:{
+    longitude:77, latitude:
+    16
+  }
+};
 
 const adminSlice = createSlice({
   name: "admin",
@@ -62,11 +91,22 @@ const adminSlice = createSlice({
       localStorage.removeItem("AdminToken");
       toast.success("Logged out successfully");
     },
-    updateHotelImages:(state,action:PayloadAction<string>) => {
-      state.hotelImages = [...state.hotelImages,action.payload]; /** or if any issue check  [...state.hotelImages, ...action.payload]; */
+    updateHotelDetails:(state,action:PayloadAction<Partial<HotelDetails>>) =>{
+      state.hotelDetails = {...state.hotelDetails,...action.payload}
     },
-    deleteHotelImages:(state,action:PayloadAction<string>) => {
-      state.hotelImages = state.hotelImages.filter((image) => image !== action.payload) 
+    updateHotelImages: (state, action: PayloadAction<string>) => {
+      state.hotelImages = [
+        ...state.hotelImages,
+        action.payload,
+      ]; /** or if any issue check  [...state.hotelImages, ...action.payload]; */
+    },
+    deleteHotelImages: (state, action: PayloadAction<string>) => {
+      state.hotelImages = state.hotelImages.filter(
+        (image) => image !== action.payload
+      );
+    },
+    updateLocation:(state,action: PayloadAction<object>) => {
+      state.location = {...state.location,...action.payload};
     },
     startLoading: (state) => {
       state.adminLoading = true;
@@ -163,8 +203,10 @@ export const {
   setCurrentAdmin,
   updateAdmin,
   logoutAdmin,
+  updateHotelDetails,
   updateHotelImages,
   deleteHotelImages,
+  updateLocation,
   startLoading,
   stopAdminLoading,
 } = adminSlice.actions;
