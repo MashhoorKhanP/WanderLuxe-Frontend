@@ -3,7 +3,6 @@ import errorHandle from "../../components/hooks/errorHandler";
 import { AxiosError } from "axios";
 import { getUsers, loginAdmin } from "../../actions/admin";
 import { toast } from "react-toastify";
-import { stat } from "fs";
 
 interface AdminState {
   currentAdmin: Admin | null; //Want to update according to database
@@ -12,10 +11,8 @@ interface AdminState {
   users: Users[];
   hotelImages: string[];
   hotelDetails: HotelDetails;
-  location:{longitude:number,latitude:number}
+  hotelLocation:{longitude:number,latitude:number}
 }
-
-
 
 interface Admin {
   _id: string;
@@ -64,9 +61,9 @@ const initialState: AdminState = {
     description: "",
     parkingPrice:0,
   },
-  location:{
-    longitude:77, latitude:
-    16
+  hotelLocation:{
+    longitude:0, latitude:
+    0
   }
 };
 
@@ -106,7 +103,7 @@ const adminSlice = createSlice({
       );
     },
     updateLocation:(state,action: PayloadAction<object>) => {
-      state.location = {...state.location,...action.payload};
+      state.hotelLocation = {...state.hotelLocation,...action.payload};
     },
     startLoading: (state) => {
       state.adminLoading = true;

@@ -1,7 +1,7 @@
 import { Avatar, Container, InputAdornment, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import pendingIcon from '../icons/progess4.gif'
+import pendingIcon from '../icons/progress4.gif'
 import { updateHotelDetails } from '../../../../../store/slices/adminSlice';
 
 interface InfoFieldsProps {
@@ -40,12 +40,13 @@ const InfoFields: React.FC<InfoFieldsProps> = ({mainProps,optionalProps={},minLe
     {...mainProps}
     {...optionalProps}
     error = {error}
-    helperText = {error && `This field must be contain ${minLength} characters`}
+    helperText = {error && `This field must be contain ${minLength} values.`}
     color = {success ? 'success' : 'primary'}
     variant='outlined'
     onChange={handleChange}
     required
     InputProps={{
+
       endAdornment:(
         <InputAdornment position='end'>
           {editing && (

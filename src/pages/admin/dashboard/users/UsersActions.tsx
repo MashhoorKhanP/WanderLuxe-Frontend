@@ -2,7 +2,7 @@ import { Check, Save } from "@mui/icons-material";
 import { Box, CircularProgress, Fab } from "@mui/material";
 import { green } from "@mui/material/colors";
 import React, { useState, useEffect } from "react";
-import { updateUser } from "../../../../actions/admin";
+import { adminUpdateUser } from "../../../../actions/admin";
 
 interface UsersActionsProps {
   params: {
@@ -35,7 +35,7 @@ const UsersActions: React.FC<UsersActionsProps> = ({
       console.log("Params.row", params.row, isVerified, isBlocked);
       try {
         // Assuming updateUser is an asynchronous action (thunk)
-        const result = await updateUser(isVerified, isBlocked, _id);
+        const result = await adminUpdateUser(isVerified, isBlocked, _id);
         if (result) {
           setSuccess(true);
           setRowId("");

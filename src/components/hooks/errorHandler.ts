@@ -22,6 +22,8 @@ const errorHandle = (error: Error | AxiosError | {}) => {
       localStorage.removeItem('currentUser');
       localStorage.removeItem('UserToken');
       toast.error(errorResponse.message);
+    }else if(errorResponse.message === "Cannot read properties of undefined (reading 'success')") {
+      toast.error('Something went wrong, please try again!');
     } else {
       toast.error(errorResponse.message);
     }

@@ -60,7 +60,7 @@ export const getUsers = createAsyncThunk("admin/Users", async () => {
   }
 });
 
-export const updateUser = async (
+export const adminUpdateUser = async (
   isVerified: boolean,
   isBlocked: boolean,
   userId: string
