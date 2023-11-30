@@ -54,7 +54,7 @@ const AddLocation: React.FC = () => {
           latitude: location.latitude,
           zoom: 8,
         }}
-        mapStyle='mapbox://styles/mapbox/streets-v11'
+        mapStyle='mapbox://styles/mapbox/streets-v12'
       >
         <Marker
           longitude={location.longitude}

@@ -10,6 +10,7 @@ import { Add } from '@mui/icons-material';
 import { addHotel } from '../../../../actions/hotel';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { resetAddHotel } from '../../../../store/slices/adminSlice';
 
 const AddHotel: React.FC = () => {
   const dispatch = useDispatch();
@@ -115,9 +116,7 @@ const AddHotel: React.FC = () => {
       toast.error('Enter a valid mobile number')
       return false;
     }
-
     // Add similar validations for other fields...
-
     return true; // Form is valid
   };
 
@@ -139,6 +138,7 @@ const AddHotel: React.FC = () => {
     if(result.success){
       toast.success('Hotel Added Successfully');
       navigate('/admin/dashboard/hotels');
+      dispatch(resetAddHotel({hotelLocation,hotelDetails,hotelImages}))
     }else{
       toast.error('Something went wrong!')
     }

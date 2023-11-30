@@ -105,6 +105,13 @@ const adminSlice = createSlice({
     updateLocation:(state,action: PayloadAction<object>) => {
       state.hotelLocation = {...state.hotelLocation,...action.payload};
     },
+    resetAddHotel:(state,action:PayloadAction<object>)=>{
+      state.hotelLocation={...state.hotelLocation,longitude:0,latitude:0}
+      state.hotelDetails = {...state.hotelDetails,hotelName:'',location:'',distanceFromCityCenter:0,mobile:'',email:'',
+    minimumRent:0,description:'',parkingPrice:0}
+    state.hotelImages =[];
+    
+    },
     startLoading: (state) => {
       state.adminLoading = true;
     },
@@ -204,6 +211,7 @@ export const {
   updateHotelImages,
   deleteHotelImages,
   updateLocation,
+  resetAddHotel,
   startLoading,
   stopAdminLoading,
 } = adminSlice.actions;

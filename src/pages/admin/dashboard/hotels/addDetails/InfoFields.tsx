@@ -40,7 +40,7 @@ const InfoFields: React.FC<InfoFieldsProps> = ({mainProps,optionalProps={},minLe
     {...mainProps}
     {...optionalProps}
     error = {error}
-    helperText = {error && `This field must be contain ${minLength} values.`}
+    helperText = {error && minLength>0 ?(`This field must be contain ${minLength} values.`) :error && minLength===0 ?('This field is required') : ('') }
     color = {success ? 'success' : 'primary'}
     variant='outlined'
     onChange={handleChange}

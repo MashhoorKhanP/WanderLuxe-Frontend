@@ -4,7 +4,6 @@ import {FormControl, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, 
 import { RootState } from "../../../../../store/types";
 import { updateHotelDetails } from "../../../../../store/slices/adminSlice";
 import InfoFields from "./InfoFields";
-import { toast } from "react-toastify";
 
 
 const AddDetails: React.FC = () => {
@@ -84,7 +83,8 @@ const AddDetails: React.FC = () => {
               label: "Email Address",
               value: hotelDetails.email,
             }}
-            minLength={10}
+            optionalProps={{ type:'email'}}
+            minLength={0}
           />
         </Grid>
         <Grid item xs={6}>

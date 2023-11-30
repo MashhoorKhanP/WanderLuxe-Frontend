@@ -59,7 +59,7 @@ const UserRouter :React.FC =() => {
       <Route path="profile" element={<Home/>}/>
       <Route path="edit-profile" element={<Home/>}/>
       <Route path="otp-verification" element={<Home/>}/>
-
+      <Route path="find-hotels" element={<Home/>}/>
     </Routes>
   )
 }

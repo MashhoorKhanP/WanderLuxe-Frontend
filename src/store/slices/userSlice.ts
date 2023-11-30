@@ -3,12 +3,13 @@ import {
   googleregister,
   loginUser,
   registerUser,
-  updateProfile,
   verifyUser,
 } from "../../actions/user";
 import errorHandle from "../../components/hooks/errorHandler";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
+import { getHotels } from "../../actions/hotel";
+import { MapRef } from "react-map-gl";
 
 interface UserState {
   currentUser: User | null; //Want to update according to database
@@ -17,6 +18,8 @@ interface UserState {
   alert: Alert | null;
   profile: Profile;
   loading: boolean;
+  hotels:[];
+  mapRef:React.RefObject<MapRef> | null;
 }
 
 const initialState: UserState = {
@@ -26,6 +29,8 @@ const initialState: UserState = {
   alert: null,
   profile: { open: false, file: null, profileImage: "" },
   loading: false,
+  hotels:[],
+  mapRef:null
 };
 
 interface User {
@@ -96,6 +101,9 @@ const userSlice = createSlice({
       console.log("state.currentUser", state.currentUser);
       const updatedUser = state.currentUser;
       localStorage.setItem("currentUser", JSON.stringify(updatedUser.message));
+    },
+    setMapRef:(state,action: PayloadAction<React.RefObject<MapRef>>)=>{
+      state.mapRef = action.payload;
     },
     logoutUser: (state) => {
       state.currentUser = null;
@@ -319,6 +327,42 @@ const userSlice = createSlice({
       }
       state.loading = false;
     });
+
+    //Hotels
+    builder.addCase(getHotels.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(getHotels.fulfilled, (state, action) => {
+      state.loading = false;
+      const hotels = action.payload;
+      if (hotels && hotels.message) {
+        console.log(
+          "JSON.Stingify of  Hotels",
+          JSON.stringify(hotels.message)
+        );
+        console.log("hotels.message", hotels.message);
+        // Don't directly modify state.currentUser, create a new object
+        state.hotels = hotels.message;
+        state.openLogin = false;
+      } else {
+        // Handle the case where currentUser or message is null or undefined
+        console.error("Received invalid data in loginUser.fulfilled");
+      }
+    });
+    builder.addCase(getHotels.rejected, (state, action) => {
+      const error = action.error as Error | AxiosError;
+
+      if (error instanceof Error) {
+        // Handle specific error messages from the server if available
+        errorHandle(error);
+        toast.error(error.message);
+      } else {
+        // Handle non-Error rejection (if needed)
+        console.error("Login failed with non-Error rejection:", action.error);
+      }
+      state.loading = false;
+    });
   },
 });
 
@@ -327,6 +371,7 @@ export const {
   updateUser,
   updateUserProfile,
   logoutUser,
+  setMapRef,
   setOpenLogin,
   setCloseLogin,
   setAlert,
