@@ -1,5 +1,5 @@
-import React from 'react'
-import { Menu ,Lock} from '@mui/icons-material'
+import React, { useState } from 'react'
+import { Lock} from '@mui/icons-material'
 import { AppBar, Box, Button, Container, IconButton, Toolbar, Typography } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import UserIcons from './user/UserIcons';
@@ -17,8 +17,10 @@ const Navbar: React.FC= () => {
     navigate('/user/login-register');
     dispatch(setOpenLogin(true));
   }
+
   
   return (
+    <>
     <AppBar position="static" sx={{ backgroundColor: '#9fa3a878' }}>
       <Container maxWidth='lg'>
        <Toolbar disableGutters>
@@ -51,6 +53,7 @@ const Navbar: React.FC= () => {
        </Toolbar>
       </Container>
     </AppBar>
+    </>
   )
 }
 

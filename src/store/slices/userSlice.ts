@@ -20,6 +20,9 @@ interface UserState {
   loading: boolean;
   hotels:[];
   mapRef:React.RefObject<MapRef> | null;
+  priceFilter: number;
+  addressFilter:{};
+  filteredHotels:any[]
 }
 
 const initialState: UserState = {
@@ -30,7 +33,10 @@ const initialState: UserState = {
   profile: { open: false, file: null, profileImage: "" },
   loading: false,
   hotels:[],
-  mapRef:null
+  mapRef:null,
+  priceFilter:3500,
+  addressFilter:{},
+  filteredHotels:[]
 };
 
 interface User {
@@ -78,6 +84,26 @@ export const resendOTPSlice = createSlice({
   },
 });
 
+const applyFilter = (hotels: any[], address: { longitude?: number; latitude?: number }, price: number): any[] => {
+  let filteredHotels = hotels;
+
+  if (address) {
+    const { longitude, latitude } = address;
+    filteredHotels = filteredHotels.filter(hotel => {
+      const longitudeDifference = longitude && hotel.longitude ? Math.abs(longitude - hotel.longitude) : 0;
+      const latitudeDifference = latitude && hotel.latitude ? Math.abs(latitude - hotel.latitude) : 0;
+      return longitudeDifference <= 1 && latitudeDifference <= 1;
+    });
+  }
+
+  if (price < 3500) {
+    filteredHotels = filteredHotels.filter(hotel => hotel.minimumRent <= price);
+  }
+
+  return filteredHotels;
+};
+
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -104,6 +130,23 @@ const userSlice = createSlice({
     },
     setMapRef:(state,action: PayloadAction<React.RefObject<MapRef>>)=>{
       state.mapRef = action.payload;
+    },
+    filterPrice:(state, action:PayloadAction<number>)=>{
+      state.priceFilter = action.payload
+      state.filteredHotels = applyFilter(
+        state.hotels, state.addressFilter,action.payload
+      )
+    },
+    filterAddress:(state,action:PayloadAction<object>) => {
+      state.addressFilter = action.payload;
+      state.filteredHotels = applyFilter(
+        state.hotels, action.payload,state.priceFilter
+      )
+    },
+    clearAddress:(state) => {
+      state.addressFilter={}
+      state.priceFilter=3500
+      state.filteredHotels=state.hotels
     },
     logoutUser: (state) => {
       state.currentUser = null;
@@ -344,6 +387,10 @@ const userSlice = createSlice({
         console.log("hotels.message", hotels.message);
         // Don't directly modify state.currentUser, create a new object
         state.hotels = hotels.message;
+        state.addressFilter={},
+        state.priceFilter=3500,
+        state.filteredHotels=hotels.message
+
         state.openLogin = false;
       } else {
         // Handle the case where currentUser or message is null or undefined
@@ -370,8 +417,11 @@ export const {
   setCurrentUser,
   updateUser,
   updateUserProfile,
+  filterAddress,
+  clearAddress,
   logoutUser,
   setMapRef,
+  filterPrice,
   setOpenLogin,
   setCloseLogin,
   setAlert,

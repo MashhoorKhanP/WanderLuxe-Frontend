@@ -3,20 +3,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/types';
 import { getHotels } from '../../../actions/hotel';
 import { AppDispatch } from '../../../store/store';
-import ReactMapGL, { GeolocateControl, Marker } from 'react-map-gl';
+import ReactMapGL, { GeolocateControl, Marker, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { Avatar, Box, Paper, Tooltip } from '@mui/material';
+import { AppBar, Avatar, Box, Paper, Tooltip } from '@mui/material';
 import SuperCluster from 'supercluster';
 import './cluster.css';
 import { useValue } from '../../../context/ContextProvider';
 import { updateLocation } from '../../../store/slices/adminSlice';
+import PopupHotel from './PopupHotel';
+import PriceSlider from '../../../components/user/searchbar/PriceSlider';
+import GeocoderInput from '../../../components/user/searchbar/GeocoderInput';
+
 
 interface Hotel {
   _id: string;
   hotelName: string;
   minimumRent: number;
   description: string;
-  hotelImages: string[];
+  images: string[];
   longitude: number;
   latitude: number;
   dropImage: string;
@@ -30,7 +34,7 @@ interface PointFeature {
     hotelName: string;
     minimumRent: number;
     description: string;
-    hotelImage: string[];
+    hotelImages: string[];
     longitude: number;
     latitude: number;
     dropImage: string;
@@ -49,14 +53,15 @@ const superCluster = new SuperCluster({
 
 const MapScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const hotels = useSelector((state: RootState) => state.user.hotels);
+  const hotels = useSelector((state: RootState) => state.user.filteredHotels);
   const{ mapRef} = useValue();
   const location = useSelector((state: RootState) => state.admin.hotelLocation);
+  const [popupInfo,setPopupInfo] = useState<PointFeature | null>(null);
 
   console.log('mapRef', mapRef);
   const [points, setPoints] = useState<PointFeature[]>([]);
   const [clusters, setClusters] = useState<PointFeature[]>([]);
-  const [bounds, setBounds] = useState<number[]>([-180, -85, 180, 85]);
+  const [bounds, setBounds] = useState<number[]>([-180, -85, 180, 85] as number[]);
   const [zoom, setZoom] = useState<number>(0);
 
   useEffect(() => {
@@ -73,7 +78,7 @@ const MapScreen: React.FC = () => {
         hotelName: hotel.hotelName,
         minimumRent: hotel.minimumRent,
         description: hotel.description,
-        hotelImage: hotel.hotelImages,
+        hotelImages: hotel.images,
         longitude: hotel.longitude,
         latitude: hotel.latitude,
         dropImage: hotel.dropImage,
@@ -102,13 +107,19 @@ const MapScreen: React.FC = () => {
   }, [mapRef?.current]);
 
   return (
+    <>
+    
+    <AppBar>
+
+    </AppBar>
     <Box
       sx={{
-        height: 400,
         position: 'relative',
+        height:400
       }}
     >
       <ReactMapGL
+        style={{ width:'100%'}}
         initialViewState={{ latitude: 11, longitude: 76, zoom: 0 }}
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN as string}
         mapStyle="mapbox://styles/mapbox/streets-v11"
@@ -160,13 +171,30 @@ const MapScreen: React.FC = () => {
                 src={cluster.properties.dropImage}
                 component={Paper}
                 elevation={2}
+                onClick={() => setPopupInfo(cluster)}
                 />
               </Tooltip>
             </Marker>
           )
         })}
+        <PriceSlider/>
+        <GeocoderInput/>
+        {popupInfo && (
+          <Popup longitude={popupInfo.geometry.coordinates[0]}
+          latitude={popupInfo.geometry.coordinates[1]}
+          maxWidth='auto'
+          closeOnClick={false}
+          focusAfterOpen={false}
+          onClose={() => setPopupInfo(null)}
+          >
+
+          <PopupHotel {...{popupInfo}} />
+
+          </Popup>
+        )}
       </ReactMapGL>
     </Box>
+    </>
   );
 };
 

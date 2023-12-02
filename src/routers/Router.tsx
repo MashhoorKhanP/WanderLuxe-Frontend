@@ -60,6 +60,7 @@ const UserRouter :React.FC =() => {
       <Route path="edit-profile" element={<Home/>}/>
       <Route path="otp-verification" element={<Home/>}/>
       <Route path="find-hotels" element={<Home/>}/>
+      <Route path="view-hotels" element={<Home/>}/>
     </Routes>
   )
 }

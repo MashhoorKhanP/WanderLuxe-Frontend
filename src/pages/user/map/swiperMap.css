@@ -1,0 +1,20 @@
+.swiper-container {
+  width: 500px;
+  --swiper-navigation-size: 20px;
+}
+
+.swiper-pagination {
+  bottom: 0;
+  padding-bottom: 10px;
+}
+
+.swiper-wrapper {
+  padding-inline-start: 0;
+}
+
+.swiper-button-next, .swiper-button-prev {
+  width: var(--swiper-navigation-size);
+  height: var(--swiper-navigation-size);
+}
+
+

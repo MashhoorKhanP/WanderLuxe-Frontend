@@ -2,7 +2,8 @@ import React, { createContext, useContext, useRef, ReactNode } from 'react';
 import { MapRef } from 'react-map-gl';
 
 interface ContextValue {
-  mapRef: React.RefObject<any>; // Replace 'any' with the specific type of your mapRef
+  mapRef: React.RefObject<MapRef>; // Replace 'any' with the specific type of your mapRef
+  containerRef:  React.RefObject<HTMLDivElement | null>;
 }
 
 const Context = createContext<ContextValue | undefined>(undefined);
@@ -21,9 +22,10 @@ interface ContextProviderProps {
 
 const ContextProvider = ({ children }: ContextProviderProps) => {
   const mapRef = useRef<MapRef>(null); // Replace 'any' with the specific type of your mapRef
-
+  const containerRef =  useRef<HTMLDivElement | null>(null);
   const contextValue: ContextValue = {
     mapRef,
+    containerRef,
   };
 
   return (
