@@ -3,12 +3,14 @@ import errorHandle from "../../components/hooks/errorHandler";
 import { AxiosError } from "axios";
 import { getUsers, loginAdmin } from "../../actions/admin";
 import { toast } from "react-toastify";
+import { addHotel, getHotels } from "../../actions/hotel";
 
 interface AdminState {
   currentAdmin: Admin | null; //Want to update according to database
   openLogin: boolean;
   adminLoading: boolean;
   users: Users[];
+  hotels:[];
   hotelImages: string[];
   hotelDetails: HotelDetails;
   hotelLocation:{longitude:number,latitude:number}
@@ -48,6 +50,7 @@ interface HotelDetails {
 const initialState: AdminState = {
   currentAdmin: null,
   users: [],
+  hotels:[],
   openLogin: false,
   adminLoading: false,
   hotelImages: [],
@@ -111,6 +114,9 @@ const adminSlice = createSlice({
     minimumRent:0,description:'',parkingPrice:0}
     state.hotelImages =[];
     
+    },
+    updateHotels:(state,action:PayloadAction<any>)=> {
+      state.hotels = action.payload
     },
     startLoading: (state) => {
       state.adminLoading = true;
@@ -200,6 +206,46 @@ const adminSlice = createSlice({
       }
       state.adminLoading = false;
     });
+
+    //Hotels
+    builder.addCase(getHotels.pending, (state) => {
+      state.adminLoading = true;
+    });
+
+    builder.addCase(getHotels.fulfilled, (state, action) => {
+      state.adminLoading = false;
+      const hotels = action.payload;
+      if (hotels && hotels.message) {
+        console.log(
+          "JSON.Stingify of  Hotels",
+          JSON.stringify(hotels.message)
+        );
+        console.log("hotels.message", hotels.message);
+        // Don't directly modify state.currentUser, create a new object
+        state.hotels = hotels.message;
+        // state.addressFilter={},
+        // state.priceFilter=3500,
+        // state.filteredHotels=hotels.message
+
+        state.openLogin = false;
+      } else {
+        // Handle the case where currentUser or message is null or undefined
+        console.error("Received invalid data in loginUser.fulfilled");
+      }
+    });
+    builder.addCase(getHotels.rejected, (state, action) => {
+      const error = action.error as Error | AxiosError;
+
+      if (error instanceof Error) {
+        // Handle specific error messages from the server if available
+        errorHandle(error);
+        toast.error(error.message);
+      } else {
+        // Handle non-Error rejection (if needed)
+        console.error("Login failed with non-Error rejection:", action.error);
+      }
+      state.adminLoading = false;
+    });
   },
 });
 
@@ -212,6 +258,7 @@ export const {
   deleteHotelImages,
   updateLocation,
   resetAddHotel,
+  updateHotels,
   startLoading,
   stopAdminLoading,
 } = adminSlice.actions;

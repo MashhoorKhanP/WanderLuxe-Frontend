@@ -29,8 +29,7 @@ const GeocoderInput: React.FC = () => {
       
       ctrl.on('result', (e) => {
         const coords = e.result.geometry.coordinates;
-        const hotelName = e.result.text;
-        dispatch(filterAddress({ longitude: coords[0], latitude: coords[1],hotelName }));
+        dispatch(filterAddress({ longitude: coords[0], latitude: coords[1] }));
       });
   
       ctrl.on('clear', () => dispatch(clearAddress()));

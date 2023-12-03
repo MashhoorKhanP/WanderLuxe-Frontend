@@ -126,7 +126,13 @@ const userSlice = createSlice({
       state.currentUser = { ...state.currentUser };
       console.log("state.currentUser", state.currentUser);
       const updatedUser = state.currentUser;
-      localStorage.setItem("currentUser", JSON.stringify(updatedUser.message));
+      if(updatedUser.message){
+        localStorage.setItem("currentUser", JSON.stringify(updatedUser.message));
+      }else{
+        localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+
+      }
+
     },
     setMapRef:(state,action: PayloadAction<React.RefObject<MapRef>>)=>{
       state.mapRef = action.payload;

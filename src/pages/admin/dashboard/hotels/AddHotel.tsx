@@ -7,13 +7,14 @@ import AddImages from './addImages/AddImages';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store/types';
 import { Add } from '@mui/icons-material';
-import { addHotel } from '../../../../actions/hotel';
+import { addHotel, getHotels } from '../../../../actions/hotel';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { resetAddHotel } from '../../../../store/slices/adminSlice';
+import { resetAddHotel, updateHotels } from '../../../../store/slices/adminSlice';
+import { AppDispatch } from '../../../../store/store';
 
 const AddHotel: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const hotelImages = useSelector((state: RootState) => state.admin.hotelImages);
   const hotelDetails = useSelector((state: RootState) => state.admin.hotelDetails);
@@ -100,6 +101,29 @@ const AddHotel: React.FC = () => {
       toast.error('Location is required, and must be at least 5 characters long')
       return false;
     }
+    
+    const minimumRentRegex = /^(1500|1[5-9]\d{2}|[23]\d{3}|3500)$/;
+    if (!minimumRentRegex.test(hotelDetails.minimumRent.toString())) {
+      toast.error('Minimum rent must be a amount between 1500 and 3500');
+      return false;
+    }
+
+    const distanceRegex =  /^(?:[0-9]|10|\d{1,2}(?:\.\d{1,2})?)$/;
+    if (!distanceRegex.test(hotelDetails.distanceFromCityCenter.toString())) {
+      toast.error('Distance from city center must be a value between 0 and 10');
+      return false;
+    }
+
+    if (hotelDetails.parkingPrice) {
+      const parkingRegex = /^(?:2[5-9]|5[0-5]|\d{1,2}(?:\.\d{1,2})?)$/;
+      if (!parkingRegex.test(hotelDetails?.parkingPrice.toString())) {
+        toast.error('Parking price should be between 25 and 55');
+        return false;
+      }
+    }
+    
+    
+    
 
     if (!hotelDetails.distanceFromCityCenter) {
       toast.error('Distance from city is required')
@@ -129,6 +153,7 @@ const AddHotel: React.FC = () => {
       location:hotelDetails.location,
       distanceFromCityCenter:hotelDetails.distanceFromCityCenter,
       email:hotelDetails.email,
+      mobile:hotelDetails.mobile,
       minimumRent:hotelDetails.minimumRent,
       description:hotelDetails.description,
       parkingPrice:hotelDetails.parkingPrice,
@@ -136,9 +161,11 @@ const AddHotel: React.FC = () => {
     })
   
     if(result.success){
-      toast.success('Hotel Added Successfully');
       navigate('/admin/dashboard/hotels');
       dispatch(resetAddHotel({hotelLocation,hotelDetails,hotelImages}))
+      const hotels = dispatch(getHotels());
+      dispatch(updateHotels({hotels}))
+      toast.success('Hotel Added Successfully');
     }else{
       toast.error('Something went wrong!')
     }

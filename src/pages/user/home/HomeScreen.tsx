@@ -20,9 +20,9 @@ const HomeScreen: React.FC = () => {
     dispatch(getHotels());
   };
 
-  const handleViewHotels = () => {
-    navigate('/user/view-hotels');
-  };
+  // const handleViewHotels = () => {
+  //   navigate('/user/view-hotels');
+  // };
 
   return (
     <>
@@ -34,9 +34,9 @@ const HomeScreen: React.FC = () => {
       ) : (
         <Box sx={{ position: 'relative' }}>
           <Box sx={{ display: 'flex', justifyContent: 'end', position: 'absolute', width: '100%', top: '10%', right: '20px', gap: 1, transform: 'translateY(-50%)' }}>
-            <Button variant='outlined' onClick={handleViewHotels}  sx={{ borderColor: 'white', color: 'white' }} endIcon={<CorporateFare />}>
+            {/* <Button variant='outlined' onClick={handleViewHotels}  sx={{ borderColor: 'white', color: 'white' }} endIcon={<CorporateFare />}>
               View Hotels
-            </Button>
+            </Button> */}
             <Button variant='outlined' onClick={handleFindHotels} sx={{ borderColor: 'white', color: 'white' }} endIcon={<TravelExplore />}>
               Find Hotels
             </Button>

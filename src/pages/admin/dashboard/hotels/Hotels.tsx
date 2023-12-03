@@ -1,15 +1,118 @@
-import { Button } from "@mui/material";
-import React, { useEffect } from "react";
+import { Avatar,Box, Button, Typography } from "@mui/material";
+import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddHotel from "./AddHotel";
 import EditHotel from "./EditHotel";
+import { DataGrid ,GridColDef, gridClasses  } from "@mui/x-data-grid";
 
+
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../store/types";
+import { getUsers } from "../../../../actions/admin";
+import moment from "moment";
+import { grey } from "@mui/material/colors";
+import HotelsActions from "./HotelsActions";
+import { AppDispatch } from "../../../../store/store";
+import { getHotels } from "../../../../actions/hotel";
+import { updateHotels } from "../../../../store/slices/adminSlice";
+
+interface UsersProps {
+  setSelectedLink: React.Dispatch<React.SetStateAction<string>>;
+  link: string;
+}
+
+interface Users {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  profileImage: string;
+  mobileNo: string;
+  email: string;
+  createdAt: string | Date;
+  isVerified: boolean;
+  isBlocked: boolean;
+}
+
+//Hotels old starting
 interface HotelsProps {
   setSelectedLink: React.Dispatch<React.SetStateAction<string>>;
   link: string;
 }
 
 const Hotels: React.FC<HotelsProps> = ({ setSelectedLink, link }) => {
+
+  const dispatch = useDispatch<AppDispatch>();
+  const hotels = useSelector((state: RootState) => state.admin.hotels);
+  console.log("Hotels List from Hotels.tsx", hotels);
+
+  const [rowId, setRowId] = useState<string>("");
+  const [selectedRowId, setSelectedRowId] = useState<string>("");
+
+  useEffect(() => {
+    setSelectedLink(link);
+  }, [dispatch, setSelectedLink, link]);
+  
+  useEffect(() => {
+    const result = dispatch(getHotels() as any);
+    dispatch(updateHotels({result}))
+  }, [dispatch]);
+
+  const columns: GridColDef[] = useMemo(
+    () => [
+      {
+        field: "images",
+        headerName: "Images",
+        width: 70,
+        renderCell: (params) => <Avatar src={params.row.images[0]} variant="rounded" />,
+        sortable: false,
+        filterable: false,
+      },
+      { field: "hotelName", headerName: "Name", width: 210 },
+      { field: "location", headerName: "Location", width: 100 },
+      // { field: "longitude", headerName: "Longitude", width: 70 },
+      // { field: "latitude", headerName: "Latitude", width: 70 },
+      { field: "minimumRent", headerName: "Rent(min)", width: 80,align:'center', renderCell:(params) => `₹${params.row.minimumRent}` },
+      { field: "parkingPrice", headerName: "Parking Fee", width: 100,align:'center', },
+      { field: "email", headerName: "Email", width: 150 },
+      { field: "mobile", headerName: "Contact No", width: 140 },
+      {
+        field: "createdAt",
+        headerName: "Created At",
+        width: 150,
+        renderCell: (params) =>
+          moment(params.row.createdAt).format("YYYY-MM-DD HH:MM:SS"),
+      },
+      { field: "_id", headerName: "Hotel ID", type: "string", width: 110},
+      // {
+      //   field: "isVerified",
+      //   headerName: "Verified",
+      //   width: 110,
+      //   type: "boolean",
+      //   editable: true,
+      // },
+      // {
+      //   field: "isBlocked",
+      //   headerName: "Blocked",
+      //   width: 110,
+      //   type: "boolean",
+      //   editable: true,
+      // },
+      {
+        field: "actions",
+        headerName: "Actions",
+        width: 150,
+        type: "actions",
+        renderCell: (params) => (
+          <HotelsActions
+            {...{ params, /**selectedRowId, setRowId, setSelectedRowId*/ }}
+          />
+        ),
+      },
+    ],
+    [/**rowId, selectedRowId*/]
+  );
+
+  //Hotel old starting
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,14 +123,47 @@ const Hotels: React.FC<HotelsProps> = ({ setSelectedLink, link }) => {
   return (
     <>
       {location.pathname === "/admin/dashboard/hotels" ? (
-        <div style={{ display: "flex" }}>
-          Hotels
+        <div style={{ display: "flex", flexDirection: "column" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            paddingRight: 8,
+            paddingTop: 1,
+          }}
+        >
           <Button
-            sx={{ marginLeft: "auto" }}
             onClick={() => navigate("/admin/dashboard/hotels/add-hotel")}
           >
             ADD HOTEL
           </Button>
+        </Box>
+          <Box sx={{ height: 400, width: "95%" }}>
+      <Typography
+        variant="h4"
+        component="h4"
+        sx={{ textAlign: "center", mt: 3, mb: 3 }}
+      >
+      </Typography>
+      <DataGrid
+        columns={columns}
+        rows={hotels}
+        getRowId={(row) => row._id}
+        pageSizeOptions={[10, 25, 50, 75, 100]}
+        getRowSpacing={(params) => ({
+          top: params.isFirstVisible ? 0 : 5,
+          bottom: params.isLastVisible ? 0 : 5,
+        })}
+        sx={{
+          [`& .${gridClasses.row}`]: {
+            bgcolor: (theme) =>
+              theme.palette.mode === "light" ? grey[200] : grey[900],
+          },
+        }}
+        // onCellEditStop={(params) => setSelectedRowId(params.id.toString())} //give on onCellEditStart
+        // onCellEditStart={(params) => setRowId(params.id.toString())}
+      />
+    </Box>
         </div>
       ) : location.pathname === "/admin/dashboard/hotels/add-hotel" ? (
         <AddHotel />

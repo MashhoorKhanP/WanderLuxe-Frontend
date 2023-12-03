@@ -93,7 +93,8 @@ const AddDetails: React.FC = () => {
               name: "minimumRent",
               label: "Minimum Rent",
               value: hotelDetails.minimumRent,
-              min:0
+              min:0,
+              max:2000
             }}
             optionalProps={{ type:'number'}}
             minLength={4}
@@ -137,9 +138,9 @@ const AddDetails: React.FC = () => {
           />
         )}
       </RadioGroup>
-      {Boolean(parkingType) && hotelDetails.parkingPrice === 55 && (
+      {Boolean(parkingType) && Number(hotelDetails.parkingPrice) > 55 && (
           <Typography sx={{textAlign:'end'}} variant="caption" color="error">
-            Maximum parking price reached!
+            Maximum parking price is 55!
           </Typography>
         )}
     </FormControl>

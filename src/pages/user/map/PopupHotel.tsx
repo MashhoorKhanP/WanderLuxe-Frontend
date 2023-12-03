@@ -7,6 +7,8 @@ import 'swiper/css/pagination';
 import 'swiper/css/lazy';
 import './swiperMap.css'
 import { useNavigate } from 'react-router-dom';
+import { VisibilityOutlined } from '@mui/icons-material';
+import { Tooltip } from '@mui/material';
 
 interface PopupHotelProps {
   popupInfo: {
@@ -30,8 +32,7 @@ const PopupHotel: React.FC<PopupHotelProps> = ({ popupInfo }) => {
   console.log('hotelName', hotelName, hotelImages);
 
   return (
-    <div className="popup-hotel-container" style={{paddingBottom:'0px'}} onClick={() =>navigate('/user/view-hotels')}>
-      
+    <div className="popup-hotel-container" style={{paddingBottom:'0px'}}>
       <div className="popup-hotel-carousel">
         <Swiper
           modules={[Autoplay, Pagination, Lazy,Navigation]}
@@ -68,11 +69,16 @@ const PopupHotel: React.FC<PopupHotelProps> = ({ popupInfo }) => {
           ))}
         </Swiper>
       </div>
-      <div className="popup-hotel-header" style={{padding:6,marginTop:2}}>
-        <p style={{fontWeight:'bold', fontSize:'13px'}}>{hotelName}</p>
-        <p style={{ fontSize:'11px'}}>Rooms starts from</p>
-        <h2 style={{fontWeight:'bolder',fontSize:'18px',marginTop:0}}>{minimumRent === 0 ? 'Free Stay' : `₹${minimumRent}`}</h2>
+      <div className="popup-hotel-header" style={{ padding: 6, marginTop: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div>
+        <p style={{ fontWeight: 'bold', fontSize: '13px' }}>{hotelName}</p>
+        <p style={{ fontSize: '11px' }}>Rooms start from</p>
+        <h2 style={{ fontWeight: 'bolder', fontSize: '18px', marginTop: 0 }}>{minimumRent === 0 ? 'Free Stay' : `₹${minimumRent}`}</h2>
       </div>
+      <Tooltip title='View more'  onClick={() =>navigate('/user/view-hotels')}>
+      <VisibilityOutlined style={{ fontSize: '20px',marginRight:'4px', cursor:'pointer' }} />
+      </Tooltip>
+    </div>
     </div>
   );
 };

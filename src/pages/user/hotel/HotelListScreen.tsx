@@ -1,8 +1,7 @@
 import { Avatar, Button, Card, Container, ImageList, ImageListItem, ImageListItemBar, Rating, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { WanderLuxeLogo } from '../../../assets/extraImages';
-import { LocationOnOutlined, Pin, StarBorder } from '@mui/icons-material';
+import { StarBorder } from '@mui/icons-material';
 import { RootState } from '../../../store/types';
 
 const HotelListScreen: React.FC = () => {
