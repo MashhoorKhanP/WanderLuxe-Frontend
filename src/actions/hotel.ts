@@ -32,6 +32,11 @@ interface DeleteHotelPayload {
   admin: Admin;
 }
 
+interface UpdateHotelPayload {
+  updatedHotel: RequestBody;
+  // admin: Admin;
+}
+
 //Admin actions
 export const addHotel = async (hotelData:RequestBody) => {
   try{
@@ -74,6 +79,22 @@ export const deleteHotel = createAsyncThunk('hotel/deleteHotel', async ({ hotelD
 
   return { hotelData } as DeleteHotelPayload;
 });
+
+export const updateHotel = async ({ updatedHotel}: UpdateHotelPayload) => {
+  console.log('udatedHotel from hotel.ts',updatedHotel)
+  const result = await fetchData({
+    url: import.meta.env.VITE_SERVER_URL + `/api/admin/hotels/update-hotel/${updatedHotel._id}`,
+    method: "PATCH",
+    body: updatedHotel
+  });
+
+  // Check for errors in the result and throw if necessary
+  if (result?.data && result.data.message) {
+    throw new Error(result.data.message);
+  }
+
+  return result;
+};
 
 //User Actions / Admin Actions
 export const getHotels = createAsyncThunk(

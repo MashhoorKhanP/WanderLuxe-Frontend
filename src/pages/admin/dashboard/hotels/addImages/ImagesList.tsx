@@ -3,7 +3,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../../store/types';
 import { Cancel, Delete } from '@mui/icons-material';
-import { deleteHotelImages } from '../../../../../store/slices/adminSlice';
+import { deleteHotelImages, updateDeletedHotelImages } from '../../../../../store/slices/adminSlice';
 import deleteFile from '../../../../../firebase/deleteFile';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
@@ -12,6 +12,7 @@ const ImagesList: React.FC = () => {
   const dispatch = useDispatch();
   const { currentAdmin } = useSelector((state: RootState) => state.admin);
   const hotelImages = useSelector((state: RootState) => state.admin.hotelImages);
+  const udpatedHotel = useSelector((state: RootState) => state.admin.updatedHotel);
   const currentAdminId =  currentAdmin?._id;
   
   const handleDelete = async(image:string) => {
@@ -30,6 +31,8 @@ const ImagesList: React.FC = () => {
       iconHtml:'<i class="bi bi-trash" style="font-size:30px"></i>'
     }).then(async(result) => {
       if (result.isConfirmed) {
+        // if(udpatedHotel) return;
+        // dispatch(updateDeletedHotelImages([image]))
          dispatch(deleteHotelImages(image))
         const imageName = image?.split(`${currentAdminId}%2F`)[1]?.split('?')[0]
         try{

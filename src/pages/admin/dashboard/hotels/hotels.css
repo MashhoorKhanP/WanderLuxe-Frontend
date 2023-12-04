@@ -1,0 +1,13 @@
+.container {
+  width: 95%;
+  max-width: 1200px; /* Adjust the maximum width as needed */
+  margin: 0 auto;   /* Center the container */
+  overflow-x: hidden;
+}
+
+/* Add media queries for responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+  }
+}

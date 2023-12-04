@@ -1,20 +1,18 @@
 import { Avatar,Box, Button, Typography } from "@mui/material";
 import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import AddHotel from "./AddHotel";
-import EditHotel from "./EditHotel";
+import './hotels.css';
 import { DataGrid ,GridColDef, gridClasses  } from "@mui/x-data-grid";
-
-
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store/types";
-import { getUsers } from "../../../../actions/admin";
 import moment from "moment";
 import { grey } from "@mui/material/colors";
 import HotelsActions from "./HotelsActions";
 import { AppDispatch } from "../../../../store/store";
 import { getHotels } from "../../../../actions/hotel";
-import { updateHotels } from "../../../../store/slices/adminSlice";
+import { updateHotelDetails, updateHotelImages, updateHotels, updateUpdatedHotel } from "../../../../store/slices/adminSlice";
+import AddHotel from "./AddHotel";
+import EditHotel from "./EditHotel";
 
 interface UsersProps {
   setSelectedLink: React.Dispatch<React.SetStateAction<string>>;
@@ -40,22 +38,28 @@ interface HotelsProps {
 }
 
 const Hotels: React.FC<HotelsProps> = ({ setSelectedLink, link }) => {
-
+  const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
   const hotels = useSelector((state: RootState) => state.admin.hotels);
   console.log("Hotels List from Hotels.tsx", hotels);
 
-  const [rowId, setRowId] = useState<string>("");
-  const [selectedRowId, setSelectedRowId] = useState<string>("");
-
+  const [data,setData] = useState<boolean>(true);
   useEffect(() => {
     setSelectedLink(link);
-  }, [dispatch, setSelectedLink, link]);
+  }, [setSelectedLink, link]);
   
   useEffect(() => {
     const result = dispatch(getHotels() as any);
     dispatch(updateHotels({result}))
-  }, [dispatch]);
+  }, [data,dispatch]);
+
+  const handleAddHotel = () => {
+    dispatch(updateHotelDetails({hotelName:'',minimumRent:0,parkingPrice:0,description:'',distanceFromCityCenter:0,location:'',email:'',mobile:''}));
+    dispatch(updateHotelImages([]));
+    dispatch(updateUpdatedHotel({}));
+    navigate("/admin/dashboard/hotels/add-hotel")
+  }
 
   const columns: GridColDef[] = useMemo(
     () => [
@@ -69,8 +73,8 @@ const Hotels: React.FC<HotelsProps> = ({ setSelectedLink, link }) => {
       },
       { field: "hotelName", headerName: "Name", width: 210 },
       { field: "location", headerName: "Location", width: 100 },
-      // { field: "longitude", headerName: "Longitude", width: 70 },
-      // { field: "latitude", headerName: "Latitude", width: 70 },
+      { field: "longitude", headerName: "Longitude", width: 75 },
+      { field: "latitude", headerName: "Latitude", width: 70 },
       { field: "minimumRent", headerName: "Rent(min)", width: 80,align:'center', renderCell:(params) => `₹${params.row.minimumRent}` },
       { field: "parkingPrice", headerName: "Parking Fee", width: 100,align:'center', },
       { field: "email", headerName: "Email", width: 150 },
@@ -104,7 +108,7 @@ const Hotels: React.FC<HotelsProps> = ({ setSelectedLink, link }) => {
         type: "actions",
         renderCell: (params) => (
           <HotelsActions
-            {...{ params, /**selectedRowId, setRowId, setSelectedRowId*/ }}
+            {...{ params, setData/**selectedRowId, setRowId, setSelectedRowId*/ }}
           />
         ),
       },
@@ -112,18 +116,10 @@ const Hotels: React.FC<HotelsProps> = ({ setSelectedLink, link }) => {
     [/**rowId, selectedRowId*/]
   );
 
-  //Hotel old starting
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    setSelectedLink(link);
-  }, [link, setSelectedLink]);
-
   return (
     <>
       {location.pathname === "/admin/dashboard/hotels" ? (
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <div className="container" style={{ display: "flex", flexDirection: "column"}}>
         <Box
           sx={{
             display: "flex",
@@ -133,7 +129,7 @@ const Hotels: React.FC<HotelsProps> = ({ setSelectedLink, link }) => {
           }}
         >
           <Button
-            onClick={() => navigate("/admin/dashboard/hotels/add-hotel")}
+            onClick={handleAddHotel}
           >
             ADD HOTEL
           </Button>
@@ -168,7 +164,7 @@ const Hotels: React.FC<HotelsProps> = ({ setSelectedLink, link }) => {
       ) : location.pathname === "/admin/dashboard/hotels/add-hotel" ? (
         <AddHotel />
       ) : location.pathname === "/admin/dashboard/hotels/edit-hotel" ? (
-        <EditHotel />
+        <AddHotel />
       ) : null}
     </>
   );

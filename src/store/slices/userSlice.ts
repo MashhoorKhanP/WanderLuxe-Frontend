@@ -386,11 +386,7 @@ const userSlice = createSlice({
       state.loading = false;
       const hotels = action.payload;
       if (hotels && hotels.message) {
-        console.log(
-          "JSON.Stingify of  Hotels",
-          JSON.stringify(hotels.message)
-        );
-        console.log("hotels.message", hotels.message);
+        
         // Don't directly modify state.currentUser, create a new object
         state.hotels = hotels.message;
         state.addressFilter={},

@@ -3,6 +3,7 @@ import React,{useState, useCallback} from 'react';
 import { useDropzone } from "react-dropzone";
 import ProgressList from "./progressList/ProgressList";
 import ImagesList from "./ImagesList";
+import { DragNDropGif } from "../../../../../assets/extraImages";
 
 const AddImages: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -16,16 +17,21 @@ const AddImages: React.FC = () => {
   })
   return (
     <>
+    
     <Paper 
   sx={{
     cursor:'pointer',
-    background:'#00000',
     color:'#bdbdbd',
+    background: `rgba(0, 0, 0, 0.5) url(${DragNDropGif}) center / 350px`,
+    backgroundRepeat:'no-repeat',
     border:'1px dashed #ccc',
+    height:'200px',
+    textAlign:'center',
     '&:hover':{border:'1px solid #ccc'}
   }}
+  
   >
-    <div style={{padding:'16px'}} {...getRootProps()}> 
+    <div style={{padding:'60px'}} {...getRootProps()}> 
       <input {...getInputProps()}/>
       {isDragActive ?(
         <p style={{color:'green'}}>Drop the files here...</p>

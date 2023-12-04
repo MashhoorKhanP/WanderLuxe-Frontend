@@ -6,19 +6,33 @@ import { RootState } from '../../../../store/types';
 import { deleteHotel, getHotels } from '../../../../actions/hotel';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-import { updateHotels } from '../../../../store/slices/adminSlice';
+import { updateHotelDetails, updateHotelImages, updateHotels, updateLocation, updateUpdatedHotel } from '../../../../store/slices/adminSlice';
 import { useNavigate } from 'react-router-dom';
 import { AppDispatch } from '../../../../store/store';
 
 interface HotelsActionsProps {
   params: any;
+  setData:any;
 }
 
-const HotelsActions: React.FC<HotelsActionsProps>= ({params}) => {
+const HotelsActions: React.FC<HotelsActionsProps>= ({params,setData}) => {
+  console.log('HotelsActionsParams.row',params
+  .row);
+  const {_id,longitude,latitude,hotelName,minimumRent,parkingPrice,images,description,distanceFromCityCenter,location,email,mobile} = params.row;
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>()
   const { currentAdmin } = useSelector((state: RootState) => state.admin);
-  
+
+  const handleEdit= () => {
+    dispatch(updateHotelImages([]));
+    dispatch(updateLocation({longitude,latitude}))
+    dispatch(updateHotelDetails({hotelName,minimumRent,parkingPrice,description,distanceFromCityCenter,location,email,mobile}))
+    dispatch(updateHotelImages(images))
+    dispatch(updateUpdatedHotel({_id,hotelName,minimumRent,parkingPrice,description,distanceFromCityCenter,location,email,mobile}))
+    console.log('reached to navigate')
+    navigate('/admin/dashboard/hotels/edit-hotel');
+  }
+
   const handleDelete = async(row:any,admin:any) => {
     Swal.fire({
     title: 'Are you sure?',
@@ -37,8 +51,7 @@ const HotelsActions: React.FC<HotelsActionsProps>= ({params}) => {
     if (result.isConfirmed) {
         dispatch(deleteHotel({ hotelData: row, admin }))
         toast.success('Hotels deleted successfully');
-        navigate('/admin/dashboard/home');
-        
+        setData((prevData:any) => !prevData);
     }
   })
 };
@@ -51,7 +64,7 @@ const HotelsActions: React.FC<HotelsActionsProps>= ({params}) => {
           </IconButton>
       </Tooltip> */}
       <Tooltip title='Edit this hotel'>
-          <IconButton onClick={() => {}}>
+          <IconButton onClick={() => handleEdit()}>
             <Edit/>
           </IconButton>
       </Tooltip>

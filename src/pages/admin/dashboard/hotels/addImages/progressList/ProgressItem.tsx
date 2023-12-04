@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import uploadFileProgress from '../../../../../../firebase/uploadFileProgress';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../../../store/types';
-import { updateHotelImages } from '../../../../../../store/slices/adminSlice';
+import { updateAddedHotelImages, updateHotelImages } from '../../../../../../store/slices/adminSlice';
 import { toast } from 'react-toastify';
 
 
@@ -19,19 +19,21 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ file }) => {
   const [progress, setProgress] = useState(0);
   const [imageURL, setImageURL] = useState<string | null>(null);
   const { currentAdmin } = useSelector((state: RootState) => state.admin);
+  const udpatedHotel:any = useSelector((state: RootState) => state.admin.updatedHotel);
 
   useEffect(() => {
     const uploadImage = async () => {
       const imageName = uuidv4() + '.' + file.name.split('.').pop();
       try {
-        const url = await uploadFileProgress(
+        const url:string = await uploadFileProgress(
           file,
           `hotels/${currentAdmin?._id}`,
           imageName,
           setProgress
         );
         
-        dispatch(updateHotelImages(url))
+        dispatch(updateHotelImages([url]))
+        // if(udpatedHotel) dispatch(updateAddedHotelImages([url]))
         setImageURL(null);
       } catch (error) {
         const typedError = error as Error;

@@ -6,20 +6,25 @@ import AddDetails from './addDetails/AddDetails';
 import AddImages from './addImages/AddImages';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store/types';
-import { Add } from '@mui/icons-material';
-import { addHotel, getHotels } from '../../../../actions/hotel';
+import { Add, Cancel, Sync } from '@mui/icons-material';
+import { addHotel, getHotels, updateHotel } from '../../../../actions/hotel';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import { resetAddHotel, updateHotels } from '../../../../store/slices/adminSlice';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { resetAddHotel, updateHotels, updateUpdatedHotel } from '../../../../store/slices/adminSlice';
 import { AppDispatch } from '../../../../store/store';
 
 const AddHotel: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const location = useLocation();
   const hotelImages = useSelector((state: RootState) => state.admin.hotelImages);
   const hotelDetails = useSelector((state: RootState) => state.admin.hotelDetails);
   const hotelLocation = useSelector((state: RootState) => state.admin.hotelLocation);
-  
+  const updatedHotel:any = useSelector((state: RootState) => state.admin.updatedHotel);
+  const deletedHotelImages = useSelector((state: RootState) => state.admin.deletedHotelImages);
+  const addedHotelImages= useSelector((state: RootState) => state.admin.addedHotelImages);
+
+  console.log('Addhotel.tsx updatedHotel',updatedHotel._id)
   const [activeStep,setActiveStep] = useState(0);
   const [steps,setSteps] = useState([
     {label:'Location',completed:false},
@@ -122,9 +127,6 @@ const AddHotel: React.FC = () => {
       }
     }
     
-    
-    
-
     if (!hotelDetails.distanceFromCityCenter) {
       toast.error('Distance from city is required')
       return false;
@@ -143,6 +145,7 @@ const AddHotel: React.FC = () => {
     // Add similar validations for other fields...
     return true; // Form is valid
   };
+
 
   const handleSubmit = (async() => {
     if(validateForm()){
@@ -171,8 +174,42 @@ const AddHotel: React.FC = () => {
     }
   }
   })
-      
-     
+
+  const handleupdateSubmit = (async() => {
+    if(validateForm()){
+    const result = await updateHotel({
+      updatedHotel:{
+      _id:updatedHotel._id,
+      longitude:hotelLocation.longitude,
+      latitude:hotelLocation.latitude,
+      hotelName:hotelDetails.hotelName,
+      location:hotelDetails.location,
+      distanceFromCityCenter:hotelDetails.distanceFromCityCenter,
+      email:hotelDetails.email,
+      mobile:hotelDetails.mobile,
+      minimumRent:hotelDetails.minimumRent,
+      description:hotelDetails.description,
+      parkingPrice:hotelDetails.parkingPrice,
+      images:hotelImages
+    }
+    })
+    
+    if(result.success){
+      navigate('/admin/dashboard/hotels');
+      dispatch(resetAddHotel({hotelLocation,hotelDetails,hotelImages}))
+      const hotels = dispatch(getHotels());
+      dispatch(updateHotels({hotels}))
+      toast.success('Hotel Updated Successfully');
+    }else{
+      toast.error('Something went wrong!')
+    }
+  }
+  })
+
+  const handleCancel = () => {
+    navigate('/admin/dashboard/hotels');
+    
+  }
   
   return (
    <Container sx={{my:4}}>
@@ -196,7 +233,28 @@ const AddHotel: React.FC = () => {
         1:<AddDetails/>,
         2:<AddImages/>
       }[activeStep]}
-    
+    <Stack sx={{alignItems:'center',justifyContent:'center',pt:5,gap:2}} direction='row'>
+    {showSubmit && (
+  location.pathname === '/admin/dashboard/hotels/add-hotel' ? (
+    <Button
+      variant='contained'
+      endIcon={<Add/>}
+      onClick={handleSubmit}
+    >
+      ADD HOTEL
+    </Button>
+  ) : location.pathname === '/admin/dashboard/hotels/edit-hotel' ? (
+    <Button
+      variant='contained'
+      endIcon={<Sync/>}
+      onClick={handleupdateSubmit}
+    >
+      UPDATE HOTEL
+    </Button>
+  ) : null
+)}
+<Button variant='outlined' style={{borderColor:'red', color:'red'}} endIcon={<Cancel/>} onClick={handleCancel}>CANCEL</Button>
+      </Stack>
      <Stack
      direction='row'
      sx={{pt:2, pb:7, justifyContent:'space-around'}}
@@ -213,14 +271,7 @@ const AddHotel: React.FC = () => {
         Next
       </Button>
      </Stack>
-     {showSubmit && (
-      <Stack sx={{alignItems:'center'}}>
-        <Button variant='contained'
-        endIcon={<Add/>}
-        onClick={handleSubmit}
-        >ADD HOTEL</Button>
-      </Stack>
-     )}
+      
      </Box>
    </Container>
   );
