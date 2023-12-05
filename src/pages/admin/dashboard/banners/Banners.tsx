@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
 interface BannersProps {
   setSelectedLink: React.Dispatch<React.SetStateAction<string>>;
@@ -10,9 +10,7 @@ const Banners: React.FC<BannersProps> = ({ setSelectedLink, link }) => {
     setSelectedLink(link);
   }, []);
 
-  return (
-    <div>Banners</div>
-  );
+  return <div>Banners</div>;
 };
 
 export default Banners;

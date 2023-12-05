@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
 interface RoomsProps {
   setSelectedLink: React.Dispatch<React.SetStateAction<string>>;
@@ -10,9 +10,7 @@ const Rooms: React.FC<RoomsProps> = ({ setSelectedLink, link }) => {
     setSelectedLink(link);
   }, []);
 
-  return (
-    <div>Rooms</div>
-  );
+  return <div>Rooms</div>;
 };
 
 export default Rooms;

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
 interface MainProps {
   setSelectedLink: React.Dispatch<React.SetStateAction<string>>;
@@ -10,9 +10,7 @@ const Main: React.FC<MainProps> = ({ setSelectedLink, link }) => {
     setSelectedLink(link);
   }, []);
 
-  return (
-    <div>Admin Home</div>
-  );
+  return <div>Admin Home</div>;
 };
 
 export default Main;

@@ -1,13 +1,13 @@
-.swiper{
-  background:#eee;
+.swiper {
+  background: #eee;
   height: fit-content;
 }
 
-.swiper-wrapper{
+.swiper-wrapper {
   align-items: center;
 }
 
-.swiper-slide img{
+.swiper-slide img {
   width: 100%;
   max-height: 400px;
   object-fit: cover;

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/types';
 import { getHotels } from '../../../actions/hotel';
 import { AppDispatch } from '../../../store/store';
-import ReactMapGL, { GeolocateControl, Marker, Popup } from 'react-map-gl';
+import ReactMapGL, { FullscreenControl, GeolocateControl, Marker, NavigationControl, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { AppBar, Avatar, Box, Paper, Tooltip } from '@mui/material';
 import SuperCluster from 'supercluster';
@@ -13,7 +13,7 @@ import { updateLocation } from '../../../store/slices/adminSlice';
 import PopupHotel from './PopupHotel';
 import PriceSlider from '../../../components/user/searchbar/PriceSlider';
 import GeocoderInput from '../../../components/user/searchbar/GeocoderInput';
-
+import './cluster.css';
 
 interface Hotel {
   _id: string;
@@ -108,28 +108,28 @@ const MapScreen: React.FC = () => {
 
   return (
     <>
-    
-    <AppBar>
-
-    </AppBar>
     <Box
       sx={{
         position: 'relative',
-        height:400
+        height:400,
       }}
+
+      className='box-react-mapgl'
     >
       <ReactMapGL
-        style={{ width:'100%'}}
+        style={{ width:'100vw',height:'100vh' }}
         initialViewState={{ latitude: 11, longitude: 76, zoom: 0 }}
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN as string}
-        mapStyle="mapbox://styles/mapbox/streets-v11"
+        mapStyle="mapbox://styles/mapbox/streets-v12"
         ref={mapRef}
         onZoomEnd={(e) => setZoom(Math.round(e.viewState.zoom as number))}
       >
         <GeolocateControl position='top-left'
         trackUserLocation
         onGeolocate={(e) => dispatch(updateLocation({ longitude: e.coords.longitude, latitude: e.coords.latitude}))}
-        /> 
+        />
+        <FullscreenControl/>
+        <NavigationControl/>
         {clusters.map((cluster) => {
           const { cluster: isCluster, point_count } = cluster.properties as any;
           const [longitude, latitude] = cluster.geometry.coordinates;

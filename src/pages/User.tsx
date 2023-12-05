@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import '../App.css';
+import "../App.css";
 import Navbar from "../components/Navbar";
 import Login from "../components/user/Login";
 import Notification from "../components/Notification";
@@ -15,12 +15,12 @@ const Home: React.FC = () => {
 
   return (
     <>
-      {location.pathname==='/user/otp-verification' &&<OtpVerification />}
+      {location.pathname === "/user/otp-verification" && <OtpVerification />}
       <Loading />
       <Notification />
       <Login />
       <Navbar />
-      <HomeScreen/>
+      <HomeScreen />
       <Footer />
     </>
   );

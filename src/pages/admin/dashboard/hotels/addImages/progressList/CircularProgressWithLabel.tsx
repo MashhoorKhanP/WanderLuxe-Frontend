@@ -1,11 +1,13 @@
-import { Box, CircularProgress, Typography } from '@mui/material';
-import React from 'react';
+import { Box, CircularProgress, Typography } from "@mui/material";
+import React from "react";
 
 interface CircularProgressWithLabelProps {
   value: number;
 }
 
-const CircularProgressWithLabel: React.FC<CircularProgressWithLabelProps> = ({ value }) => {
+const CircularProgressWithLabel: React.FC<CircularProgressWithLabelProps> = ({
+  value,
+}) => {
   return (
     <Box>
       <CircularProgress
@@ -16,14 +18,14 @@ const CircularProgressWithLabel: React.FC<CircularProgressWithLabelProps> = ({ v
       />
       <Box
         sx={{
-          position: 'absolute',
+          position: "absolute",
           top: 0,
           right: 0,
           bottom: 0,
           left: 0,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <Typography
@@ -32,7 +34,7 @@ const CircularProgressWithLabel: React.FC<CircularProgressWithLabelProps> = ({ v
           color="white"
           fontSize="1rem"
         >
-          {Math.round(value) + '%'}
+          {Math.round(value) + "%"}
         </Typography>
       </Box>
     </Box>

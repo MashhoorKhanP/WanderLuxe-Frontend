@@ -12,9 +12,8 @@
   padding-inline-start: 0;
 }
 
-.swiper-button-next, .swiper-button-prev {
+.swiper-button-next,
+.swiper-button-prev {
   width: var(--swiper-navigation-size);
   height: var(--swiper-navigation-size);
 }
-
-

@@ -92,7 +92,7 @@ const applyFilter = (hotels: any[], address: { longitude?: number; latitude?: nu
     filteredHotels = filteredHotels.filter(hotel => {
       const longitudeDifference = longitude && hotel.longitude ? Math.abs(longitude - hotel.longitude) : 0;
       const latitudeDifference = latitude && hotel.latitude ? Math.abs(latitude - hotel.latitude) : 0;
-      return longitudeDifference <= 1 && latitudeDifference <= 1;
+      return longitudeDifference <= 0 && latitudeDifference <= 0;
     });
   }
 

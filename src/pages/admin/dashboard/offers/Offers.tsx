@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
 interface OffersProps {
   setSelectedLink: React.Dispatch<React.SetStateAction<string>>;
@@ -10,9 +10,7 @@ const Offers: React.FC<OffersProps> = ({ setSelectedLink, link }) => {
     setSelectedLink(link);
   }, []);
 
-  return (
-    <div>Offers</div>
-  );
+  return <div>Offers</div>;
 };
 
 export default Offers;

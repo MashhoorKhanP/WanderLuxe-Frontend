@@ -107,7 +107,7 @@ const SideList: React.FC<SideListProps> = ({ open, setOpen, updateTitle }) => {
     setOpen(false);
     setSelectedLink(link);
     updateTitle(title);
-    navigate(link.startsWith('/') ? link : `/admin/dashboard/${link}`);
+    navigate(link.startsWith("/") ? link : `/admin/dashboard/${link}`);
   };
   const list = useMemo(
     () => [

@@ -140,6 +140,7 @@ const Hotels: React.FC<HotelsProps> = ({ setSelectedLink, link }) => {
         component="h4"
         sx={{ textAlign: "center", mt: 3, mb: 3 }}
       >
+        Manage Hotels
       </Typography>
       <DataGrid
         columns={columns}
