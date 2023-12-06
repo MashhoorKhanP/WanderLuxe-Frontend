@@ -17,15 +17,15 @@ interface PopupHotelProps {
       minimumRent: number;
       hotelImages: string[];
       description: string;
-    };
-    // ... other props
+    };  // ... other props
   };
+  distance: string | number | null;
 }
 interface CustomSwiperOptions {
   lazy?: boolean;
 }
 
-const PopupHotel: React.FC<PopupHotelProps> = ({ popupInfo }) => {
+const PopupHotel: React.FC<PopupHotelProps> = ({ popupInfo,distance }) => {
   const navigate = useNavigate();
   console.log("popupInfo", popupInfo.properties);
   const { hotelName, minimumRent, hotelImages, description } =
@@ -83,7 +83,16 @@ const PopupHotel: React.FC<PopupHotelProps> = ({ popupInfo }) => {
         }}
       >
         <div>
-          <p style={{ fontWeight: "bold", fontSize: "13px" }}>{hotelName}</p>
+          <p style={{ fontWeight: "bold", fontSize: "13px"}}>{hotelName}</p>
+          {distance && ( <p
+    style={{
+      fontWeight: 500,
+      fontSize: '11px',
+      color: Number(distance) < 20 ? 'green': Number(distance) < 30 ?'blue': 'red',
+    }}
+  >
+    {`${distance}km from current location.`}
+  </p>)}
           <p style={{ fontSize: "11px" }}>Rooms start from</p>
           <h2 style={{ fontWeight: "bolder", fontSize: "18px", marginTop: 0 }}>
             {minimumRent === 0 ? "Free Stay" : `₹${minimumRent}`}
