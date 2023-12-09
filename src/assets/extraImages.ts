@@ -1,3 +1,5 @@
 export const WanderLuxeLogo:string = 'https://firebasestorage.googleapis.com/v0/b/wanderluxe-booking-app-87e72.appspot.com/o/WanderLuxe-ExtraImages%2FWanderLuxe.png?alt=media&token=056cfead-c957-45b3-bc4d-e348b73c243b'
 export const HomeImage1:string = 'https://firebasestorage.googleapis.com/v0/b/wanderluxe-booking-app-87e72.appspot.com/o/WanderLuxe-ExtraImages%2Fbest-hotel-website-designs-examples.jpeg?alt=media&token=13a5d22e-023d-4da5-8196-948e27d1ad68'
 export const DragNDropGif:string = 'https://firebasestorage.googleapis.com/v0/b/wanderluxe-booking-app-87e72.appspot.com/o/WanderLuxe-ExtraImages%2FdragNDrop.gif?alt=media&token=0bc5b431-928f-4e68-86e8-4cef91da91af'
+export const SpinnerGif:string = 'https://firebasestorage.googleapis.com/v0/b/wanderluxe-booking-app-87e72.appspot.com/o/WanderLuxe-ExtraImages%2FSpinner.gif?alt=media&token=d3390d7f-8e6c-4c27-a67b-607ab16c6e6f'
+export const NotFound: string = 'https://firebasestorage.googleapis.com/v0/b/wanderluxe-booking-app-87e72.appspot.com/o/WanderLuxe-ExtraImages%2Fspaceman.gif?alt=media&token=8af0f298-0cd2-40b1-bbfa-6bd48e3e4f53'

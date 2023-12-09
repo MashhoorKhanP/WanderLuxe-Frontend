@@ -2,9 +2,10 @@ import { Box, IconButton, Slider, Typography } from '@mui/material';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/types';
-import { filterPrice } from '../../../store/slices/userSlice';
+import { filterPrice, filterRoomPrice } from '../../../store/slices/userSlice';
 import { CurrencyRupee } from '@mui/icons-material';
 import { useValue } from '../../../context/ContextProvider';
+import { useLocation } from 'react-router-dom';
 
 const marks = [
   {value:1500, label:'₹1500'},
@@ -15,12 +16,17 @@ const marks = [
 
 const PriceSlider: React.FC = () => {
  const dispatch = useDispatch();
+ const location = useLocation();
  const {containerRef} = useValue();
  const priceFilter = useSelector((state:RootState) => state.user.priceFilter);
  const handleSliderChange = (_event: Event, price: number | number[]) => {
   // Ensure price is always a single number
   const newPrice = Array.isArray(price) ? price[0] : price;
-  dispatch(filterPrice(newPrice));
+  if(location.pathname=== '/user/view-hotels' || location.pathname === '/user/find-hotels'){
+    dispatch(filterPrice(newPrice));
+  }else if (location.pathname=== '/user/view-rooms'){
+    dispatch (filterRoomPrice(newPrice));
+  }
 };
   return (
     <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

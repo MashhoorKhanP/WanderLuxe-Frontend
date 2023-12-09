@@ -12,9 +12,11 @@ import { ThemeProvider } from "@emotion/react";
 import { Tooltip } from "@mui/material";
 import { Brightness4Sharp, Brightness7, Home } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/types";
 import useCheckToken from "../../../components/hooks/useCheckToken";
+import { getHotels } from "../../../actions/hotel";
+import { updateHotels } from "../../../store/slices/adminSlice";
 
 const drawerWidth = 240;
 
@@ -43,6 +45,7 @@ const AppBar = styled(MuiAppBar, {
 const Dashboard: React.FC = () => {
   const checkToken = useCheckToken();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { currentAdmin } = useSelector((state: RootState) => state.admin);
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(true);
@@ -68,6 +71,11 @@ const Dashboard: React.FC = () => {
       navigate("/admin/login");
     }
   }, [navigate, currentAdmin]);
+
+  useEffect(() => {
+    const result = dispatch(getHotels() as any);
+    dispatch(updateHotels({result}))
+  }, [dispatch]);
 
   return (
     <ThemeProvider theme={darkTheme}>

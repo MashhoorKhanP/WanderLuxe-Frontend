@@ -68,11 +68,11 @@ const HotelsActions: React.FC<HotelsActionsProps>= ({params,setData}) => {
             <Edit/>
           </IconButton>
       </Tooltip>
-      <Tooltip title='Delete this room'>
+      {/* <Tooltip title='Delete this room'>
           <IconButton onClick={() => handleDelete(params.row,currentAdmin as any)}>
             <Delete/>
           </IconButton>
-      </Tooltip>
+      </Tooltip> */}
     </Box>
   );
 };

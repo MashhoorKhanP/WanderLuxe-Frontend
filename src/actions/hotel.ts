@@ -6,6 +6,7 @@ import errorHandle from "../components/hooks/errorHandler";
 import { AppThunk } from "../store/store";
 import { toast } from "react-toastify";
 import deleteImages from "./utils/deleteImages";
+import { RoomDetails } from "../store/slices/adminSlice";
 
 interface RequestBody {
   _id?: string;
@@ -102,6 +103,9 @@ export const updateHotel = async ({ updatedHotel }: UpdateHotelPayload) => {
 
   return result;
 };
+
+
+
 
 //User Actions / Admin Actions
 export const getHotels = createAsyncThunk("user/getHotels", async () => {

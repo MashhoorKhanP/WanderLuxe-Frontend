@@ -260,6 +260,7 @@ const MapScreen: React.FC = () => {
                 })
               ) && setStart([e.coords.longitude, e.coords.latitude])
             }
+            
           />
 
           {/* Map Direction Start */}
@@ -340,7 +341,7 @@ const MapScreen: React.FC = () => {
                     src={cluster.properties.dropImage}
                     component={Paper}
                     elevation={2}
-                    onClick={() => { setPopupInfo(cluster); handleClick; }}
+                    onClick={(e) => { setPopupInfo(cluster); handleClick(e) }}
                   />
                 </Tooltip>
               </Marker>

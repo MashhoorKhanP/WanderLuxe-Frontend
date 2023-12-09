@@ -118,8 +118,9 @@ const AddDetails: React.FC = () => {
               name: "description",
               label: "Description",
               value: hotelDetails.description,
+              multiline: true, 
+              rows: 4
             }}
-            optionalProps={{ multiline: true, rows: 4 }}
             minLength={15}
           />
         </Grid>

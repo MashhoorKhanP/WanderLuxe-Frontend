@@ -10,18 +10,24 @@ import { RootState } from "../../../../../store/types";
 import { Cancel, Delete } from "@mui/icons-material";
 import {
   deleteHotelImages,
+  deleteRoomImages,
   updateDeletedHotelImages,
 } from "../../../../../store/slices/adminSlice";
 import deleteFile from "../../../../../firebase/deleteFile";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { useLocation } from "react-router-dom";
 
 const ImagesList: React.FC = () => {
+  const location = useLocation();
   const dispatch = useDispatch();
   const { currentAdmin } = useSelector((state: RootState) => state.admin);
   const hotelImages = useSelector(
     (state: RootState) => state.admin.hotelImages
   );
+
+  const roomImages = useSelector((state: RootState) => state.admin.roomImages);
+  
   const udpatedHotel = useSelector(
     (state: RootState) => state.admin.updatedHotel
   );
@@ -45,20 +51,33 @@ const ImagesList: React.FC = () => {
       if (result.isConfirmed) {
         // if(udpatedHotel) return;
         // dispatch(updateDeletedHotelImages([image]))
-        dispatch(deleteHotelImages(image));
-        const imageName = image
-          ?.split(`${currentAdminId}%2F`)[1]
-          ?.split("?")[0];
-        try {
-          await deleteFile(`hotels/${currentAdminId}/${imageName}`);
-          toast.success("File deleted successfully");
-        } catch (error) {
-          console.log(error);
+        if (location.pathname === "/admin/dashboard/hotels/add-hotel" || location.pathname === "/admin/dashboard/hotels/edit-hotel") {
+          dispatch(deleteHotelImages(image));
+          const imageName = image
+            ?.split(`${currentAdminId}%2F`)[1]
+            ?.split("?")[0];
+          try {
+            await deleteFile(`hotels/${currentAdminId}/${imageName}`);
+            toast.success("File deleted successfully");
+          } catch (error) {
+            console.log(error);
+          }
+        } else if (location.pathname === "/admin/dashboard/rooms/add-room" || location.pathname === "/admin/dashboard/rooms/edit-room") {
+          dispatch(deleteRoomImages(image));
+          const imageName = image
+            ?.split(`${currentAdminId}%2F`)[1]
+            ?.split("?")[0];
+          try {
+            await deleteFile(`rooms/${currentAdminId}/${imageName}`);
+            toast.success("File deleted successfully");
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
     });
   };
-
+  const images = location.pathname === "/admin/dashboard/hotels/add-hotel" || location.pathname === "/admin/dashboard/hotels/edit-hotel" ? hotelImages : roomImages;
   return (
     <ImageList
       rowHeight={250}
@@ -69,7 +88,7 @@ const ImagesList: React.FC = () => {
         },
       }}
     >
-      {hotelImages.map((image, index) => (
+      {images.map((image, index) => (
         <ImageListItem key={index} cols={1} rows={1} sx={{ mt: "25px" }}>
           <img
             src={image}

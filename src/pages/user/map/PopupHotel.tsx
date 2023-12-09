@@ -16,7 +16,7 @@ interface PopupHotelProps {
       hotelName: string;
       minimumRent: number;
       hotelImages: string[];
-      description: string;
+      hotelId:string;
     };  // ... other props
   };
   distance: string | number | null;
@@ -28,7 +28,7 @@ interface CustomSwiperOptions {
 const PopupHotel: React.FC<PopupHotelProps> = ({ popupInfo,distance }) => {
   const navigate = useNavigate();
   console.log("popupInfo", popupInfo.properties);
-  const { hotelName, minimumRent, hotelImages, description } =
+  const { hotelName, minimumRent, hotelImages,hotelId} =
     popupInfo.properties;
   console.log("hotelName", hotelName, hotelImages);
 
@@ -99,8 +99,8 @@ const PopupHotel: React.FC<PopupHotelProps> = ({ popupInfo,distance }) => {
           </h2>
         </div>
         <Tooltip
-          title="View more"
-          onClick={() => navigate("/user/view-hotels")}
+          title="View available rooms"
+          onClick={() => navigate(`/user/view-rooms?hotelId=${hotelId}`)}
         >
           <VisibilityOutlined
             style={{ fontSize: "20px", marginRight: "4px", cursor: "pointer" }}

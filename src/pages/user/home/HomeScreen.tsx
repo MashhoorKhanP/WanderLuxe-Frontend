@@ -8,7 +8,9 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../store/store";
 import { getHotels } from "../../../actions/hotel";
 import MapScreen from "../map/MapScreen";
-import HotelListScreen from "../hotel/HotelListScreen";
+import HotelListScreen from "../hotels/HotelListScreen";
+import RoomListScreen from "../rooms/RoomListScreen";
+import { getRooms } from "../../../actions/room";
 
 const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -20,9 +22,10 @@ const HomeScreen: React.FC = () => {
     dispatch(getHotels());
   };
 
-  // const handleViewHotels = () => {
-  //   navigate('/user/view-hotels');
-  // };
+  const handleViewHotels = () => {
+    navigate('/user/view-hotels');
+    dispatch(getRooms());
+  };
 
   return (
     <>
@@ -31,6 +34,10 @@ const HomeScreen: React.FC = () => {
       ) : location.pathname === "/user/view-hotels" ? (
         <>
           <HotelListScreen />
+        </>
+      ): location.pathname === "/user/view-rooms" ? (
+        <>
+          <RoomListScreen/>
         </>
       ) : (
         <Box sx={{ position: "relative" }}>
@@ -46,9 +53,9 @@ const HomeScreen: React.FC = () => {
               transform: "translateY(-50%)",
             }}
           >
-            {/* <Button variant='outlined' onClick={handleViewHotels}  sx={{ borderColor: 'white', color: 'white' }} endIcon={<CorporateFare />}>
+            <Button variant='outlined' onClick={handleViewHotels}  sx={{ borderColor: 'white', color: 'white' }} endIcon={<CorporateFare />}>
               View Hotels
-            </Button> */}
+            </Button>
             <Button
               variant="outlined"
               onClick={handleFindHotels}
@@ -65,11 +72,11 @@ const HomeScreen: React.FC = () => {
               zIndex: -1,
             }}
           >
-            <img src={HomeImage1} style={{ width: "50%" }} alt="HomeImage1" />
+            <img src={HomeImage1} style={{ width: "50%" }} alt="HomeImage1"  loading="lazy"/>
             <img
               src={BackgroundImage}
               style={{ width: "50%" }}
-              alt="BackgroundImage"
+              alt="BackgroundImage" loading="lazy"
             />
           </Box>
         </Box>

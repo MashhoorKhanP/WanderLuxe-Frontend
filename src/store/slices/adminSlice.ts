@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import { getUsers, loginAdmin } from "../../actions/admin";
 import { toast } from "react-toastify";
 import { addHotel, getHotels, updateHotel } from "../../actions/hotel";
+import { getRooms } from "../../actions/room";
 
 interface AdminState {
   currentAdmin: Admin | null; //Want to update according to database
@@ -11,12 +12,16 @@ interface AdminState {
   adminLoading: boolean;
   users: Users[];
   hotels:[];
+  allHotels:[];
   hotelImages: string[];
   hotelDetails: HotelDetails;
   hotelLocation:{longitude:number,latitude:number};
   updatedHotel:{},
   deletedHotelImages:string[],
   addedHotelImages:string[]
+  roomDetails:RoomDetails;
+  roomImages:string[];
+  rooms:[];
 }
 
 interface Admin {
@@ -39,7 +44,8 @@ interface Users {
   isBlocked: boolean;
 }
 
-interface HotelDetails {
+export interface HotelDetails {
+  _id:string;
   hotelName: string;
   location: string;
   distanceFromCityCenter: number;
@@ -50,14 +56,29 @@ interface HotelDetails {
   parkingPrice?:number;
 }
 
+export interface RoomDetails {
+  roomType:string;
+  hotelName: string;
+  hotelId:string;
+  amenities:string[];
+  price:number;
+  discountPrice:number;
+  roomsCount:number;
+  maxPeople:number;
+  description:string;
+  images?:string[];
+}
+
 const initialState: AdminState = {
   currentAdmin: null,
   users: [],
   hotels:[],
+  allHotels:[],
   openLogin: false,
   adminLoading: false,
   hotelImages: [],
   hotelDetails: {
+    _id:'',
     hotelName: "",
     location: "",
     distanceFromCityCenter: 0,
@@ -74,6 +95,20 @@ const initialState: AdminState = {
   updatedHotel:{},
   deletedHotelImages:[],
   addedHotelImages:[],
+
+  roomImages: [],
+  roomDetails: {
+    roomType:'',
+    hotelId:'',
+    hotelName: '',
+    amenities:[''],
+    price:0,
+    discountPrice:0,
+    roomsCount:0,
+    maxPeople:0,
+    description:'',
+  },
+  rooms:[]
 };
 
 const adminSlice = createSlice({
@@ -151,6 +186,35 @@ const adminSlice = createSlice({
         ];  
       
       /** or if any issue check  [...state.hotelImages, ...action.payload]; */
+    },
+    //Rooms part
+    updateRoomDetails:(state,action:PayloadAction<Partial<RoomDetails>>) =>{
+      console.log('updateRoomDetails',action.payload);
+      state.roomDetails = {...state.roomDetails,...action.payload}
+    },
+    updateRoomImages: (state, action: PayloadAction<string[] | []>) => { 
+      console.log('action.payload',action.payload);
+      const resultImage = action.payload;
+      if(resultImage.length<=0){
+        state.roomImages = [ 
+            ...action.payload,
+          ];
+      }else{
+        state.roomImages = [
+      ...state.roomImages, 
+        ...action.payload,
+      ]; 
+      }
+      /** or if any issue check  [...state.hotelImages, ...action.payload]; */
+    },
+    deleteRoomImages: (state, action: PayloadAction<string>) => {
+      state.roomImages = state.roomImages.filter(
+        (image) => image !== action.payload
+      );
+    },
+    resetAddRoom:(state,action:PayloadAction<object>)=>{
+      state.roomDetails = {...state.roomDetails,roomType:'',hotelName:'',amenities:[],price:0,discountPrice:0,roomsCount:0,maxPeople:0,description:''}
+      state.roomImages=[];
     },
     startLoading: (state) => {
       state.adminLoading = true;
@@ -253,6 +317,7 @@ const adminSlice = createSlice({
        
         // Don't directly modify state.currentUser, create a new object
         state.hotels = hotels.message;
+        state.allHotels = hotels.message;
         // state.addressFilter={},
         // state.priceFilter=3500,
         // state.filteredHotels=hotels.message
@@ -276,40 +341,38 @@ const adminSlice = createSlice({
       }
       state.adminLoading = false;
     });
+    
+    builder.addCase(getRooms.pending, (state) => {
+      state.adminLoading = true;
+    });
 
-    // builder.addCase(updateHotel.pending, (state) => {
-    //   state.adminLoading = true;
-    // });
+    builder.addCase(getRooms.fulfilled, (state, action) => {
+      state.adminLoading = false;
+      const rooms = action.payload;
+      if (rooms && rooms.message) {
+       
+        // Don't directly modify state.currentUser, create a new object
+        state.rooms = rooms.message;
+        // state.allRooms = rooms.message;
+        state.openLogin = false;
+      } else {
+        // Handle the case where currentUser or message is null or undefined
+        console.error("Received invalid data in loginUser.fulfilled");
+      }
+    });
+    builder.addCase(getRooms.rejected, (state, action) => {
+      const error = action.error as Error | AxiosError;
 
-    // builder.addCase(updateHotel.fulfilled, (state, action) => {
-    //   state.adminLoading = false;
-    //   const hotels = action.payload;
-    //   if (hotels && hotels.message) {
-        
-    //     console.log("hotels.message", hotels.message);
-    //     // Don't directly modify state.currentUser, create a new object
-    //     state.hotels = hotels.message;
-        
-
-    //     state.openLogin = false;
-    //   } else {
-    //     // Handle the case where currentUser or message is null or undefined
-    //     console.error("Received invalid data in loginUser.fulfilled");
-    //   }
-    // });
-    // builder.addCase(updateHotel.rejected, (state, action) => {
-    //   const error = action.error as Error | AxiosError;
-
-    //   if (error instanceof Error) {
-    //     // Handle specific error messages from the server if available
-    //     errorHandle(error);
-    //     toast.error(error.message);
-    //   } else {
-    //     // Handle non-Error rejection (if needed)
-    //     console.error("Login failed with non-Error rejection:", action.error);
-    //   }
-    //   state.adminLoading = false;
-    // });
+      if (error instanceof Error) {
+        // Handle specific error messages from the server if available
+        errorHandle(error);
+        toast.error(error.message);
+      } else {
+        // Handle non-Error rejection (if needed)
+        console.error("Login failed with non-Error rejection:", action.error);
+      }
+      state.adminLoading = false;
+    });
   },
 });
 
@@ -326,6 +389,10 @@ export const {
   updateUpdatedHotel,
   resetAddHotel,
   updateHotels,
+  updateRoomDetails,
+  updateRoomImages,
+  deleteRoomImages,
+  resetAddRoom,
   startLoading,
   stopAdminLoading,
 } = adminSlice.actions;

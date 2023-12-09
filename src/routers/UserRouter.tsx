@@ -46,6 +46,7 @@ const UserRouter: React.FC = () => {
       <Route path="otp-verification" element={<Home />} />
       <Route path="find-hotels" element={<Home />} />
       <Route path="view-hotels" element={<Home />} />
+      <Route path='view-rooms' element={<Home/>}/>
 
       <Route path="" element={<UserPrivateRoute />}>
         <Route path="edit-profile" element={<Home />} />

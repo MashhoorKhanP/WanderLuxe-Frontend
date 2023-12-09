@@ -10,6 +10,7 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { getHotels } from "../../actions/hotel";
 import { MapRef } from "react-map-gl";
+import { getRooms } from "../../actions/room";
 
 interface UserState {
   currentUser: User | null; //Want to update according to database
@@ -19,10 +20,12 @@ interface UserState {
   profile: Profile;
   loading: boolean;
   hotels:[];
+  rooms:[];
   mapRef:React.RefObject<MapRef> | null;
   priceFilter: number;
   addressFilter:{};
-  filteredHotels:any[]
+  filteredHotels:any[];
+  filteredRooms:any[];
 }
 
 const initialState: UserState = {
@@ -33,10 +36,12 @@ const initialState: UserState = {
   profile: { open: false, file: null, profileImage: "" },
   loading: false,
   hotels:[],
+  rooms:[],
   mapRef:null,
   priceFilter:3500,
   addressFilter:{},
-  filteredHotels:[]
+  filteredHotels:[],
+  filteredRooms:[]
 };
 
 interface User {
@@ -85,7 +90,7 @@ export const resendOTPSlice = createSlice({
 });
 
 const applyFilter = (hotels: any[], address: { longitude?: number; latitude?: number }, price: number): any[] => {
-  let filteredHotels = hotels;
+  let filteredHotels = [...hotels]; // hotels;
 
   if (address) {
     const { longitude, latitude } = address;
@@ -101,6 +106,17 @@ const applyFilter = (hotels: any[], address: { longitude?: number; latitude?: nu
   }
 
   return filteredHotels;
+};
+
+const applyRoomFilter = (rooms: any[],  price: number): any[] => {
+  let filteredRooms = [...rooms]; // hotels;
+
+
+  if (price < 3500) {
+    filteredRooms = filteredRooms.filter(room => room.price <= price);
+  }
+
+  return filteredRooms;
 };
 
 
@@ -132,7 +148,6 @@ const userSlice = createSlice({
         localStorage.setItem("currentUser", JSON.stringify(updatedUser));
 
       }
-
     },
     setMapRef:(state,action: PayloadAction<React.RefObject<MapRef>>)=>{
       state.mapRef = action.payload;
@@ -143,10 +158,33 @@ const userSlice = createSlice({
         state.hotels, state.addressFilter,action.payload
       )
     },
+    filterHotels:(state,action:PayloadAction<any>) => {
+      state.hotels = action.payload;
+      state.addressFilter = action.payload;
+      state.filteredHotels =applyFilter(state.hotels,state.addressFilter,state.priceFilter || 3500);
+    },
     filterAddress:(state,action:PayloadAction<object>) => {
       state.addressFilter = action.payload;
       state.filteredHotels = applyFilter(
         state.hotels, action.payload,state.priceFilter
+      )
+    },
+    setHotels:(state,action:PayloadAction<any>) => {
+      state.hotels = action.payload;
+      state.filteredHotels = applyFilter(state.hotels,state.addressFilter,state.priceFilter || 3500)
+    },
+    setRooms:(state,action:PayloadAction<any>) => {
+      state.rooms = action.payload;
+      state.filteredRooms = applyRoomFilter(state.rooms,state.priceFilter || 3500)
+    },
+    filterRooms:(state,action:PayloadAction<any>) => {
+      state.rooms = action.payload;
+      state.filteredRooms =applyRoomFilter(state.rooms,state.priceFilter || 3500);
+    },
+    filterRoomPrice:(state, action:PayloadAction<number>)=>{
+      state.priceFilter = action.payload
+      state.filteredRooms = applyRoomFilter(
+        state.rooms,action.payload
       )
     },
     clearAddress:(state) => {
@@ -335,6 +373,7 @@ const userSlice = createSlice({
 
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.loading = false;
+      console.log('loginUser.fulfilled',action.payload)
       const currentUser = action.payload;
       if (currentUser && currentUser.message) {
         console.log(currentUser, "for token check");
@@ -412,6 +451,39 @@ const userSlice = createSlice({
       }
       state.loading = false;
     });
+    //Rooms
+    builder.addCase(getRooms.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(getRooms.fulfilled, (state, action) => {
+      state.loading = false;
+      const rooms = action.payload;
+      console.log('rooms', rooms);
+      if (rooms && rooms.message) {
+       
+        // Don't directly modify state.currentUser, create a new object
+        state.rooms = rooms.message;
+        // state.allRooms = rooms.message;
+        state.openLogin = false;
+      } else {
+        // Handle the case where currentUser or message is null or undefined
+        console.error("Received invalid data in loginUser.fulfilled");
+      }
+    });
+    builder.addCase(getRooms.rejected, (state, action) => {
+      const error = action.error as Error | AxiosError;
+
+      if (error instanceof Error) {
+        // Handle specific error messages from the server if available
+        errorHandle(error);
+        toast.error(error.message);
+      } else {
+        // Handle non-Error rejection (if needed)
+        console.error("Login failed with non-Error rejection:", action.error);
+      }
+      state.loading = false;
+    });
   },
 });
 
@@ -421,9 +493,14 @@ export const {
   updateUserProfile,
   filterAddress,
   clearAddress,
+  setHotels,
   logoutUser,
+  filterHotels,
+  filterRooms,
+  setRooms,
   setMapRef,
   filterPrice,
+  filterRoomPrice,
   setOpenLogin,
   setCloseLogin,
   setAlert,
