@@ -35,14 +35,16 @@ const Navbar: React.FC= () => {
         <Typography variant='h6'
         component='h1'
         noWrap
-        sx={{flexGrow:1, display:{xs:'none',md:'flex',color: '#000000'}}}
+        onClick={() => navigate('/user/home') }
+        sx={{flexGrow:1, display:{xs:'none',md:'flex',color: '#000000'},cursor:'pointer'}}
         >
           WanderLuxe
         </Typography>
         <Typography variant='h6'
         component='h1'
         noWrap
-        sx={{flexGrow:1, display:{xs:'flex',md:'none',color: '#000000'}}}
+        onClick={() => navigate('/user/home') }
+        sx={{flexGrow:1, display:{xs:'flex',md:'none',color: '#000000',cursor:'pointer'}}}
         >
           WanderLuxe
         </Typography>

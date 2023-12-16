@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "../App.css";
 import Navbar from "../components/Navbar";
 import Login from "../components/user/Login";
@@ -8,7 +8,7 @@ import OtpVerification from "../components/user/OtpVerification";
 import { useLocation } from "react-router-dom";
 import Footer from "../components/Footer";
 import HomeScreen from "./user/home/HomeScreen";
-import MapScreen from "./user/map/MapScreen";
+import RoomOverviewScreen from "./user/rooms/RoomOverviewScreen";
 
 const Home: React.FC = () => {
   const location = useLocation();
@@ -21,6 +21,7 @@ const Home: React.FC = () => {
       <Login />
       <Navbar />
       <HomeScreen />
+      <RoomOverviewScreen/>
       <Footer />
     </>
   );

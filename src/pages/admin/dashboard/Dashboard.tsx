@@ -16,7 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/types";
 import useCheckToken from "../../../components/hooks/useCheckToken";
 import { getHotels } from "../../../actions/hotel";
-import { updateHotels } from "../../../store/slices/adminSlice";
+import { updateHotels, updateRooms } from "../../../store/slices/adminSlice";
+import { getRooms } from "../../../actions/room";
 
 const drawerWidth = 240;
 
@@ -50,6 +51,7 @@ const Dashboard: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(true);
   const [title, setTitle] = useState("Admin Panel");
+  
 
   console.log(currentAdmin);
   const darkTheme = useMemo(
@@ -75,6 +77,8 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const result = dispatch(getHotels() as any);
     dispatch(updateHotels({result}))
+    const rooms = dispatch(getRooms() as any);
+    dispatch(updateRooms({rooms}))
   }, [dispatch]);
 
   return (

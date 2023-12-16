@@ -1,81 +1,120 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../../store/store';
-import { useSearchParams } from 'react-router-dom';
-import { getRooms } from '../../../actions/room';
-import { Box, Card, CardContent, CardMedia, Container, Hidden, ImageList, ImageListItem, ImageListItemBar, Rating, Tooltip, Typography } from '@mui/material';
-import { NotFound, SpinnerGif } from '../../../assets/extraImages';
-import { StarBorder } from '@mui/icons-material';
-import { filterRooms, setRooms } from '../../../store/slices/userSlice';
-import SearchBar from '../../../components/common/SearchBar';
-import PriceSlider from '../../../components/user/searchbar/PriceSlider';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../store/store";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { getRooms } from "../../../actions/room";
+import {
+  Box,
+  Card,
+  CardContent,
+  CardMedia,
+  Container,
+  Hidden,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
+  Rating,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { NotFound, SpinnerGif } from "../../../assets/extraImages";
+import { StarBorder } from "@mui/icons-material";
+import { filterRooms, setRooms } from "../../../store/slices/userSlice";
+import SearchBar from "../../../components/common/SearchBar";
+import PriceSlider from "../../../components/user/searchbar/PriceSlider";
+import MyDatePicker from "./MyDatePicker";
+import { openRoomOverview, setRoomId } from "../../../store/slices/roomSlice";
 
 const RoomListScreen: React.FC = () => {
- const dispatch  = useDispatch<AppDispatch>();
- const rooms:any = useSelector((state: RootState) => state.user.filteredRooms);
- const [loading, setLoading] = useState(false);
- const [currentPage, setCurrentPage] = useState(1);
- const [allRooms, setAllRooms] = useState<any>([]);
- const [searchParams] = useSearchParams();
- const roomsPerPage = 6;
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const rooms: any = useSelector(
+    (state: RootState) => state.user.filteredRooms
+  );
+  const [loading, setLoading] = useState(false);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [allRooms, setAllRooms] = useState<any>([]);
+  const [searchParams] = useSearchParams();
+  const roomsPerPage = 6;
 
- const hotelId = searchParams.get('hotelId');
- 
+  const hotelId = searchParams.get("hotelId");
 
- useEffect(() => {
-  if(!rooms.length){
-    const fetchRooms = async () => {
-    const response = await dispatch(getRooms());
-    setAllRooms(response.payload.message);
-    dispatch(setRooms(response.payload.message)); // assuming getHotels returns { payload: hotels }
+  const toggleDatePicker = () => {
+    setIsDatePickerOpen((prev) => !prev);
   };
-  fetchRooms();
-  }
-}, [dispatch]);
 
-  const indexOfLastHotel = currentPage * roomsPerPage;
-  const indexOfFirstHotel = indexOfLastHotel - roomsPerPage;
-  const currentRooms = rooms.slice(indexOfFirstHotel, indexOfLastHotel).filter((room:any) => room.hotelId === hotelId);
-  
+  useEffect(() => {
+    if (!rooms.length || !allRooms.length) {
+      const fetchRooms = async () => {
+        const response = await dispatch(getRooms());
+        setAllRooms(response.payload.message);
+        dispatch(setRooms(response.payload.message)); // assuming getHotels returns { payload: hotels }
+      };
+      fetchRooms();
+    }
+    setAllRooms(rooms);
+  }, [dispatch,allRooms]);
+
+  const indexOfLastRooms = currentPage * roomsPerPage;
+  const indexOfFirstRooms = indexOfLastRooms - roomsPerPage;
+  const currentRooms = rooms
+    .slice(indexOfFirstRooms, indexOfLastRooms)
+    .filter((room: any) => room.hotelId === hotelId);
+
   const handleSearch = (query: string) => {
     setLoading(true);
-    
+
     setCurrentPage(1); // Reset to the first page when searching
     // Simulating a delay (remove this in the actual implementation)
-    if(query.trim().length<=0){
-      console.log('allRooms', allRooms)
+    if (query.trim().length <= 0) {
+      console.log("allRooms", allRooms);
       setTimeout(() => {
         dispatch(filterRooms(allRooms));
         setLoading(false);
-      }, 1000); 
-    }else{
-      const newFilteredRooms:any = allRooms.filter(
-      (room:any) =>
+      }, 1000);
+    } else {
+      const newFilteredRooms: any = allRooms.filter((room: any) =>
         room.roomType.toLowerCase().includes(query.toLowerCase())
-    );
+      );
 
-    setTimeout(() => {
-      dispatch(filterRooms(newFilteredRooms));
-      setLoading(false);
-    }, 1000); 
+      setTimeout(() => {
+        dispatch(filterRooms(newFilteredRooms));
+        setLoading(false);
+      }, 1000);
     }
     // Simulating a delay (remove this in the actual implementation)
   };
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+  const handleCardClick = (roomId: string) => {
+    dispatch(openRoomOverview()); // Dispatch an action to open the RoomOverviewScreen
+    dispatch(setRoomId(roomId)); 
+    // navigate('/user/view-rooms/room-overview');
+  };
+
   return (
     <Container>
+      <Box paddingTop={4}>
+      <Typography variant='h5' fontWeight='bold'>{`${currentRooms[0]?.hotelName ?currentRooms[0]?.hotelName :"Not Found" } - Rooms`}</Typography>
+      </Box> 
       <Box
         display={"flex"}
         flexDirection={"row"}
-        justifyContent={"space-between"}
+        justifyContent={"space-evenly"}
         alignItems={"center"}
         pb={2}
+        gap={3}
+        
       >
         <SearchBar onSearch={handleSearch} />
-        <PriceSlider />
+
+        <MyDatePicker isOpen={isDatePickerOpen} onToggle={toggleDatePicker} />
+        <PriceSlider/>
       </Box>
+
       <ImageList
         gap={12}
         sx={{
@@ -89,28 +128,27 @@ const RoomListScreen: React.FC = () => {
             sx={{
               position: "absolute",
               top: 50,
-              left: "38%",
               width: "300px",
+              mt:'4%',
+              ml:'35%',
               height: "100vh",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               paddingBottom: "250px",
             }}
-            
           >
             <img src={SpinnerGif} alt="Loading..." />
           </Box>
         ) : currentRooms.length > 0 ? (
-          currentRooms.map((room:any) => (
+          currentRooms.map((room: any) => (
             <Tooltip title="Click to view more details!" key={room._id}>
-              <Card sx={{ width: "100%", height: "270px" }} >
-                <ImageListItem sx={{ height: "100% !important" }} >
-                  <ImageListItemBar 
+              <Card sx={{ width: "100%", height: "270px" }} onClick={() => handleCardClick(room._id)}>
+                <ImageListItem sx={{ height: "100% !important" }}>
+                  <ImageListItemBar
                     sx={{
                       background: "0",
                     }}
-                    
                     title={room.roomType}
                     subtitle={`${room.hotelName}`}
                     // actionIcon={<Avatar src={hotel.dropImage} sx={{ m: "10px" }} />}
@@ -124,34 +162,59 @@ const RoomListScreen: React.FC = () => {
                   />
                   {/* Want to give room starts from with  */}
                   <ImageListItemBar
-                     title={
+                    title={
                       <>
                         ₹{room.price}&nbsp;
-                        <Typography component="span" variant="subtitle1" sx={{ textDecoration: 'line-through',fontSize:'14px', color: 'rgb(213 211 211)' }}>
+                        <Typography
+                          component="span"
+                          variant="subtitle1"
+                          sx={{
+                            textDecoration: "line-through",
+                            fontSize: "14px",
+                            color: "rgb(213 211 211)",
+                          }}
+                        >
                           ₹{room.price + room.discountPrice}
                         </Typography>
-                      </>                   
-                     }
-                     subtitle={
+                      </>
+                    }
+                    subtitle={
                       <>
-                      {room.amenities.map((amenity: string, index: number) => (
-                        <React.Fragment key={index}>
-                          <Typography variant="subtitle2" sx={{ display: 'inline', fontSize: '12px', color: 'rgb(213 211 211)' }}>
-                            {amenity}
-                          </Typography>
-                          {index >= 0 && index < room.amenities.length - 1 ?<span>,&nbsp;</span>:''}
-                        </React.Fragment>
-                      ))}
-                    </>
-                     }
-
+                        {room.amenities.map(
+                          (amenity: string, index: number) => (
+                            <React.Fragment key={index}>
+                              <Typography
+                                variant="subtitle2"
+                                sx={{
+                                  display: "inline",
+                                  fontSize: "12px",
+                                  color: "rgb(213 211 211)",
+                                }}
+                              >
+                                {amenity}
+                              </Typography>
+                              {index >= 0 &&
+                              index < room.amenities.length - 1 ? (
+                                <span>,&nbsp;</span>
+                              ) : (
+                                ""
+                              )}
+                            </React.Fragment>
+                          )
+                        )}
+                      </>
+                    }
                     actionIcon={
                       <Rating
                         sx={{ color: "rgba(255,255,255, 0.8)", mr: "5px" }}
                         name="hotelRating"
                         defaultValue={3.5}
                         precision={0.5}
-                        emptyIcon={<StarBorder sx={{ color: "rgba(255,255,255, 0.8)" }} />}
+                        emptyIcon={
+                          <StarBorder
+                            sx={{ color: "rgba(255,255,255, 0.8)" }}
+                          />
+                        }
                       />
                     }
                   />
@@ -160,29 +223,28 @@ const RoomListScreen: React.FC = () => {
             </Tooltip>
           ))
         ) : (
-          <Card sx={{ textAlign: "center",boxShadow:0}}>
-          <CardMedia
-            component="img"
-            alt="No Results Found"
-            height="50"
-            image={NotFound}
-            loading="lazy"
-            
-          />
-          <CardContent>
-            <Typography variant="caption">No results found.</Typography>
-            <Typography variant="caption">
-              Try a different search.
-            </Typography>
-          </CardContent>
-        </Card>
+          <Card sx={{ textAlign: "center", boxShadow: 0 }}>
+            <CardMedia
+              component="img"
+              alt="No Results Found"
+              height="50"
+              image={NotFound}
+              loading="lazy"
+            />
+            <CardContent>
+              <Typography variant="caption">No results found.</Typography>
+              <Typography variant="caption">Try a different search.</Typography>
+            </CardContent>
+          </Card>
         )}
       </ImageList>
       <Box sx={{ display: "flex", justifyContent: "center", padding: 4 }}>
         {rooms.length > roomsPerPage && (
           <Hidden mdDown>
             <Box>
-              {Array.from({ length: Math.ceil(rooms.length / roomsPerPage) }).map((_, index) => (
+              {Array.from({
+                length: Math.ceil(rooms.length / roomsPerPage),
+              }).map((_, index) => (
                 <Typography
                   key={index + 1}
                   variant="button"

@@ -31,7 +31,7 @@ const UserRouter: React.FC = () => {
       }
     } else if (storedUser === null || storedUser === undefined) {
       navigate("/user/home");
-      dispatch(logoutUser());
+      // dispatch(logoutUser());
       // Handle the case where storedUser is null (no user data in local storage)
     }
   }, [dispatch]);
@@ -47,9 +47,14 @@ const UserRouter: React.FC = () => {
       <Route path="find-hotels" element={<Home />} />
       <Route path="view-hotels" element={<Home />} />
       <Route path='view-rooms' element={<Home/>}/>
+      {/* <Route path='view-rooms/room-overview' element={<Home/>}/> */}
+
 
       <Route path="" element={<UserPrivateRoute />}>
         <Route path="edit-profile" element={<Home />} />
+        <Route path="change-password" element={<Home />}/>
+        <Route path='wishlist' element={<Home/>}/>
+        <Route path='book-room' element={<Home/>}/>
       </Route>
     </Routes>
   );

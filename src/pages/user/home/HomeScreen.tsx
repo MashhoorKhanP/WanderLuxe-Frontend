@@ -11,6 +11,10 @@ import MapScreen from "../map/MapScreen";
 import HotelListScreen from "../hotels/HotelListScreen";
 import RoomListScreen from "../rooms/RoomListScreen";
 import { getRooms } from "../../../actions/room";
+import RoomOverviewScreen from "../rooms/RoomOverviewScreen";
+import WishListScreen from "../wishlist/WishlistScreen";
+import BookingScreen from "../booking/BookingScreen";
+import ChangePasswordScreen from "../password/ChangePasswordScreen";
 
 const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -38,6 +42,18 @@ const HomeScreen: React.FC = () => {
       ): location.pathname === "/user/view-rooms" ? (
         <>
           <RoomListScreen/>
+        </>
+      ): location.pathname === "/user/wishlist" ? (
+        <>
+          <WishListScreen/>
+        </>
+      ) : location.pathname === "/user/book-room" ? (
+        <>
+          <BookingScreen/>
+        </>
+      ): location.pathname === "/user/change-password" ? (
+        <>
+          <ChangePasswordScreen/>
         </>
       ) : (
         <Box sx={{ position: "relative" }}>

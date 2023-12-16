@@ -28,14 +28,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       label={location.pathname=== '/user/view-hotels'? "Search hotels/location" : location.pathname=== '/user/view-rooms'?'Search room types':'Search'}
       variant="outlined"
       size="small"
-      sx={{ width: 400, mt: 2 }}
+      sx={{ width:400, mt: 2 }}
       value={searchQuery}
       onChange={handleChange}
       onKeyPress={handleKeyPress}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <Search onClick={() => onSearch(searchQuery)} style={{ cursor: "pointer" }} />
+            <Search/>
           </InputAdornment>
         ),
       }}

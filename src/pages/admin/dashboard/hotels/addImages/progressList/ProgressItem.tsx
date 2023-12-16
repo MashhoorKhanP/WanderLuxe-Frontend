@@ -29,7 +29,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ file }) => {
   );
   
   useEffect(() => {
-    if (location.pathname === "/admin/dashboard/hotels/add-hotel") {
+    if (location.pathname === "/admin/dashboard/hotels/add-hotel" || location.pathname === "/admin/dashboard/hotels/edit-hotel") {
       const uploadImage = async () => {
         const imageName = uuidv4() + "." + file.name.split(".").pop();
         try {
@@ -52,7 +52,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ file }) => {
   
       setImageURL(URL.createObjectURL(file));
       uploadImage();
-    } else if (location.pathname === "/admin/dashboard/rooms/add-room") {
+    } else if (location.pathname === "/admin/dashboard/rooms/add-room" || location.pathname === "/admin/dashboard/rooms/edit-room") {
       const uploadImage = async () => {
         const imageName = uuidv4() + "." + file.name.split(".").pop();
         try {

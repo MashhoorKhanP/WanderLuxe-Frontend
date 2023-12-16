@@ -4,7 +4,7 @@ import { RootState } from '../../store/types';
 import { setAlert, updateUserProfile } from '../../store/slices/userSlice';
 import { updateProfile } from '../../actions/user';
 import { Avatar, Backdrop, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField, Tooltip } from '@mui/material';
-import { ArrowBack, Close, Edit, FavoriteBorder, Grading } from '@mui/icons-material';
+import { ArrowBack, Close, Edit, FavoriteBorder, Grading, Key, PasswordOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -28,7 +28,7 @@ const Profile: React.FC = () => {
   // if(currentUser?.message) currentUser = currentUser.message;
   const handleClose = () => {
     dispatch(updateUserProfile({ ...profile, open: false }));
-    navigate('/user/home')
+    // navigate('/user/home')
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -135,7 +135,7 @@ const Profile: React.FC = () => {
         </IconButton>
       </DialogTitle>
       <form onSubmit={handleSubmit}>
-        <DialogContent>
+        <DialogContent sx={{p:5}}>
           <DialogContentText sx={{ textAlign: 'start' }}>
             Profile Image:
           </DialogContentText>
@@ -240,12 +240,19 @@ const Profile: React.FC = () => {
       </form>
 
       <DialogActions sx={{ justifyContent: "center", px: '19px', pb: '25px' }}>
-        <Button type="submit" variant="contained" sx={{ bgcolor: 'black' }} endIcon={<Grading />}>
+        <Button variant="contained" sx={{ bgcolor: 'black',transition: "color border bgColor 0.3s ease",
+                      "&:hover": { bgcolor: "#ffffff",color:'#000000',border:'1px solid black' },
+                     }} endIcon={<Grading />}>
           My Bookings
         </Button>
 
-        <Button type="submit" variant="contained" sx={{ bgcolor: 'black' }} endIcon={<FavoriteBorder />}>
-          My Wishlist
+        <Button onClick={() => {
+    handleClose && handleClose();
+    navigate('/user/change-password');
+  }} variant="contained" sx={{ bgcolor: 'black',transition: "color border bgColor 0.3s ease",
+                      "&:hover": { bgcolor: "#ffffff",color:'#000000',border:'1px solid black' },
+                    }} endIcon={<PasswordOutlined />}>
+          Change password
         </Button>
       </DialogActions>
     </Dialog>

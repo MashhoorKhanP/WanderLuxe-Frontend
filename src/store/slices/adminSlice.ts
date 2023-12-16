@@ -22,6 +22,8 @@ interface AdminState {
   roomDetails:RoomDetails;
   roomImages:string[];
   rooms:[];
+  updatedRoom:{},
+
 }
 
 interface Admin {
@@ -57,6 +59,7 @@ export interface HotelDetails {
 }
 
 export interface RoomDetails {
+  _id?:string;
   roomType:string;
   hotelName: string;
   hotelId:string;
@@ -101,14 +104,15 @@ const initialState: AdminState = {
     roomType:'',
     hotelId:'',
     hotelName: '',
-    amenities:[''],
+    amenities:[],
     price:0,
     discountPrice:0,
     roomsCount:0,
     maxPeople:0,
     description:'',
   },
-  rooms:[]
+  rooms:[],
+  updatedRoom:{},
 };
 
 const adminSlice = createSlice({
@@ -188,6 +192,9 @@ const adminSlice = createSlice({
       /** or if any issue check  [...state.hotelImages, ...action.payload]; */
     },
     //Rooms part
+    updateRooms:(state,action:PayloadAction<any>)=> {
+      state.rooms = action.payload
+    },
     updateRoomDetails:(state,action:PayloadAction<Partial<RoomDetails>>) =>{
       console.log('updateRoomDetails',action.payload);
       state.roomDetails = {...state.roomDetails,...action.payload}
@@ -211,6 +218,9 @@ const adminSlice = createSlice({
       state.roomImages = state.roomImages.filter(
         (image) => image !== action.payload
       );
+    },
+    updateUpdatedRoom:(state,action:PayloadAction<any>) => {
+      state.updatedRoom={...state.updatedRoom,...action.payload}
     },
     resetAddRoom:(state,action:PayloadAction<object>)=>{
       state.roomDetails = {...state.roomDetails,roomType:'',hotelName:'',amenities:[],price:0,discountPrice:0,roomsCount:0,maxPeople:0,description:''}
@@ -389,10 +399,12 @@ export const {
   updateUpdatedHotel,
   resetAddHotel,
   updateHotels,
+  updateRooms,
   updateRoomDetails,
   updateRoomImages,
   deleteRoomImages,
   resetAddRoom,
+  updateUpdatedRoom,
   startLoading,
   stopAdminLoading,
 } = adminSlice.actions;

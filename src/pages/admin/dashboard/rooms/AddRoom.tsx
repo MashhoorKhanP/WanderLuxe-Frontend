@@ -7,16 +7,18 @@ import { Add, Cancel, Sync } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store/types';
 import AddImages from '../hotels/addImages/AddImages';
-import {resetAddRoom} from '../../../../store/slices/adminSlice';
+import {resetAddRoom, updateRooms} from '../../../../store/slices/adminSlice';
 import { toast } from 'react-toastify';
-import { addRoom } from '../../../../actions/room';
+import { addRoom, getRooms, updateRoom } from '../../../../actions/room';
+import { AppDispatch } from '../../../../store/store';
 
 const AddRoom: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
   const roomImages = useSelector((state: RootState) => state.admin.roomImages);
   const roomDetails = useSelector((state: RootState) => state.admin.roomDetails);
+  const updatedRoom:any = useSelector((state: RootState) => state.admin.updatedRoom);
   const hotelDetails: any = useSelector((state: RootState) => state.admin.allHotels);
   const [activeStep,setActiveStep] = useState(0);
   const [steps,setSteps] = useState([
@@ -146,6 +148,36 @@ const AddRoom: React.FC = () => {
   }
   })
 
+  const handleupdateSubmit = (async() => {
+    if(validateForm()){
+    const result = await updateRoom({
+      updatedRoom:{
+      _id:updatedRoom._id,
+      roomType:roomDetails.roomType,
+      hotelId:roomDetails.hotelId,
+      hotelName:roomDetails.hotelName ,
+      amenities:roomDetails.amenities,
+      price:roomDetails.price,
+      discountPrice:roomDetails.discountPrice,
+      roomsCount:roomDetails.roomsCount,
+      maxPeople:roomDetails.maxPeople,
+      description:roomDetails.description,
+      images:roomImages
+    }
+    })
+    
+    if(result.success){
+      navigate('/admin/dashboard/rooms');
+      dispatch(resetAddRoom({roomDetails,roomImages}))
+      const rooms = dispatch(getRooms());
+      dispatch(updateRooms({rooms}))
+      toast.success('Room Updated Successfully');
+    }else{
+      toast.error('Something went wrong!')
+    }
+  }
+  })
+
   const handleCancel = () => {
     navigate('/admin/dashboard/rooms');
   }
@@ -185,7 +217,7 @@ const AddRoom: React.FC = () => {
     <Button
       variant='contained'
       endIcon={<Sync/>}
-      // onClick={handleupdateSubmit}
+      onClick={handleupdateSubmit}
     >
       UPDATE ROOM
     </Button>

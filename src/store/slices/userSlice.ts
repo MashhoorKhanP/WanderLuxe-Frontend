@@ -1,5 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import {
+  addRemoveFromWishlist,
+  changePassword,
   googleregister,
   loginUser,
   registerUser,
@@ -10,7 +12,6 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { getHotels } from "../../actions/hotel";
 import { MapRef } from "react-map-gl";
-import { getRooms } from "../../actions/room";
 
 interface UserState {
   currentUser: User | null; //Want to update according to database
@@ -19,7 +20,7 @@ interface UserState {
   alert: Alert | null;
   profile: Profile;
   loading: boolean;
-  hotels:[];
+  hotels:any[];
   rooms:[];
   mapRef:React.RefObject<MapRef> | null;
   priceFilter: number;
@@ -41,11 +42,11 @@ const initialState: UserState = {
   priceFilter:3500,
   addressFilter:{},
   filteredHotels:[],
-  filteredRooms:[]
+  filteredRooms:[],
 };
 
 interface User {
-  id?: string;
+  _id?: string;
   email?: string;
   firstName?: string;
   lastName?: string;
@@ -57,6 +58,7 @@ interface User {
     profileImage: string;
   };
   isGoogle?: boolean;
+  wishlist?:[string]
 }
 
 interface Alert {
@@ -97,7 +99,7 @@ const applyFilter = (hotels: any[], address: { longitude?: number; latitude?: nu
     filteredHotels = filteredHotels.filter(hotel => {
       const longitudeDifference = longitude && hotel.longitude ? Math.abs(longitude - hotel.longitude) : 0;
       const latitudeDifference = latitude && hotel.latitude ? Math.abs(latitude - hotel.latitude) : 0;
-      return longitudeDifference <= 0 && latitudeDifference <= 0;
+      return longitudeDifference <=1 && latitudeDifference <= 1;
     });
   }
 
@@ -451,27 +453,25 @@ const userSlice = createSlice({
       }
       state.loading = false;
     });
-    //Rooms
-    builder.addCase(getRooms.pending, (state) => {
+
+    builder.addCase(addRemoveFromWishlist.pending, (state) => {
       state.loading = true;
     });
 
-    builder.addCase(getRooms.fulfilled, (state, action) => {
+    builder.addCase(addRemoveFromWishlist.fulfilled, (state, action) => {
       state.loading = false;
-      const rooms = action.payload;
-      console.log('rooms', rooms);
-      if (rooms && rooms.message) {
-       
+      const user = action.payload;
+      console.log('user', user);
+      if (user && user.message) {
         // Don't directly modify state.currentUser, create a new object
-        state.rooms = rooms.message;
-        // state.allRooms = rooms.message;
-        state.openLogin = false;
+        state.currentUser = {...user.message};
+        localStorage.setItem("currentUser", JSON.stringify(state.currentUser));
       } else {
         // Handle the case where currentUser or message is null or undefined
-        console.error("Received invalid data in loginUser.fulfilled");
+        console.error("Something went wrong while wishlisting");
       }
     });
-    builder.addCase(getRooms.rejected, (state, action) => {
+    builder.addCase(addRemoveFromWishlist.rejected, (state, action) => {
       const error = action.error as Error | AxiosError;
 
       if (error instanceof Error) {
@@ -480,7 +480,38 @@ const userSlice = createSlice({
         toast.error(error.message);
       } else {
         // Handle non-Error rejection (if needed)
-        console.error("Login failed with non-Error rejection:", action.error);
+        console.error("Wishlisting Failed", action.error);
+      }
+      state.loading = false;
+    });
+
+    builder.addCase(changePassword.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(changePassword.fulfilled, (state, action) => {
+      state.loading = false;
+      const user = action.payload;
+      console.log('user', user);
+      if (user && user.message) {
+        // Don't directly modify state.currentUser, create a new object
+        state.currentUser = {...user.message};
+        localStorage.setItem("currentUser", JSON.stringify(state.currentUser));
+      } else {
+        // Handle the case where currentUser or message is null or undefined
+        console.error("Something went wrong while wishlisting");
+      }
+    });
+    builder.addCase(changePassword.rejected, (state, action) => {
+      const error = action.error as Error | AxiosError;
+
+      if (error instanceof Error) {
+        // Handle specific error messages from the server if available
+        errorHandle(error);
+        toast.error(error.message);
+      } else {
+        // Handle non-Error rejection (if needed)
+        console.error("Changing password failed", action.error);
       }
       state.loading = false;
     });

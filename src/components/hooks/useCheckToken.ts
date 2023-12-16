@@ -12,7 +12,7 @@ const useCheckToken = () => {
   const navigate = useNavigate();
   const warningShownRef = useRef(false);
   const currentUserToken = localStorage.getItem("UserToken");
-  const currentAdminToken = localStorage.getItem("AdminToken"); //change currentAdmin make slice
+  const currentAdminToken = localStorage.getItem("AdminToken");
 
   useEffect(() => {
     let token;
@@ -30,16 +30,12 @@ const useCheckToken = () => {
     }
 
     const decodedToken: any = jwtDecode(token);
-    if (
-      decodedToken.exp * 1000 < new Date().getTime() &&
-      !warningShownRef.current
-    ) {
+
+    if (decodedToken.exp * 1000 < new Date().getTime() && !warningShownRef.current) {
       warningShownRef.current = true;
-      toast.warning("Sessions timeout, Please log in again");
+      toast.warning("Session timed out. Please log in again.");
       dispatch(logoutAction());
-      if (logoutAction === logoutAdmin) {
-        navigate("/admin/login");
-      }
+      navigate(logoutAction === logoutAdmin ? "/admin/login" : "/user/home");
     }
   }, [currentUserToken, currentAdminToken, dispatch, navigate]);
 
@@ -47,3 +43,4 @@ const useCheckToken = () => {
 };
 
 export default useCheckToken;
+

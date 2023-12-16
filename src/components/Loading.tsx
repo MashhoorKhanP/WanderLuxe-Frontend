@@ -4,12 +4,11 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store/types';
 
 const Loading:React.FC= () => {
-  const {loading}= useSelector((state:RootState) => state.user);
-  const {adminLoading} = useSelector((state:RootState) => state.admin);
+  const loading= useSelector((state:RootState) => state.user.loading===true || state.admin.adminLoading===true || state.room.loading ===true);
   
   return (
     <Backdrop
-    open={loading || adminLoading}
+    open={loading}
     sx={{zIndex:(theme) => theme.zIndex.modal + 1}}>
       <CircularProgress color='inherit' />
     </Backdrop>

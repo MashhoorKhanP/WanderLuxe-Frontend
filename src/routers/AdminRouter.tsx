@@ -31,7 +31,7 @@ const AdminRouter: React.FC = () => {
       }
     } else if (storedAdmin === null || storedAdmin === undefined) {
       navigate("/admin/login");
-      dispatch(logoutAdmin());
+      // dispatch(logoutAdmin());
       // Handle the case where storedUser is null (no user data in local storage)
     }
   }, [dispatch]);

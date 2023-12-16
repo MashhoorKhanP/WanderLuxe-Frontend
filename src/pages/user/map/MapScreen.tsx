@@ -77,7 +77,7 @@ const MapScreen: React.FC = () => {
   const [coords, setCoords] = useState<number[]>([]);
   const [distance, setDistance] = useState<number | null>(null);
   const [routeInstructions, setRouteInstructions] = useState<string[]>([]);
-
+  const [mapStyle, setMapStyle] = useState("mapbox://styles/mapbox/streets-v12");
   useEffect(() => {
     const updatedPoints: PointFeature[] = hotels.map((hotel: Hotel) => ({
       type: "Feature",
@@ -98,9 +98,20 @@ const MapScreen: React.FC = () => {
       },
     }));
     setPoints(updatedPoints);
-  }, [hotels]);
+  }, [hotels,GeocoderInput]);
 
   // ... (Previous code remains unchanged)
+  useEffect(() => {
+    const currentTime = new Date().getHours();
+
+    // Set the map style based on the current time
+    if (currentTime >= 19) { // 7pm in 24-hour format
+      setMapStyle("mapbox://styles/mapbox/navigation-night-v1");
+    } else {
+      setMapStyle("mapbox://styles/mapbox/streets-v12");
+    }
+  }, []);
+
 
   useEffect(() => {
     superCluster.load(points);
@@ -235,16 +246,16 @@ const MapScreen: React.FC = () => {
       <Box
         sx={{
           position: "relative",
-          height: 400,
+          height: '400px',
         }}
         className="box-react-mapgl"
       >
         <ReactMapGL
           onClick={handleClick}
-          style={{ width: "100vw", height: "100vh" }}
+          style={{ width: "100vw", height: "400px" }}
           initialViewState={{ latitude: 11, longitude: 76, zoom: 3 }}
           mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN as string}
-          mapStyle="mapbox://styles/mapbox/streets-v12"
+          mapStyle={mapStyle}
           ref={mapRef}
           onZoomEnd={(e) => setZoom(Math.round(e.viewState.zoom as number))}
         >

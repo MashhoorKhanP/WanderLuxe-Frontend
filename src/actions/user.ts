@@ -53,6 +53,21 @@ interface UpdateProfilePayload {
   };
 }
 
+interface WishlistData {
+  wishlistData:{
+    hotelId:string,
+    userId:string;
+  }
+}
+
+interface ChangePasswordData {
+  changePasswordData:{
+    userId:string,
+    currentPassword:string,
+    newPassword:string
+  }
+}
+
 //Async thunk for user register instead fetchData.ts
 export const registerUser = createAsyncThunk(
   "user/register",
@@ -110,7 +125,7 @@ export const verifyUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
   "user/loginUser",
-  async (userData: LoginRequestBody, { dispatch, getState }) => {
+  async (userData: LoginRequestBody,) => {
     try {
       const result = await instance.post("/login", userData);
       if (result?.data && result.data.message) {
@@ -221,3 +236,40 @@ export const updateProfile = async ({
     throw error;
   }
 };
+
+export const changePassword = createAsyncThunk(
+  'user/changePassword',
+  async ({changePasswordData}:ChangePasswordData) => {
+    console.log("Change password date:", changePasswordData);
+    const result = await fetchData({
+      url:import.meta.env.VITE_SERVER_URL +
+      `/api/user/change-password`,
+    method: "PATCH",
+    body:{...changePasswordData},
+    })
+    if (result?.data && result.data.message) {
+      throw new Error(result.data.message);
+    }
+  
+    return result;
+  })
+
+
+export const addRemoveFromWishlist = createAsyncThunk(
+  "user/addRemoveFromWishlist",
+  async ({wishlistData}:WishlistData) => {
+  console.log("HotelId from user.ts", wishlistData.hotelId);
+  const result = await fetchData({
+    url:
+      import.meta.env.VITE_SERVER_URL +
+      `/api/user/add-remove/wishlist`,
+    method: "PATCH",
+    body:{...wishlistData},
+  });
+  // Check for errors in the result and throw if necessary
+  if (result?.data && result.data.message) {
+    throw new Error(result.data.message);
+  }
+
+  return result;
+});

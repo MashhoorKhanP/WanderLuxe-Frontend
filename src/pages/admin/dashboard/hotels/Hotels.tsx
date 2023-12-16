@@ -50,8 +50,9 @@ const Hotels: React.FC<HotelsProps> = ({ setSelectedLink, link }) => {
   }, [setSelectedLink, link]);
   
   useEffect(() => {
-    const result = dispatch(getHotels() as any);
-    dispatch(updateHotels({result}))
+      const result = dispatch(getHotels() as any);
+      dispatch(updateHotels({result}))
+    
   }, [data,dispatch]);
 
   const handleAddHotel = () => {

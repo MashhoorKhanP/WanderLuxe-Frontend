@@ -16,16 +16,18 @@ import {
   Typography,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { Favorite, FavoriteBorder, FavoriteOutlined, StarBorder } from "@mui/icons-material";
+import { BedOutlined, Favorite, FavoriteBorder, StarBorder} from "@mui/icons-material";
 import { RootState } from "../../../store/types";
 import PriceSlider from "../../../components/user/searchbar/PriceSlider";
 import SearchBar from "../../../components/common/SearchBar";
 import { NotFound, SpinnerGif } from "../../../assets/extraImages";
 import { getHotels } from "../../../actions/hotel";
 import { AppDispatch } from "../../../store/store";
-import {filterHotels,setHotels, setOpenLogin } from "../../../store/slices/userSlice";
+import {filterHotels,setHotels, setOpenLogin, updateUser } from "../../../store/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { addRemoveFromWishlist } from "../../../actions/user";
+import { setCheckInCheckOutRange } from "../../../store/slices/roomSlice";
 
 const HotelListScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,16 +40,17 @@ const HotelListScreen: React.FC = () => {
   const hotelsPerPage = 6;
   
   useEffect(() => {
-    if(!hotels.length){
+    if(!hotels.length || !allHotels.length){
     const fetchHotels = async () => {
       const response = await dispatch(getHotels());
       setAllHotels(response.payload.message);
       dispatch(setHotels(response.payload.message)); // assuming getHotels returns { payload: hotels }
     };
-
+    
     fetchHotels();
   }
-  }, [dispatch]);
+    dispatch(setCheckInCheckOutRange({}));
+  }, [dispatch,allHotels]);
 
   const indexOfLastHotel = currentPage * hotelsPerPage;
   const indexOfFirstHotel = indexOfLastHotel - hotelsPerPage;
@@ -89,12 +92,21 @@ const HotelListScreen: React.FC = () => {
       navigate('/user/login-register');
       dispatch(setOpenLogin(true));
       toast.warning('Please login to wishlist hotels!');
+    }else{
+      dispatch(addRemoveFromWishlist({wishlistData:{
+        hotelId,
+        userId:currentUser?._id as string
+      }}))
+      navigate('/user/view-hotels');
     }
   }
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <Container>
+      <Box paddingTop={4}>
+      <Typography variant='h5' fontWeight='bold'>Hotels</Typography>
+      </Box> 
       <Box
         display={"flex"}
         flexDirection={"row"}
@@ -114,27 +126,32 @@ const HotelListScreen: React.FC = () => {
         }}
       >
         {loading ? (
+          <ImageList  sx={{padding:14,
+            justifyContent: "center",
+            alignItems: "center",}}>
           <Box
             sx={{
               position: "absolute",
-              top: 50,
-              left: "38%",
-              width: "300px",
-              height: "100vh",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              paddingBottom: "250px",
+            width: "300px",
+            height: "100vh",
+            ml:'25%',
+            mt:'4%',
+            display: "flex",
+            flexDirection:'column',
+            justifyContent: "center",
+            alignItems: "center",
             }}
             
           >
             <img src={SpinnerGif} alt="Loading..." />
           </Box>
+          </ImageList>
+
         ) : currentHotels.length > 0 ? (
           currentHotels.map((hotel) => (
-            <Tooltip title="Click to check room availability!" key={hotel._id} onClick={() => handleViewRoom(hotel._id)}>
+            <Tooltip title="" key={hotel._id} >
               <Card sx={{ width: "100%", height: "270px" }} >
-                <ImageListItem sx={{ height: "100% !important" }} >
+                <ImageListItem sx={{ height: "100% !important" }}>
                   <ImageListItemBar 
                     sx={{
                       background: "0",
@@ -144,23 +161,38 @@ const HotelListScreen: React.FC = () => {
                     subtitle={`𖡡 ${hotel.location}`}
                     actionIcon={<>
                        <Avatar src={hotel.dropImage} sx={{ m: "10px" }} />
+                      <Tooltip title={currentUser?.wishlist?.includes(hotel._id)? ('Remove from wishlist'):('Add to wishlist')}>
+
                       <IconButton
                        onClick={() => handleWishlist(hotel._id)} // Add your wishlist logic here
-                        sx={{ position: 'absolute', top: '55px', right: '10px',color:'white'}}
-                      >
-                        <FavoriteBorder />
+                       sx={{ position: 'absolute', top: '55px', right: '10px',color:'white', transition: 'color 0.3s ease', '&:hover': { color: 'red'}}}
+                       >
+                        {currentUser?.wishlist?.includes(hotel._id)? (<Favorite sx={{color:'red'}}/>):(<FavoriteBorder />)}
+                        
                       </IconButton>
+                        </Tooltip>
+                        <Tooltip title='View Rooms'>
+
+                      <IconButton
+                        onClick={() => handleViewRoom(hotel._id)} // Add your wishlist logic here
+                       sx={{ position: 'absolute', top: '85px', right: '10px',color:'white', transition: 'color 0.3s ease', '&:hover': { color: 'red'}}}
+                       >
+                        <BedOutlined sx={{color:'white', transition: 'color 0.3s ease', '&:hover': { color: 'red'}}}  onClick={() => handleViewRoom(hotel._id)}/>
+                        
+                      </IconButton>
+                        </Tooltip>
                     </>}
                     position="top"
                   />
                   <img
                     src={hotel.images[0]}
                     alt={hotel.hotelName}
-                    style={{ cursor: "pointer" }}
+                    // style={{ cursor: "pointer" }}
                     loading="lazy"
                   />
                   {/* Want to give room starts from with  */}
                   <ImageListItemBar
+                   onClick={() => handleViewRoom(hotel._id)}
                     title={`₹${hotel.minimumRent}`}
                     subtitle={"Rooms start from"}
                     actionIcon={
@@ -172,7 +204,7 @@ const HotelListScreen: React.FC = () => {
                         emptyIcon={<StarBorder sx={{ color: "rgba(255,255,255, 0.8)" }} />}
                       />
                     }
-                  />
+                    />
                 </ImageListItem>
               </Card>
             </Tooltip>

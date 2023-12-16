@@ -88,7 +88,7 @@ const ImagesList: React.FC = () => {
         },
       }}
     >
-      {images.map((image, index) => (
+      {images.map((image:string, index) => (
         <ImageListItem key={index} cols={1} rows={1} sx={{ mt: "25px" }}>
           <img
             src={image}

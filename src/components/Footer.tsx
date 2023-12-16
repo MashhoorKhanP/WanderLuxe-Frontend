@@ -3,7 +3,6 @@ import { Box, Paper, Typography, Link, Divider, IconButton } from '@mui/material
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import Logo from '../../src/assets/wanderLuxe.jpg'
 import { WanderLuxeLogo } from '../assets/extraImages';
 
 const Footer: React.FC = () => {

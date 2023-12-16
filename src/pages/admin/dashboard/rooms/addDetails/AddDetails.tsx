@@ -205,7 +205,7 @@ const handleAmenityCheckboxChange = (amenity: string) => {
     {/* Content of the Popover */}
     {/* <Typography variant="h6" sx={{fontSize:'14px',p:1}}>Hotel Details:</Typography> */}
     
-    <img src={selectedHotel.images[imageIndex]} alt={`Hotel ${imageIndex + 1}`} style={{ width: '300px', height: '200px' }} loading='lazy' />
+    <img src={selectedHotel.images[imageIndex]} alt={`Hotel ${imageIndex + 1}`} style={{ width: '300px', height: '200px',objectFit:'cover' }} loading='lazy' />
     {/* Next and Previous buttons */}
     <Box display="flex" flexDirection={'row'} justifyContent="center" alignItems="center">
       <Tooltip title='Previous'>
