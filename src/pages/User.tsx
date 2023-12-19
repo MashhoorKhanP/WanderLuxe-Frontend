@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import Footer from "../components/Footer";
 import HomeScreen from "./user/home/HomeScreen";
 import RoomOverviewScreen from "./user/rooms/RoomOverviewScreen";
+import CouponsOverviewScreen from "./user/coupons/CouponsOverviewScreen";
 
 const Home: React.FC = () => {
   const location = useLocation();
@@ -22,6 +23,7 @@ const Home: React.FC = () => {
       <Navbar />
       <HomeScreen />
       <RoomOverviewScreen/>
+      <CouponsOverviewScreen/>
       <Footer />
     </>
   );

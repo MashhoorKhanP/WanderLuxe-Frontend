@@ -6,12 +6,13 @@ import {
   loginUser,
   registerUser,
   verifyUser,
-} from "../../actions/user";
-import errorHandle from "../../components/hooks/errorHandler";
+} from "../../../actions/user";
+import errorHandle from "../../../components/hooks/errorHandler";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { getHotels } from "../../actions/hotel";
+import { getHotels } from "../../../actions/hotel";
 import { MapRef } from "react-map-gl";
+import { getCoupons } from "../../../actions/coupon";
 
 interface UserState {
   currentUser: User | null; //Want to update according to database
@@ -20,13 +21,13 @@ interface UserState {
   alert: Alert | null;
   profile: Profile;
   loading: boolean;
-  hotels:any[];
-  rooms:[];
-  mapRef:React.RefObject<MapRef> | null;
+  hotels: any[];
+  rooms: [];
+  mapRef: React.RefObject<MapRef> | null;
   priceFilter: number;
-  addressFilter:{};
-  filteredHotels:any[];
-  filteredRooms:any[];
+  addressFilter: {};
+  filteredHotels: any[];
+  filteredRooms: any[];
 }
 
 const initialState: UserState = {
@@ -36,13 +37,13 @@ const initialState: UserState = {
   alert: null,
   profile: { open: false, file: null, profileImage: "" },
   loading: false,
-  hotels:[],
-  rooms:[],
-  mapRef:null,
-  priceFilter:3500,
-  addressFilter:{},
-  filteredHotels:[],
-  filteredRooms:[],
+  hotels: [],
+  rooms: [],
+  mapRef: null,
+  priceFilter: 3500,
+  addressFilter: {},
+  filteredHotels: [],
+  filteredRooms: [],
 };
 
 interface User {
@@ -58,7 +59,7 @@ interface User {
     profileImage: string;
   };
   isGoogle?: boolean;
-  wishlist?:[string]
+  wishlist?: [string];
 }
 
 interface Alert {
@@ -91,36 +92,44 @@ export const resendOTPSlice = createSlice({
   },
 });
 
-const applyFilter = (hotels: any[], address: { longitude?: number; latitude?: number }, price: number): any[] => {
+const applyFilter = (
+  hotels: any[],
+  address: { longitude?: number; latitude?: number },
+  price: number
+): any[] => {
   let filteredHotels = [...hotels]; // hotels;
 
   if (address) {
     const { longitude, latitude } = address;
-    filteredHotels = filteredHotels.filter(hotel => {
-      const longitudeDifference = longitude && hotel.longitude ? Math.abs(longitude - hotel.longitude) : 0;
-      const latitudeDifference = latitude && hotel.latitude ? Math.abs(latitude - hotel.latitude) : 0;
-      return longitudeDifference <=1 && latitudeDifference <= 1;
+    filteredHotels = filteredHotels.filter((hotel) => {
+      const longitudeDifference =
+        longitude && hotel.longitude
+          ? Math.abs(longitude - hotel.longitude)
+          : 0;
+      const latitudeDifference =
+        latitude && hotel.latitude ? Math.abs(latitude - hotel.latitude) : 0;
+      return longitudeDifference <= 1 && latitudeDifference <= 1;
     });
   }
 
   if (price < 3500) {
-    filteredHotels = filteredHotels.filter(hotel => hotel.minimumRent <= price);
+    filteredHotels = filteredHotels.filter(
+      (hotel) => hotel.minimumRent <= price
+    );
   }
 
   return filteredHotels;
 };
 
-const applyRoomFilter = (rooms: any[],  price: number): any[] => {
+const applyRoomFilter = (rooms: any[], price: number): any[] => {
   let filteredRooms = [...rooms]; // hotels;
 
-
   if (price < 3500) {
-    filteredRooms = filteredRooms.filter(room => room.price <= price);
+    filteredRooms = filteredRooms.filter((room) => room.price <= price);
   }
 
   return filteredRooms;
 };
-
 
 const userSlice = createSlice({
   name: "user",
@@ -138,61 +147,82 @@ const userSlice = createSlice({
       const updatedUserProfile = action.payload;
       console.log("UpdateUserProfile", { ...updatedUserProfile });
       console.log("Update state.Profile", { ...state.profile });
-      // localStorage.removeItem('currentUser');
       state.currentUser = { ...state.currentUser, ...updatedUserProfile }; // Update only the relevant part of currentUser
-      state.profile = { ...state.profile, ...updatedUserProfile }; // Update profile state
-      state.currentUser = { ...state.currentUser };
+      state.profile = {
+        ...state.currentUser,
+        ...state.profile,
+        ...updatedUserProfile,
+      }; // Update profile state
+      // state.currentUser = { ...state.currentUser };
       console.log("state.currentUser", state.currentUser);
       const updatedUser = state.currentUser;
-      if(updatedUser.message){
-        localStorage.setItem("currentUser", JSON.stringify(updatedUser.message));
-      }else{
+      if (updatedUser.message) {
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify(updatedUser.message)
+        );
+      } else {
         localStorage.setItem("currentUser", JSON.stringify(updatedUser));
-
       }
     },
-    setMapRef:(state,action: PayloadAction<React.RefObject<MapRef>>)=>{
+    setMapRef: (state, action: PayloadAction<React.RefObject<MapRef>>) => {
       state.mapRef = action.payload;
     },
-    filterPrice:(state, action:PayloadAction<number>)=>{
-      state.priceFilter = action.payload
+    filterPrice: (state, action: PayloadAction<number>) => {
+      state.priceFilter = action.payload;
       state.filteredHotels = applyFilter(
-        state.hotels, state.addressFilter,action.payload
-      )
+        state.hotels,
+        state.addressFilter,
+        action.payload
+      );
     },
-    filterHotels:(state,action:PayloadAction<any>) => {
+    filterHotels: (state, action: PayloadAction<any>) => {
       state.hotels = action.payload;
       state.addressFilter = action.payload;
-      state.filteredHotels =applyFilter(state.hotels,state.addressFilter,state.priceFilter || 3500);
+      state.filteredHotels = applyFilter(
+        state.hotels,
+        state.addressFilter,
+        state.priceFilter || 3500
+      );
     },
-    filterAddress:(state,action:PayloadAction<object>) => {
+    filterAddress: (state, action: PayloadAction<object>) => {
       state.addressFilter = action.payload;
       state.filteredHotels = applyFilter(
-        state.hotels, action.payload,state.priceFilter
-      )
+        state.hotels,
+        action.payload,
+        state.priceFilter
+      );
     },
-    setHotels:(state,action:PayloadAction<any>) => {
+    setHotels: (state, action: PayloadAction<any>) => {
       state.hotels = action.payload;
-      state.filteredHotels = applyFilter(state.hotels,state.addressFilter,state.priceFilter || 3500)
+      state.filteredHotels = applyFilter(
+        state.hotels,
+        state.addressFilter,
+        state.priceFilter || 3500
+      );
     },
-    setRooms:(state,action:PayloadAction<any>) => {
+    setRooms: (state, action: PayloadAction<any>) => {
       state.rooms = action.payload;
-      state.filteredRooms = applyRoomFilter(state.rooms,state.priceFilter || 3500)
-    },
-    filterRooms:(state,action:PayloadAction<any>) => {
-      state.rooms = action.payload;
-      state.filteredRooms =applyRoomFilter(state.rooms,state.priceFilter || 3500);
-    },
-    filterRoomPrice:(state, action:PayloadAction<number>)=>{
-      state.priceFilter = action.payload
       state.filteredRooms = applyRoomFilter(
-        state.rooms,action.payload
-      )
+        state.rooms,
+        state.priceFilter || 3500
+      );
     },
-    clearAddress:(state) => {
-      state.addressFilter={}
-      state.priceFilter=3500
-      state.filteredHotels=state.hotels
+    filterRooms: (state, action: PayloadAction<any>) => {
+      state.rooms = action.payload;
+      state.filteredRooms = applyRoomFilter(
+        state.rooms,
+        state.priceFilter || 3500
+      );
+    },
+    filterRoomPrice: (state, action: PayloadAction<number>) => {
+      state.priceFilter = action.payload;
+      state.filteredRooms = applyRoomFilter(state.rooms, action.payload);
+    },
+    clearAddress: (state) => {
+      state.addressFilter = {};
+      state.priceFilter = 3500;
+      state.filteredHotels = state.hotels;
     },
     logoutUser: (state) => {
       state.currentUser = null;
@@ -242,10 +272,10 @@ const userSlice = createSlice({
         };
         state.openLogin = false;
         state.openOTPVerification = true;
-        if(state.openOTPVerification){
-            setTimeout(() => {
-            toast.warning('OTP Expired');
-          }, 2 * 60000)
+        if (state.openOTPVerification) {
+          setTimeout(() => {
+            toast.warning("OTP Expired");
+          }, 2 * 60000);
         }
       }
       state.loading = false;
@@ -350,9 +380,11 @@ const userSlice = createSlice({
 
     builder.addCase(verifyUser.rejected, (state, action) => {
       state.loading = false;
-      state.alert={open: true,
+      state.alert = {
+        open: true,
         severity: "error",
-        message: 'Invalid OTP, Please confirm your OTP'}
+        message: "Invalid OTP, Please confirm your OTP",
+      };
       if (action.error instanceof Error) {
         state.alert = {
           open: true,
@@ -375,7 +407,7 @@ const userSlice = createSlice({
 
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.loading = false;
-      console.log('loginUser.fulfilled',action.payload)
+      console.log("loginUser.fulfilled", action.payload);
       const currentUser = action.payload;
       if (currentUser && currentUser.message) {
         console.log(currentUser, "for token check");
@@ -427,12 +459,11 @@ const userSlice = createSlice({
       state.loading = false;
       const hotels = action.payload;
       if (hotels && hotels.message) {
-        
         // Don't directly modify state.currentUser, create a new object
         state.hotels = hotels.message;
-        state.addressFilter={},
-        state.priceFilter=3500,
-        state.filteredHotels=hotels.message
+        (state.addressFilter = {}),
+          (state.priceFilter = 3500),
+          (state.filteredHotels = hotels.message);
 
         state.openLogin = false;
       } else {
@@ -461,10 +492,10 @@ const userSlice = createSlice({
     builder.addCase(addRemoveFromWishlist.fulfilled, (state, action) => {
       state.loading = false;
       const user = action.payload;
-      console.log('user', user);
+      console.log("user", user);
       if (user && user.message) {
         // Don't directly modify state.currentUser, create a new object
-        state.currentUser = {...user.message};
+        state.currentUser = { ...user.message };
         localStorage.setItem("currentUser", JSON.stringify(state.currentUser));
       } else {
         // Handle the case where currentUser or message is null or undefined
@@ -492,10 +523,10 @@ const userSlice = createSlice({
     builder.addCase(changePassword.fulfilled, (state, action) => {
       state.loading = false;
       const user = action.payload;
-      console.log('user', user);
+      console.log("user", user);
       if (user && user.message) {
         // Don't directly modify state.currentUser, create a new object
-        state.currentUser = {...user.message};
+        state.currentUser = { ...user.message };
         localStorage.setItem("currentUser", JSON.stringify(state.currentUser));
       } else {
         // Handle the case where currentUser or message is null or undefined

@@ -3,44 +3,29 @@ import fetchData from "./utils/fetchData";
 import { AxiosError } from "axios";
 import errorHandle from "../components/hooks/errorHandler";
 import deleteImages from "./utils/deleteImages";
+import { CouponDetails } from "../store/slices/adminSlices/adminCouponSlice";
 
-interface RequestBody {
-  _id?: string;
-  longitude: number;
-  latitude: number;
-  hotelName: string;
-  location: string;
-  distanceFromCityCenter: number;
-  email: string;
-  mobile: string;
-  minimumRent: number; // Adjust this type as per your requirements
-  description: string;
-  parkingPrice?: number;
-  images: string[];
-}
 
-export interface Admin {
-  _id: string;
-  email: string;
-}
+// export interface Admin {
+//   _id: string;
+//   email: string;
+// }
 
 interface DeleteHotelPayload {
-  hotelData: RequestBody;
-  admin: Admin;
+  couponData: CouponDetails;
 }
 
-interface UpdateHotelPayload {
-  updatedHotel: RequestBody;
-  // admin: Admin;
+interface UpdateCouponPayload {
+  updatedCoupon: CouponDetails;
 }
 
 //Admin actions
-export const addHotel = async (hotelData: RequestBody) => {
+export const addCoupon = async (couponData:CouponDetails) => {
   try {
     const result = await fetchData({
-      url: import.meta.env.VITE_SERVER_URL + "/api/admin/hotels/add-hotel",
+      url: import.meta.env.VITE_SERVER_URL + "/api/admin/coupons/add-coupon",
       method: "POST",
-      body: hotelData,
+      body: couponData,
     });
     if (result?.data && result.data.message) {
       // If there is an error message, throw an error to trigger the rejected action
@@ -59,37 +44,37 @@ export const addHotel = async (hotelData: RequestBody) => {
   }
 };
 
-export const deleteHotel = createAsyncThunk(
-  "hotel/deleteHotel",
-  async ({ hotelData, admin }: DeleteHotelPayload) => {
-    const result = await fetchData({
-      url:
-        import.meta.env.VITE_SERVER_URL +
-        `/api/admin/hotels/delete-hotel/${hotelData._id}`,
-      method: "DELETE",
-      body: {},
-    });
+// export const deleteHotel = createAsyncThunk(
+//   "hotel/deleteHotel",
+//   async ({ hotelData, admin }: DeleteHotelPayload) => {
+//     const result = await fetchData({
+//       url:
+//         import.meta.env.VITE_SERVER_URL +
+//         `/api/admin/hotels/delete-hotel/${hotelData._id}`,
+//       method: "DELETE",
+//       body: {},
+//     });
 
-    // Check for errors in the result and throw if necessary
-    if (result?.data && result.data.message) {
-      throw new Error(result.data.message);
-    }
+//     // Check for errors in the result and throw if necessary
+//     if (result?.data && result.data.message) {
+//       throw new Error(result.data.message);
+//     }
 
-    // Delete images after successful deletion
-    deleteImages(hotelData.images, admin._id);
+//     // Delete images after successful deletion
+//     deleteImages(hotelData.images, admin._id);
 
-    return { hotelData } as DeleteHotelPayload;
-  }
-);
+//     return { hotelData } as DeleteHotelPayload;
+//   }
+// );
 
-export const updateHotel = async ({ updatedHotel }: UpdateHotelPayload) => {
-  console.log("udatedHotel from hotel.ts", updatedHotel);
+export const updateCoupon = async ({ updatedCoupon }: UpdateCouponPayload) => {
+  console.log("udatedcoupon from coupon.ts", updatedCoupon);
   const result = await fetchData({
     url:
       import.meta.env.VITE_SERVER_URL +
-      `/api/admin/hotels/update-hotel/${updatedHotel._id}`,
+      `/api/admin/coupons/update-coupon/${updatedCoupon._id}`,
     method: "PATCH",
-    body: updatedHotel,
+    body: updatedCoupon,
   });
 
   // Check for errors in the result and throw if necessary
@@ -101,10 +86,10 @@ export const updateHotel = async ({ updatedHotel }: UpdateHotelPayload) => {
 };
 
 //User Actions / Admin Actions
-export const getHotels = createAsyncThunk("user/getHotels", async () => {
+export const getCoupons = createAsyncThunk("user/getCoupons", async () => {
   try {
     const result = await fetchData({
-      url: import.meta.env.VITE_SERVER_URL + "/api/user/find-hotels",
+      url: import.meta.env.VITE_SERVER_URL + "/api/user/find-coupons",
       method: "GET",
     });
     if (result?.data && result.data.message) {
@@ -116,9 +101,9 @@ export const getHotels = createAsyncThunk("user/getHotels", async () => {
   } catch (error) {
     const typedError = error as Error | AxiosError;
 
-    console.error("Error logging in:", typedError);
+    console.error("Error getCoupons :", typedError);
     errorHandle(typedError);
-    console.error("Error in loginUser:", error);
+    console.error("Error getCoupons :", error);
     // dispatch(setAlert({open: true, severity: 'error', message: typedError.message || 'Login failed' }))
     throw error;
   }

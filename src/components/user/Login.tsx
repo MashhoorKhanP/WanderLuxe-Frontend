@@ -12,7 +12,10 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setAlert, setCloseLogin } from "../../store/slices/userSlice";
+import {
+  setAlert,
+  setCloseLogin,
+} from "../../store/slices/userSlices/userSlice";
 import { RootState } from "../../store/types";
 import { Close, Send } from "@mui/icons-material";
 import PasswordField from "./PasswordField";

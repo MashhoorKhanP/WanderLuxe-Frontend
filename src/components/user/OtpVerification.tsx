@@ -14,7 +14,7 @@ import React, { useEffect, useState, useRef } from "react";
 import {
   setAlert,
   setCloseOTPVerification,
-} from "../../store/slices/userSlice";
+} from "../../store/slices/userSlices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/types";
 import { MuiOtpInput } from "mui-one-time-password-input";
@@ -76,7 +76,7 @@ const OtpVerification: React.FC = () => {
 
   const handleClose = () => {
     dispatch(setCloseOTPVerification());
-    navigate('/user/home');
+    navigate("/user/home");
   };
 
   const handleVerifyOTP = (event: React.FormEvent) => {

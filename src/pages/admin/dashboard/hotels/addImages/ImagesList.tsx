@@ -8,28 +8,25 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../store/types";
 import { Cancel, Delete } from "@mui/icons-material";
-import {
-  deleteHotelImages,
-  deleteRoomImages,
-  updateDeletedHotelImages,
-} from "../../../../../store/slices/adminSlice";
 import deleteFile from "../../../../../firebase/deleteFile";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { useLocation } from "react-router-dom";
+import { deleteHotelImages } from "../../../../../store/slices/adminSlices/adminHotelSlice";
+import { deleteRoomImages } from "../../../../../store/slices/adminSlices/adminRoomSlice";
 
 const ImagesList: React.FC = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const { currentAdmin } = useSelector((state: RootState) => state.admin);
   const hotelImages = useSelector(
-    (state: RootState) => state.admin.hotelImages
+    (state: RootState) => state.adminHotel.hotelImages
   );
 
-  const roomImages = useSelector((state: RootState) => state.admin.roomImages);
-  
+  const roomImages = useSelector((state: RootState) => state.adminRoom.roomImages);
+
   const udpatedHotel = useSelector(
-    (state: RootState) => state.admin.updatedHotel
+    (state: RootState) => state.adminHotel.updatedHotel
   );
   const currentAdminId = currentAdmin?._id;
 
@@ -51,7 +48,10 @@ const ImagesList: React.FC = () => {
       if (result.isConfirmed) {
         // if(udpatedHotel) return;
         // dispatch(updateDeletedHotelImages([image]))
-        if (location.pathname === "/admin/dashboard/hotels/add-hotel" || location.pathname === "/admin/dashboard/hotels/edit-hotel") {
+        if (
+          location.pathname === "/admin/dashboard/hotels/add-hotel" ||
+          location.pathname === "/admin/dashboard/hotels/edit-hotel"
+        ) {
           dispatch(deleteHotelImages(image));
           const imageName = image
             ?.split(`${currentAdminId}%2F`)[1]
@@ -62,7 +62,10 @@ const ImagesList: React.FC = () => {
           } catch (error) {
             console.log(error);
           }
-        } else if (location.pathname === "/admin/dashboard/rooms/add-room" || location.pathname === "/admin/dashboard/rooms/edit-room") {
+        } else if (
+          location.pathname === "/admin/dashboard/rooms/add-room" ||
+          location.pathname === "/admin/dashboard/rooms/edit-room"
+        ) {
           dispatch(deleteRoomImages(image));
           const imageName = image
             ?.split(`${currentAdminId}%2F`)[1]
@@ -77,7 +80,11 @@ const ImagesList: React.FC = () => {
       }
     });
   };
-  const images = location.pathname === "/admin/dashboard/hotels/add-hotel" || location.pathname === "/admin/dashboard/hotels/edit-hotel" ? hotelImages : roomImages;
+  const images =
+    location.pathname === "/admin/dashboard/hotels/add-hotel" ||
+    location.pathname === "/admin/dashboard/hotels/edit-hotel"
+      ? hotelImages
+      : roomImages;
   return (
     <ImageList
       rowHeight={250}
@@ -88,7 +95,7 @@ const ImagesList: React.FC = () => {
         },
       }}
     >
-      {images.map((image:string, index) => (
+      {images.map((image: string, index) => (
         <ImageListItem key={index} cols={1} rows={1} sx={{ mt: "25px" }}>
           <img
             src={image}

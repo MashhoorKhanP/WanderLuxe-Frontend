@@ -1,13 +1,13 @@
 import React from "react";
 import { Alert, Snackbar } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { clearAlert } from "../store/slices/userSlice";
+import { clearAlert } from "../store/slices/userSlices/userSlice";
 import { RootState } from "../store/types";
 
 const Notification: React.FC = () => {
   const dispatch = useDispatch();
   const alert = useSelector((state: RootState) => state.user.alert);
-  console.log("alert",alert)
+  console.log("alert", alert);
   const handleClose = (
     event: React.SyntheticEvent | MouseEvent,
     reason?: string
@@ -22,7 +22,7 @@ const Notification: React.FC = () => {
       onClose={(event, reason) =>
         handleClose(event as React.SyntheticEvent | MouseEvent, reason)
       }
-      message={alert?.message ||""}
+      message={alert?.message || ""}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
     >
       <Alert

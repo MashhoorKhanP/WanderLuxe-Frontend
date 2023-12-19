@@ -1,35 +1,34 @@
 import { AxiosError } from "axios";
 import errorHandle from "../components/hooks/errorHandler";
-import { RoomDetails } from "../store/slices/adminSlice";
+import { RoomDetails } from "../store/slices/adminSlices/adminSlice";
 import fetchData from "./utils/fetchData";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import deleteImages from "./utils/deleteImages";
 import { Admin } from "./hotel";
-
 
 interface DeleteRoomPayload {
   roomData: RoomDetails;
   admin: Admin;
 }
 
-interface UpdateRoomPayload{
- updatedRoom:{
-  _id?:string;
-  roomType:string;
-  hotelName: string;
-  hotelId:string;
-  amenities:string[];
-  price:number;
-  discountPrice:number;
-  roomsCount:number;
-  maxPeople:number;
-  description:string;
-  images?:string[];
- }
+interface UpdateRoomPayload {
+  updatedRoom: {
+    _id?: string;
+    roomType: string;
+    hotelName: string;
+    hotelId: string;
+    amenities: string[];
+    price: number;
+    discountPrice: number;
+    roomsCount: number;
+    maxPeople: number;
+    description: string;
+    images?: string[];
+  };
 }
 
 //Admin Side
-export const addRoom = async (roomData:RoomDetails) => {
+export const addRoom = async (roomData: RoomDetails) => {
   try {
     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + "/api/admin/rooms/add-room",
@@ -76,7 +75,7 @@ export const deleteRoom = createAsyncThunk(
   }
 );
 
-export const updateRoom = async ({ updatedRoom }:UpdateRoomPayload) => {
+export const updateRoom = async ({ updatedRoom }: UpdateRoomPayload) => {
   console.log("updatedRoom from room.ts", updatedRoom);
   const result = await fetchData({
     url:
@@ -96,7 +95,7 @@ export const updateRoom = async ({ updatedRoom }:UpdateRoomPayload) => {
 
 //User Side / Admin Actions
 export const getRooms = createAsyncThunk("user/getRooms", async () => {
-  console.log('Entered inside the getRooms in room.ts')
+  console.log("Entered inside the getRooms in room.ts");
   try {
     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + "/api/user/find-rooms",
@@ -118,4 +117,3 @@ export const getRooms = createAsyncThunk("user/getRooms", async () => {
     throw error;
   }
 });
-

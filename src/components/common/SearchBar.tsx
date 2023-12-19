@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { InputAdornment, TextField } from "@mui/material";
+import { Box, InputAdornment, TextField } from "@mui/material";
 import { Search } from "@mui/icons-material";
+import { useLocation } from "react-router-dom";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
+  const location = useLocation()
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,11 +26,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
+    <Box  width={'70%'}>
     <TextField
       label={location.pathname=== '/user/view-hotels'? "Search hotels/location" : location.pathname=== '/user/view-rooms'?'Search room types':'Search'}
       variant="outlined"
       size="small"
-      sx={{ width:400, mt: 2 }}
+      sx={{
+        width:location.pathname=== '/user/view-hotels' ? '50%' :location.pathname=== '/user/view-rooms'? '200px':'60%',
+        mt: 2,
+      }}
       value={searchQuery}
       onChange={handleChange}
       onKeyPress={handleKeyPress}
@@ -40,6 +46,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         ),
       }}
     />
+    </Box>
   );
 };
 

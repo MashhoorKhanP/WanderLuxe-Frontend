@@ -1,16 +1,19 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import errorHandle from "../../components/hooks/errorHandler";
+import errorHandle from "../../../components/hooks/errorHandler";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import { MapRef } from "react-map-gl";
-import { getRooms } from "../../actions/room";
+import { getRooms } from "../../../actions/room";
+import { Options } from "../../../pages/user/rooms/AdultChildrenPicker";
 
 interface RoomState {
   loading: boolean;
-  rooms:[];
-  isRoomOverviewOpen:boolean;
-  selectedRoomId:string| null;
-  checkInCheckOutRange:{}
+  rooms: [];
+  isRoomOverviewOpen: boolean;
+  selectedRoomId: string | null;
+  checkInCheckOutRange: {};
+  adultChildrenCount:number;
+  adultChildrenOptions:Options;
+  additionalRoomsNeeded:number;
 }
 
 const getTodayOrTomorrowDate = () => {
@@ -28,16 +31,22 @@ const today = getTodayOrTomorrowDate();
 
 const initialState: RoomState = {
   loading: false,
-  rooms:[],
+  rooms: [],
   isRoomOverviewOpen: false,
   selectedRoomId: null,
   checkInCheckOutRange: {
     startDate: today,
     endDate: today,
-    startTime: '',
-    endTime: '',
+    startTime: "",
+    endTime: "",
     numberOfNights: 1,
-  }
+  },
+  adultChildrenCount:1,
+  adultChildrenOptions:{
+    adult:1,
+    children:0
+  },
+  additionalRoomsNeeded:1
 };
 
 const roomSlice = createSlice({
@@ -51,11 +60,23 @@ const roomSlice = createSlice({
       state.isRoomOverviewOpen = false;
       state.selectedRoomId = null;
     },
+    setAdultChildren:(state,action:PayloadAction<number>) => {
+      state.adultChildrenCount= action.payload;
+    },
+    setAdultChildrenOptions:(state,action:PayloadAction<object>) => {
+      state.adultChildrenOptions = {...state.adultChildrenOptions,...action.payload};
+    },
+    setAdditionalRoomsNeeded:(state,action:PayloadAction<number>) => {
+      state.additionalRoomsNeeded= action.payload;
+    },
     setRoomId: (state, action: PayloadAction<string>) => {
       state.selectedRoomId = action.payload;
     },
-    setCheckInCheckOutRange:(state, action:PayloadAction<any>) => {
-      state.checkInCheckOutRange = {...state.checkInCheckOutRange,...action.payload};
+    setCheckInCheckOutRange: (state, action: PayloadAction<any>) => {
+      state.checkInCheckOutRange = {
+        ...state.checkInCheckOutRange,
+        ...action.payload,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -67,9 +88,8 @@ const roomSlice = createSlice({
     builder.addCase(getRooms.fulfilled, (state, action) => {
       // state.loading = false;
       const rooms = action.payload;
-      console.log('rooms', rooms);
+      console.log("rooms", rooms);
       if (rooms && rooms.message) {
-       
         // Don't directly modify state.currentUser, create a new object
         state.rooms = rooms.message;
         // state.allRooms = rooms.message;
@@ -92,7 +112,6 @@ const roomSlice = createSlice({
       }
       // state.loading = false;
     });
-
   },
 });
 
@@ -101,6 +120,9 @@ export const {
   closeRoomOverview,
   openRoomOverview,
   setCheckInCheckOutRange,
+  setAdultChildren,
+  setAdditionalRoomsNeeded,
+  setAdultChildrenOptions
 } = roomSlice.actions;
 
 export default roomSlice.reducer;

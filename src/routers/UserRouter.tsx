@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Home from "../pages/User";
 import { useDispatch } from "react-redux";
-import { logoutUser, updateUser } from "../store/slices/userSlice";
+import { logoutUser, updateUser } from "../store/slices/userSlices/userSlice";
 import UserPrivateRoute from "../components/UserPrivateRoute";
 
 interface User {
@@ -46,15 +46,14 @@ const UserRouter: React.FC = () => {
       <Route path="otp-verification" element={<Home />} />
       <Route path="find-hotels" element={<Home />} />
       <Route path="view-hotels" element={<Home />} />
-      <Route path='view-rooms' element={<Home/>}/>
+      <Route path="view-rooms" element={<Home />} />
       {/* <Route path='view-rooms/room-overview' element={<Home/>}/> */}
-
 
       <Route path="" element={<UserPrivateRoute />}>
         <Route path="edit-profile" element={<Home />} />
-        <Route path="change-password" element={<Home />}/>
-        <Route path='wishlist' element={<Home/>}/>
-        <Route path='book-room' element={<Home/>}/>
+        <Route path="change-password" element={<Home />} />
+        <Route path="wishlist" element={<Home />} />
+        <Route path="book-room" element={<Home />} />
       </Route>
     </Routes>
   );

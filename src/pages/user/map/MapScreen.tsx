@@ -17,12 +17,13 @@ import { AppBar, Avatar, Box, Paper, Tooltip, Typography } from "@mui/material";
 import SuperCluster from "supercluster";
 import "./cluster.css";
 import { useValue } from "../../../context/ContextProvider";
-import { updateLocation } from "../../../store/slices/adminSlice";
+
 import PopupHotel from "./PopupHotel";
 import PriceSlider from "../../../components/user/searchbar/PriceSlider";
 import GeocoderInput from "../../../components/user/searchbar/GeocoderInput";
 import "./cluster.css";
 import RouteInstructions from "./RouteInstructions";
+import { updateLocation } from "../../../store/slices/adminSlices/adminHotelSlice";
 
 interface Hotel {
   _id: string;
@@ -77,7 +78,9 @@ const MapScreen: React.FC = () => {
   const [coords, setCoords] = useState<number[]>([]);
   const [distance, setDistance] = useState<number | null>(null);
   const [routeInstructions, setRouteInstructions] = useState<string[]>([]);
-  const [mapStyle, setMapStyle] = useState("mapbox://styles/mapbox/streets-v12");
+  const [mapStyle, setMapStyle] = useState(
+    "mapbox://styles/mapbox/streets-v12"
+  );
   useEffect(() => {
     const updatedPoints: PointFeature[] = hotels.map((hotel: Hotel) => ({
       type: "Feature",
@@ -98,20 +101,20 @@ const MapScreen: React.FC = () => {
       },
     }));
     setPoints(updatedPoints);
-  }, [hotels,GeocoderInput]);
+  }, [hotels, GeocoderInput]);
 
   // ... (Previous code remains unchanged)
   useEffect(() => {
     const currentTime = new Date().getHours();
 
     // Set the map style based on the current time
-    if (currentTime >= 19) { // 7pm in 24-hour format
+    if (currentTime >= 19) {
+      // 7pm in 24-hour format
       setMapStyle("mapbox://styles/mapbox/navigation-night-v1");
     } else {
       setMapStyle("mapbox://styles/mapbox/streets-v12");
     }
   }, []);
-
 
   useEffect(() => {
     superCluster.load(points);
@@ -120,7 +123,7 @@ const MapScreen: React.FC = () => {
       zoom
     ) as PointFeature[];
     setClusters(newClusters);
-  }, [points, zoom, bounds, start, end,setEnd,setStart]);
+  }, [points, zoom, bounds, start, end, setEnd, setStart]);
 
   useEffect(() => {
     if (mapRef?.current) {
@@ -246,7 +249,7 @@ const MapScreen: React.FC = () => {
       <Box
         sx={{
           position: "relative",
-          height: '400px',
+          height: "400px",
         }}
         className="box-react-mapgl"
       >
@@ -271,7 +274,6 @@ const MapScreen: React.FC = () => {
                 })
               ) && setStart([e.coords.longitude, e.coords.latitude])
             }
-            
           />
 
           {/* Map Direction Start */}
@@ -352,7 +354,10 @@ const MapScreen: React.FC = () => {
                     src={cluster.properties.dropImage}
                     component={Paper}
                     elevation={2}
-                    onClick={(e) => { setPopupInfo(cluster); handleClick(e) }}
+                    onClick={(e) => {
+                      setPopupInfo(cluster);
+                      handleClick(e);
+                    }}
                   />
                 </Tooltip>
               </Marker>
@@ -369,7 +374,10 @@ const MapScreen: React.FC = () => {
               focusAfterOpen={false}
               onClose={() => setPopupInfo(null)}
             >
-              <PopupHotel {...{ popupInfo }} distance={distance?.toFixed(2)|| ''} />
+              <PopupHotel
+                {...{ popupInfo }}
+                distance={distance?.toFixed(2) || ""}
+              />
             </Popup>
           )}
         </ReactMapGL>

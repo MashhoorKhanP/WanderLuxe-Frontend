@@ -1,11 +1,15 @@
-import React, { useState } from 'react'
-import { Button } from '@mui/material'
-import GoogleIcon from '../../assets/googleIcon.png'
-import { useDispatch } from 'react-redux'
-import { setAlert, setCloseLogin, updateUser } from '../../store/slices/userSlice'
-import { jwtDecode } from 'jwt-decode'
-import { googleregister } from '../../actions/user'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
+import { Button } from "@mui/material";
+import GoogleIcon from "../../assets/googleIcon.png";
+import { useDispatch } from "react-redux";
+import {
+  setAlert,
+  setCloseLogin,
+  updateUser,
+} from "../../store/slices/userSlices/userSlice";
+import { jwtDecode } from "jwt-decode";
+import { googleregister } from "../../actions/user";
+import { useNavigate } from "react-router-dom";
 
 declare global {
   interface Window {
@@ -22,47 +26,74 @@ interface DecodedToken {
   // Add other properties as needed
 }
 
-const GoogleOneTapLogin:React.FC = () => {
+const GoogleOneTapLogin: React.FC = () => {
   const dispatch = useDispatch();
-  const navigate =useNavigate()
-  const [disable,setDisabled] = useState(false);
+  const navigate = useNavigate();
+  const [disable, setDisabled] = useState(false);
 
-  const handleResponse = (response:any) => {
-    const token = response.credential
-    const decodedToken :DecodedToken = jwtDecode(token)
-    const { sub: id, email, given_name: firstName, family_name: lastName, picture: profileImage } = decodedToken;
+  const handleResponse = (response: any) => {
+    const token = response.credential;
+    const decodedToken: DecodedToken = jwtDecode(token);
+    const {
+      sub: id,
+      email,
+      given_name: firstName,
+      family_name: lastName,
+      picture: profileImage,
+    } = decodedToken;
     //dispatch(updateUser({id,email,firstName,lastName,profileImage,token,isGoogle:true}))
-    dispatch(googleregister({email,firstName,lastName,profileImage,password:token,isGoogle:true,isVerified:true})as any)
-    
-  }
+    dispatch(
+      googleregister({
+        email,
+        firstName,
+        lastName,
+        profileImage,
+        password: token,
+        isGoogle: true,
+        isVerified: true,
+      }) as any
+    );
+  };
 
   const handleGoogleLogin = () => {
-    navigate('/user/google-login')
+    navigate("/user/google-login");
     setDisabled(true);
-    try{
+    try {
       window.google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-        callback:handleResponse
-      })
-      window.google.accounts.id.prompt((notification:any)=>{
-        if(notification.isNotDisplayed()){
-          throw new Error ('Try to clear the cookies or try again later')
+        callback: handleResponse,
+      });
+      window.google.accounts.id.prompt((notification: any) => {
+        if (notification.isNotDisplayed()) {
+          throw new Error("Try to clear the cookies or try again later");
         }
-        if(notification.isSkippedMoment() || notification.isDismissedMoment()){
+        if (
+          notification.isSkippedMoment() ||
+          notification.isDismissedMoment()
+        ) {
           setDisabled(false);
         }
-      })
-    }catch(error){
+      });
+    } catch (error) {
       const typedError = error as Error;
-      dispatch(setAlert({open:true,severity:'error',message:typedError.message}))
+      dispatch(
+        setAlert({ open: true, severity: "error", message: typedError.message })
+      );
       console.log(error);
     }
   };
   return (
-    <Button variant='outlined' startIcon={<img src={GoogleIcon}  alt="Google" style={{ width: '25px' }}/>} disabled={disable} onClick={handleGoogleLogin}>
+    <Button
+      variant="outlined"
+      startIcon={
+        <img src={GoogleIcon} alt="Google" style={{ width: "25px" }} />
+      }
+      disabled={disable}
+      onClick={handleGoogleLogin}
+    >
       Sign in with Google
     </Button>
-  )
-}
+  );
+};
 
-export default GoogleOneTapLogin
+export default GoogleOneTapLogin;

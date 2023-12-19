@@ -1,6 +1,5 @@
 import React, { forwardRef, useState, useEffect } from "react";
 import {
-  AppBar,
   Avatar,
   Box,
   Button,
@@ -37,8 +36,14 @@ import "swiper/css/zoom";
 import "./swiper.css";
 import "./bookRoom.css";
 import { WanderLuxeLogo } from "../../../assets/extraImages";
-import { HotelDetails } from "../../../store/slices/adminSlice";
-import { closeRoomOverview, setRoomId } from "../../../store/slices/roomSlice";
+import { HotelDetails } from "../../../store/slices/adminSlices/adminSlice";
+import {
+  closeRoomOverview,
+  setAdditionalRoomsNeeded,
+  setRoomId,
+} from "../../../store/slices/userSlices/roomSlice";
+import Swal from "sweetalert2";
+import { AppDispatch } from "../../../store/store";
 
 interface Place {
   text: string;
@@ -48,13 +53,19 @@ interface Place {
 const Transition = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
   const transitionSpeed = 500;
 
-  return <Slide direction="down" {...props} ref={ref} timeout={{ enter: transitionSpeed, exit: transitionSpeed }} />;
-
+  return (
+    <Slide
+      direction="down"
+      {...props}
+      ref={ref}
+      timeout={{ enter: transitionSpeed, exit: transitionSpeed }}
+    />
+  );
 });
 
 const RoomOverviewScreen: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const isOpen = useSelector(
     (state: RootState) => state.room.isRoomOverviewOpen
@@ -64,11 +75,17 @@ const RoomOverviewScreen: React.FC = () => {
     (state: RootState) => state.user.filteredRooms
   );
   const hotels = useSelector((state: RootState) => state.user.filteredHotels);
-  const checkInCheckoutRange:any = useSelector((state:RootState) => state.room.checkInCheckOutRange);
-  console.log(checkInCheckoutRange)
+  const checkInCheckoutRange: any = useSelector(
+    (state: RootState) => state.room.checkInCheckOutRange
+  );
+  const adultChildCount = useSelector((state: RootState) => state.room.adultChildrenCount);
+  const additionalRoomsNeeded = useSelector((state: RootState) => state.room.additionalRoomsNeeded);
+  
+  console.log("checkInCheckout", checkInCheckoutRange);
   const [room, setRoom] = useState<any>([]);
   const [hotel, setHotel] = useState<any>([]);
   const [place, setPlace] = useState<Place | null>(null);
+  const [roomsNeeded, setRoomsNeeded] = useState<number>(additionalRoomsNeeded? additionalRoomsNeeded:1);
 
   useEffect(() => {
     if (isOpen && roomId) {
@@ -96,28 +113,69 @@ const RoomOverviewScreen: React.FC = () => {
           .then((data) => setPlace(data.features[0]));
       }
     }
+   
+
+      
   }, [roomId, isOpen, rooms, hotels, room]);
 
+  useEffect(() => {
+    const totalPeople = adultChildCount ? adultChildCount : 1;
+    const additionalRoomsNeeded = Math.max(
+      Math.ceil((totalPeople - room.maxPeople) / room.maxPeople),
+      0
+    );
   
+    setRoomsNeeded(additionalRoomsNeeded);
+    dispatch(setAdditionalRoomsNeeded(additionalRoomsNeeded));
+  }, [adultChildCount, room]);
+  
+
   const handleClose = () => {
     dispatch(closeRoomOverview());
+    
     dispatch(setRoomId(""));
     // setHotel([]);
     // Dispatch an action to close the RoomOverviewScreen
     // navigate('/user/view-rooms');
   };
-
+  console.log('adultChildrencount',adultChildCount)
+  console.log('roomsNeeded',roomsNeeded)
   const handleBooking = () => {
-    dispatch(closeRoomOverview());
-    navigate(`/user/book-room?roomId=${roomId}`);
-  }
+      dispatch(closeRoomOverview());
+      Swal.fire({
+        title: "Are you sure?",
+        text: `Book ${room.roomType} on ${
+          room.hotelName
+        } hotel! (Check-In: ${checkInCheckoutRange.startDate.toDateString()} ${
+          checkInCheckoutRange.startTime
+        } & Check-Out: ${checkInCheckoutRange.endDate.toDateString()} ${
+          checkInCheckoutRange.endTime
+        })`,
+        icon: "success",
+        showCancelButton: true,
+        confirmButtonText: "Yes, Book",
+        confirmButtonColor: "green",
+        cancelButtonText: "No, cancel!",
+        customClass: {
+          container: "custom-swal-container",
+        },
+        width: 450,
+        background: "#f0f0f0",
+        iconHtml: '<i class="bi bi-check-lg" style="font-size:55px"></i>',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          navigate(`/user/book-room?roomId=${roomId}&additionalroomsNeeded=${roomsNeeded}`);
+        }
+      });
+    
+  };
 
   console.log("Room from overview", room);
   console.log("Hotel from overview", hotel);
   return (
     <Dialog
-    className="dialog_container"
-      open={isOpen && location.pathname==='/user/view-rooms'}
+      className="dialog_container"
+      open={isOpen && location.pathname === "/user/view-rooms"}
       onClose={(event, reason) => {
         if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
           // Set 'open' to false, however you would do that with your particular code.
@@ -127,22 +185,23 @@ const RoomOverviewScreen: React.FC = () => {
       TransitionComponent={Transition}
     >
       <Container>
-      <Toolbar sx={{paddingTop:2,paddingBottom:2}}>
+        <Toolbar sx={{ paddingTop: 2, paddingBottom: 2 }}>
           <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
             <Typography variant="h6">{room.roomType}</Typography>
             <Typography variant="subtitle2">{room.hotelName}</Typography>
           </div>
-          <IconButton color="inherit"  onClick={handleClose}>
+          <IconButton color="inherit" onClick={handleClose}>
             <Close />
           </IconButton>
         </Toolbar>
         <Divider
-                      sx={{
-                        width: "100%",
-                        height: "1px",
-                        bgcolor: "#777",
-                      }}
-                    /><br/>
+          sx={{
+            width: "100%",
+            height: "1px",
+            bgcolor: "#777",
+          }}
+        />
+        <br />
         <Swiper
           className="swiper-container"
           style={
@@ -209,6 +268,15 @@ const RoomOverviewScreen: React.FC = () => {
           alignItems="flex-start"
           justifyContent="space-between"
         >
+          <Stack direction="row" p={0}>
+           
+           <Typography
+             variant="h6"
+             sx={{ fontSize: "12px", color: "#666" }}
+           >
+             {`₹ = 1 room x ${checkInCheckoutRange.numberOfNights} night`}
+           </Typography>
+       </Stack>
           <Stack direction="row">
             <Box
               sx={{
@@ -223,12 +291,19 @@ const RoomOverviewScreen: React.FC = () => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  gap: '75%',
+                  gap: "75%",
                 }}
               >
+                
                 <Box>
-                  <Typography variant="h6" component={"span"} sx={{fontSize:'26px'}}>
-                    {checkInCheckoutRange.numberOfNights?(`₹${(room.price)* checkInCheckoutRange.numberOfNights}`):(`₹${room.price}`)}
+                  <Typography
+                    variant="h6"
+                    component={"span"}
+                    sx={{ fontSize: "26px" }}
+                  >
+                    {checkInCheckoutRange.numberOfNights
+                      ? `₹${room.price * checkInCheckoutRange.numberOfNights}`
+                      : `₹${room.price}`}
                   </Typography>
                   <Typography
                     variant="h6"
@@ -239,8 +314,14 @@ const RoomOverviewScreen: React.FC = () => {
                       color: "#777",
                     }}
                   >
-                    {checkInCheckoutRange.numberOfNights?(`₹${(room.price + room.discountPrice)*checkInCheckoutRange.numberOfNights}`):(`₹${room.price + room.discountPrice}`)}
+                    {checkInCheckoutRange.numberOfNights
+                      ? `₹${
+                          (room.price + room.discountPrice) *
+                          checkInCheckoutRange.numberOfNights
+                        }`
+                      : `₹${room.price + room.discountPrice}`}
                   </Typography>
+                  
                 </Box>
                 <Box
                   sx={{
@@ -265,48 +346,60 @@ const RoomOverviewScreen: React.FC = () => {
               </Box>
             </Box>
           </Stack>
+          
           <Stack direction="row">
-           
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  component={"span"}
+                  sx={{ fontSize: "16px", pr: 0.5, color: "#666" }}
+                >
+                  Amenities:
+                </Typography>
+              </Box>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
                 }}
               >
-                <Box
-                sx={{
-                  display: "flex",
-                }}
-                >
-                <Typography variant="h6" component={"span"} sx={{fontSize:'16px',pr:0.5,color:'#666'}}>
-                      Amenities:   
-                </Typography>
-                </Box>
-                <Box
-                sx={{
-                  display: "flex",
-                  alignItems:'center',
-                
-                }}
-                >
-                  {room.amenities &&
-                    room.amenities.map((amenity: string, index: number) => (
-                      <><Typography variant="h6"  sx={{fontSize:'14px'}} key={index}>
+                {room.amenities &&
+                  room.amenities.map((amenity: string, index: number) => (
+                    <>
+                      <Typography
+                        variant="h6"
+                        sx={{ fontSize: "14px" }}
+                        key={index}
+                      >
                         {`${amenity} `}
                       </Typography>
-                      {index >= 0 &&
-                        index < room.amenities.length - 1 ? (
-                          <Typography sx={{pl:0.5,pr:0.5,fontSize:'14px'}} variant="h6">•</Typography>
-                        ) : (
-                          ""
-                        )}
-                        </>
-                    ))}
-                </Box>
+                      {index >= 0 && index < room.amenities.length - 1 ? (
+                        <Typography
+                          sx={{ pl: 0.5, pr: 0.5, fontSize: "14px" }}
+                          variant="h6"
+                        >
+                          •
+                        </Typography>
+                      ) : (
+                        ""
+                      )}
+                    </>
+                  ))}
               </Box>
-              </Stack>
-              <Stack direction="row">
-              <Box
+            </Box>
+          </Stack>
+          <Stack direction="row">
+            <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -314,89 +407,150 @@ const RoomOverviewScreen: React.FC = () => {
                 width: "100%",
               }}
             >
-              <Typography variant="h6" component={"span"} sx={{fontSize:'16px',pr:0.5,color:'#666'}}>
-                      Max People:   
-                    </Typography>
-                    <Typography variant="h6" component={"span"} sx={{fontSize:'14px'}}>
-                    {room.maxPeople} 
-                    </Typography>
-
+              <Typography
+                variant="h6"
+                component={"span"}
+                sx={{ fontSize: "16px", pr: 0.5, color: "#666" }}
+              >
+                Max People:
+              </Typography>
+              <Typography
+                variant="h6"
+                component={"span"}
+                sx={{ fontSize: "14px" }}
+              >
+                {room.maxPeople}
+              </Typography>
             </Box>
-            </Stack>
-              <Stack>
-                <Box
-                sx={{
-                  display: "inline-block",
-                }}>
-                
-                <Typography variant="h6" component={"span"} sx={{fontSize:'16px',pr:0.5,color:'#666'}}>
-                {"Address: "}
-              </Typography><br/>
-              <Typography variant="h6" component={"span"} sx={{fontSize:'14px'}}>
-                {place?.place_name|| hotel?.location}
+          </Stack>
+          <Stack direction="row">
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <Typography
+                variant="h6"
+                component={"span"}
+                sx={{ fontSize: "16px", pr: 0.5, color: "#666" }}
+              >
+                Rooms Available:
               </Typography>
-                </Box>
-                <Box
-                sx={{
-                  display: "inline-block",
-                }}
-                >
-                
-                 <Typography variant="h6" component={"span"} sx={{fontSize:'16px',color:'#666'}}>
-                {"Location: "}
-              </Typography><br/>
-              <Typography variant="h6" component={"span"} sx={{fontSize:'14px',}}>
-                {place?.text+', '+hotel?.location  || hotel?.location}
+              <Typography
+                variant="h6"
+                component={"span"}
+                sx={{ fontSize: "14px" }}
+              >
+                {room.roomsCount}
               </Typography>
-                </Box>
-              </Stack>
-            
+            </Box>
+          </Stack>
           <Stack>
-            <Typography variant="h6" component={"span"} sx={{fontSize:'16px',pr:0.5,color:'#666'}}>
+            <Box
+              sx={{
+                display: "inline-block",
+              }}
+            >
+              <Typography
+                variant="h6"
+                component={"span"}
+                sx={{ fontSize: "16px", pr: 0.5, color: "#666" }}
+              >
+                {"Address: "}
+              </Typography>
+              <br />
+              <Typography
+                variant="h6"
+                component={"span"}
+                sx={{ fontSize: "14px" }}
+              >
+                {place?.place_name || hotel?.location}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "inline-block",
+              }}
+            >
+              <Typography
+                variant="h6"
+                component={"span"}
+                sx={{ fontSize: "16px", color: "#666" }}
+              >
+                {"Location: "}
+              </Typography>
+              <br />
+              <Typography
+                variant="h6"
+                component={"span"}
+                sx={{ fontSize: "14px" }}
+              >
+                {place?.text + ", " + hotel?.location || hotel?.location}
+              </Typography>
+            </Box>
+          </Stack>
+
+          <Stack>
+            <Typography
+              variant="h6"
+              component={"span"}
+              sx={{ fontSize: "16px", pr: 0.5, color: "#666" }}
+            >
               {"Description: "}
             </Typography>
-            <Typography variant="h6" component={"span"} sx={{fontSize:'14px'}}>
+            <Typography
+              variant="h6"
+              component={"span"}
+              sx={{ fontSize: "14px" }}
+            >
               {room.description}
             </Typography>
           </Stack>
-          <Stack direction='row' width={'100%'}>
-  {checkInCheckoutRange && (
-    (checkInCheckoutRange.startDate.toLocaleDateString() === checkInCheckoutRange.endDate.toLocaleDateString() ||
-      checkInCheckoutRange.startDate === undefined ||
-      checkInCheckoutRange.endDate === undefined ||
-      checkInCheckoutRange.startTime === undefined ||
-      checkInCheckoutRange.endTime === undefined) ? (
-        <Button
-          variant="outlined"
-          onClick={handleClose}
-          sx={{
-            width: '100%',
-            p: 1,
-            borderRadius: 0,
-            borderColor: 'red',
-            color: 'red',
-            "&:hover": {
-              border: '1.5px solid red',
-              borderColor: 'red'
-            }
-          }}
-        >
-          Select a valid CheckIn/CheckOut to proceed!
-        </Button>
-      ) : (
-        <Button
-          className='book_room_btn'
-          variant="outlined"
-          sx={{ width: '100%', p: 1, borderRadius: 0 }}
-          color="inherit"
-          onClick={handleBooking}
-        >
+          <Stack direction="row" width={"100%"}>
+  {checkInCheckoutRange &&
+    (checkInCheckoutRange.startDate.toLocaleDateString() ===
+      checkInCheckoutRange.endDate.toLocaleDateString() ||
+    checkInCheckoutRange.startDate === undefined ||
+    checkInCheckoutRange.endDate === undefined ||
+    checkInCheckoutRange.startTime === undefined ||
+    checkInCheckoutRange.endTime === undefined ? (
+      <Button
+        variant="outlined"
+        onClick={handleClose}
+        sx={{
+          width: "100%",
+          p: 1,
+          borderRadius: 0,
+          borderColor: "red",
+          color: "red",
+          "&:hover": {
+            border: "1.5px solid red",
+            borderColor: "red",
+          },
+        }}
+      >
+        Select a valid CheckIn/CheckOut to proceed!
+      </Button>
+    ) : (
+      <Button
+        className="book_room_btn"
+        variant="outlined"
+        sx={{ width: "100%", p: 1, borderRadius: 0 }}
+        color="inherit"
+        disabled={room.roomsCount <= roomsNeeded} // Disable button if rooms are not available
+        onClick={handleBooking}
+      >
+        {room.roomsCount > roomsNeeded ? (
           <span>Book room</span>
-        </Button>
-      )
-  )}
+        ) : (
+          <span>Room availability exceeded</span>
+        )}
+      </Button>
+    ))}
 </Stack>
-
         </Stack>
       </Container>
     </Dialog>

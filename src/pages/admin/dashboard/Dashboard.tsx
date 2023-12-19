@@ -16,8 +16,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/types";
 import useCheckToken from "../../../components/hooks/useCheckToken";
 import { getHotels } from "../../../actions/hotel";
-import { updateHotels, updateRooms } from "../../../store/slices/adminSlice";
 import { getRooms } from "../../../actions/room";
+import { updateHotels } from "../../../store/slices/adminSlices/adminHotelSlice";
+import { updateRooms } from "../../../store/slices/adminSlices/adminRoomSlice";
+import { getCoupons } from "../../../actions/coupon";
+import { updateCoupons } from "../../../store/slices/adminSlices/adminCouponSlice";
 
 const drawerWidth = 240;
 
@@ -51,7 +54,6 @@ const Dashboard: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(true);
   const [title, setTitle] = useState("Admin Panel");
-  
 
   console.log(currentAdmin);
   const darkTheme = useMemo(
@@ -75,10 +77,12 @@ const Dashboard: React.FC = () => {
   }, [navigate, currentAdmin]);
 
   useEffect(() => {
-    const result = dispatch(getHotels() as any);
-    dispatch(updateHotels({result}))
+    const hotels = dispatch(getHotels() as any);
+    dispatch(updateHotels({ hotels }));
     const rooms = dispatch(getRooms() as any);
-    dispatch(updateRooms({rooms}))
+    dispatch(updateRooms({ rooms }));
+    const coupons = dispatch(getCoupons() as any);
+    dispatch(updateCoupons({coupons}))
   }, [dispatch]);
 
   return (

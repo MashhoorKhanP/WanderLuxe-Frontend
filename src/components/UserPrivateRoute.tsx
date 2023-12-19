@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { Outlet, useNavigate } from "react-router-dom";
-import { setOpenLogin } from '../store/slices/userSlice';
-import { toast } from 'react-toastify';
+import { setOpenLogin } from "../store/slices/userSlices/userSlice";
+import { toast } from "react-toastify";
 
 const UserPrivateRoute: React.FC = () => {
   const navigate = useNavigate();
@@ -12,9 +12,9 @@ const UserPrivateRoute: React.FC = () => {
 
   useEffect(() => {
     if (!currentUser) {
-      navigate('/');
+      navigate("/");
       dispatch(setOpenLogin(true));
-      toast.warning('Please log in to your account to perform this action!');
+      toast.warning("Please log in to your account to perform this action!");
     }
   }, [currentUser, dispatch, navigate]);
 

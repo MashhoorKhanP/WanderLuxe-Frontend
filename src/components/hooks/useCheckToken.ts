@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/types";
 import { jwtDecode } from "jwt-decode";
-import { logoutUser } from "../../store/slices/userSlice";
-import { logoutAdmin } from "../../store/slices/adminSlice";
+import { logoutUser } from "../../store/slices/userSlices/userSlice";
+import { logoutAdmin } from "../../store/slices/adminSlices/adminSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -15,27 +15,32 @@ const useCheckToken = () => {
   const currentAdminToken = localStorage.getItem("AdminToken");
 
   useEffect(() => {
-    let token;
-    let logoutAction;
-
     if (currentUserToken) {
-      token = currentUserToken;
-      logoutAction = logoutUser;
-    } else if (currentAdminToken) {
-      token = currentAdminToken;
-      logoutAction = logoutAdmin;
-    } else {
-      // No token found, nothing to check
-      return;
+      const decodedUserToken: any = jwtDecode(currentUserToken);
+
+      if (
+        decodedUserToken.exp * 1000 < new Date().getTime() &&
+        !warningShownRef.current
+      ) {
+        warningShownRef.current = true;
+        toast.warning("User session timed out. Please log in again.");
+        dispatch(logoutUser());
+        navigate("/user/home");
+      }
     }
 
-    const decodedToken: any = jwtDecode(token);
-
-    if (decodedToken.exp * 1000 < new Date().getTime() && !warningShownRef.current) {
-      warningShownRef.current = true;
-      toast.warning("Session timed out. Please log in again.");
-      dispatch(logoutAction());
-      navigate(logoutAction === logoutAdmin ? "/admin/login" : "/user/home");
+    if (currentAdminToken) {
+      const decodedAdminToken: any = jwtDecode(currentAdminToken);
+      
+      if (
+        decodedAdminToken.exp * 1000 < new Date().getTime() &&
+        !warningShownRef.current
+      ) {
+        warningShownRef.current = true;
+        toast.warning("Admin session timed out. Please log in again.");
+        dispatch(logoutAdmin());
+        navigate("/admin/login");
+      }
     }
   }, [currentUserToken, currentAdminToken, dispatch, navigate]);
 
@@ -43,4 +48,3 @@ const useCheckToken = () => {
 };
 
 export default useCheckToken;
-

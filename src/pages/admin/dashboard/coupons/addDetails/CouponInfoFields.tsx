@@ -1,16 +1,19 @@
-import { Avatar, Container, InputAdornment, TextField } from "@mui/material";
+import { Avatar, InputAdornment, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import pendingIcon from "../icons/progress4.gif";
-import { updateHotelDetails } from "../../../../../store/slices/adminSlices/adminHotelSlice";
+import pendingIcon from "../../hotels/icons/progress4.gif";
+import { updateCouponDetails } from "../../../../../store/slices/adminSlices/adminCouponSlice";
 
 interface InfoFieldsProps {
   mainProps: {};
-  optionalProps?: {};
+  optionalProps?: {
+    children?: React.ReactNode;
+    type?: string;
+  };
   minLength: number;
 }
 
-const InfoFields: React.FC<InfoFieldsProps> = ({
+const CouponInfoFields: React.FC<InfoFieldsProps> = ({
   mainProps,
   optionalProps = {},
   minLength,
@@ -23,7 +26,7 @@ const InfoFields: React.FC<InfoFieldsProps> = ({
 
   let timer: number | any;
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(updateHotelDetails({ [e.target.name]: e.target.value }));
+    dispatch(updateCouponDetails({ [e.target.name]: e.target.value }));
     if (!editing) setEditing(true);
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -67,4 +70,4 @@ const InfoFields: React.FC<InfoFieldsProps> = ({
   );
 };
 
-export default InfoFields;
+export default CouponInfoFields;

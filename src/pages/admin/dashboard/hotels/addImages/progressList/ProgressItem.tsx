@@ -6,13 +6,10 @@ import { v4 as uuidv4 } from "uuid";
 import uploadFileProgress from "../../../../../../firebase/uploadFileProgress";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../../store/types";
-import {
-  updateAddedHotelImages,
-  updateHotelImages,
-  updateRoomImages,
-} from "../../../../../../store/slices/adminSlice";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
+import { updateHotelImages } from "../../../../../../store/slices/adminSlices/adminHotelSlice";
+import { updateRoomImages } from "../../../../../../store/slices/adminSlices/adminRoomSlice";
 
 interface ProgressItemProps {
   file: File;
@@ -25,11 +22,14 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ file }) => {
   const [imageURL, setImageURL] = useState<string | null>(null);
   const { currentAdmin } = useSelector((state: RootState) => state.admin);
   const udpatedHotel: any = useSelector(
-    (state: RootState) => state.admin.updatedHotel
+    (state: RootState) => state.adminHotel.updatedHotel
   );
-  
+
   useEffect(() => {
-    if (location.pathname === "/admin/dashboard/hotels/add-hotel" || location.pathname === "/admin/dashboard/hotels/edit-hotel") {
+    if (
+      location.pathname === "/admin/dashboard/hotels/add-hotel" ||
+      location.pathname === "/admin/dashboard/hotels/edit-hotel"
+    ) {
       const uploadImage = async () => {
         const imageName = uuidv4() + "." + file.name.split(".").pop();
         try {
@@ -39,7 +39,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ file }) => {
             imageName,
             setProgress
           );
-  
+
           dispatch(updateHotelImages([url]));
           // if(udpatedHotel) dispatch(updateAddedHotelImages([url]))
           setImageURL(null);
@@ -49,10 +49,13 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ file }) => {
           console.log(typedError);
         }
       };
-  
+
       setImageURL(URL.createObjectURL(file));
       uploadImage();
-    } else if (location.pathname === "/admin/dashboard/rooms/add-room" || location.pathname === "/admin/dashboard/rooms/edit-room") {
+    } else if (
+      location.pathname === "/admin/dashboard/rooms/add-room" ||
+      location.pathname === "/admin/dashboard/rooms/edit-room"
+    ) {
       const uploadImage = async () => {
         const imageName = uuidv4() + "." + file.name.split(".").pop();
         try {
@@ -62,7 +65,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ file }) => {
             imageName,
             setProgress
           );
-  
+
           dispatch(updateRoomImages([url]));
           // if(udpatedHotel) dispatch(updateAddedHotelImages([url]))
           setImageURL(null);
@@ -72,12 +75,11 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ file }) => {
           console.log(typedError);
         }
       };
-  
+
       setImageURL(URL.createObjectURL(file));
       uploadImage();
     }
   }, [file]);
-  
 
   return (
     imageURL && (

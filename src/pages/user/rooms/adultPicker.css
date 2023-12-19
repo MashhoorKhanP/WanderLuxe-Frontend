@@ -1,0 +1,68 @@
+.headerSearch{
+  height: 40px;
+  background-color: #ffffff;
+  border:1px solid #a0a0a0;
+  display: flex;
+  border-radius: 5px;
+  position: absolute;
+  margin-top: 17px;
+}
+
+.headerSearchItem{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+
+}
+
+.headerSearchText{
+  color:#7a7a7a;
+  cursor: pointer;
+}
+
+.headerIcon{
+  color:#7a7a7a;
+}
+
+.options{
+  z-index: 1;
+  position: relative;
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 2px;
+  border:1px solid #7a7a7a;
+  -webkit-box-shadow:0 px 0px 10px -5px rgba(0,0,0,0.4);
+  box-shadow: 0 px 0px 10px -5px rgba(0,0,0,0.4);
+}
+
+.optionItem{
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
+}
+
+.optionCounter{
+  display: flex;
+  align-items: center;
+  gap:10px;
+  font-size: 12px;
+  color: #000000;
+}
+
+.optionCounterButton {
+  width: 30px;
+  height: 29px;
+  font-size: 14px;
+  color: #ffffff;
+  border: 1px solid #7a7a7a;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.optionCounterButton:disabled {
+  cursor: not-allowed;
+}

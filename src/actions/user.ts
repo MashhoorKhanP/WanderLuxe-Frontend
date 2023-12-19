@@ -9,7 +9,7 @@ import {
   resendOTPPending,
   resendOTPRejected,
   setAlert,
-} from "../store/slices/userSlice";
+} from "../store/slices/userSlices/userSlice";
 import uploadFile from "../firebase/upload";
 import { v4 as uuidv4 } from "uuid";
 import instance from "./utils/axiosInstance";
@@ -54,18 +54,18 @@ interface UpdateProfilePayload {
 }
 
 interface WishlistData {
-  wishlistData:{
-    hotelId:string,
-    userId:string;
-  }
+  wishlistData: {
+    hotelId: string;
+    userId: string;
+  };
 }
 
 interface ChangePasswordData {
-  changePasswordData:{
-    userId:string,
-    currentPassword:string,
-    newPassword:string
-  }
+  changePasswordData: {
+    userId: string;
+    currentPassword: string;
+    newPassword: string;
+  };
 }
 
 //Async thunk for user register instead fetchData.ts
@@ -125,7 +125,7 @@ export const verifyUser = createAsyncThunk(
 
 export const loginUser = createAsyncThunk(
   "user/loginUser",
-  async (userData: LoginRequestBody,) => {
+  async (userData: LoginRequestBody) => {
     try {
       const result = await instance.post("/login", userData);
       if (result?.data && result.data.message) {
@@ -238,38 +238,36 @@ export const updateProfile = async ({
 };
 
 export const changePassword = createAsyncThunk(
-  'user/changePassword',
-  async ({changePasswordData}:ChangePasswordData) => {
+  "user/changePassword",
+  async ({ changePasswordData }: ChangePasswordData) => {
     console.log("Change password date:", changePasswordData);
     const result = await fetchData({
-      url:import.meta.env.VITE_SERVER_URL +
-      `/api/user/change-password`,
-    method: "PATCH",
-    body:{...changePasswordData},
-    })
+      url: import.meta.env.VITE_SERVER_URL + `/api/user/change-password`,
+      method: "PATCH",
+      body: { ...changePasswordData },
+    });
     if (result?.data && result.data.message) {
       throw new Error(result.data.message);
     }
-  
-    return result;
-  })
 
+    return result;
+  }
+);
 
 export const addRemoveFromWishlist = createAsyncThunk(
   "user/addRemoveFromWishlist",
-  async ({wishlistData}:WishlistData) => {
-  console.log("HotelId from user.ts", wishlistData.hotelId);
-  const result = await fetchData({
-    url:
-      import.meta.env.VITE_SERVER_URL +
-      `/api/user/add-remove/wishlist`,
-    method: "PATCH",
-    body:{...wishlistData},
-  });
-  // Check for errors in the result and throw if necessary
-  if (result?.data && result.data.message) {
-    throw new Error(result.data.message);
-  }
+  async ({ wishlistData }: WishlistData) => {
+    console.log("HotelId from user.ts", wishlistData.hotelId);
+    const result = await fetchData({
+      url: import.meta.env.VITE_SERVER_URL + `/api/user/add-remove/wishlist`,
+      method: "PATCH",
+      body: { ...wishlistData },
+    });
+    // Check for errors in the result and throw if necessary
+    if (result?.data && result.data.message) {
+      throw new Error(result.data.message);
+    }
 
-  return result;
-});
+    return result;
+  }
+);

@@ -3,7 +3,10 @@ import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import AdminLogin from "../components/admin/Login";
 import Admin from "../pages/Admin";
 import { useDispatch } from "react-redux";
-import { logoutAdmin, updateAdmin } from "../store/slices/adminSlice";
+import {
+  logoutAdmin,
+  updateAdmin,
+} from "../store/slices/adminSlices/adminSlice";
 import AdminPrivateRoute from "../components/AdminPrivateRoute";
 
 interface Admin {
@@ -42,9 +45,8 @@ const AdminRouter: React.FC = () => {
       <Route path="*" element={<Navigate to="/admin/login" />} />
       {/* <Route path="dashboard" element={<Dashboard/>}/> */}
 
-      <Route path="" element={<AdminPrivateRoute />}>
+      
         <Route path="dashboard/*" element={<Admin />} />
-      </Route>
     </Routes>
   );
 };

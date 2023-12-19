@@ -1,62 +1,90 @@
-import React, { useState } from 'react'
-import { Lock} from '@mui/icons-material'
-import { AppBar, Box, Button, Container, IconButton, Toolbar, Typography } from '@mui/material'
-import { useDispatch, useSelector } from 'react-redux'
-import UserIcons from './user/UserIcons';
-import { RootState } from '../store/types';
-import { setOpenLogin } from '../store/slices/userSlice';
-import { useNavigate } from 'react-router-dom';
-import { WanderLuxeLogo } from '../assets/extraImages';
+import React, { useState } from "react";
+import { Lock } from "@mui/icons-material";
+import {
+  AppBar,
+  Box,
+  Button,
+  Container,
+  IconButton,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import UserIcons from "./user/UserIcons";
+import { RootState } from "../store/types";
+import { setOpenLogin } from "../store/slices/userSlices/userSlice";
+import { useNavigate } from "react-router-dom";
+import { WanderLuxeLogo } from "../assets/extraImages";
 
-
-const Navbar: React.FC= () => {
+const Navbar: React.FC = () => {
   const dispatch = useDispatch();
-  const navigate =useNavigate()
-  const{ currentUser} = useSelector((state:RootState) => state.user);
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state: RootState) => state.user);
   const handleOpenLogin = () => {
-    navigate('/user/login-register');
+    navigate("/user/login-register");
     dispatch(setOpenLogin(true));
-  }
+  };
 
-  
   return (
     <>
-    <AppBar position="static" sx={{ backgroundColor: '#9fa3a878' }}>
-      <Container maxWidth='lg'>
-       <Toolbar disableGutters>
-        {/* <Box>
+      <AppBar position="static" sx={{ backgroundColor: "#9fa3a878" }}>
+        <Container maxWidth="lg">
+          <Toolbar disableGutters>
+            {/* <Box>
           <IconButton size='large' sx={{display:{color:'#000000'}}}>
             <Menu/>
           </IconButton>
         </Box> */}
-        <Box>
-          <img src={WanderLuxeLogo} style={{width:'35px'}}/>
-        </Box>
-        <Typography variant='h6'
-        component='h1'
-        noWrap
-        onClick={() => navigate('/user/home') }
-        sx={{flexGrow:1, display:{xs:'none',md:'flex',color: '#000000'},cursor:'pointer'}}
-        >
-          WanderLuxe
-        </Typography>
-        <Typography variant='h6'
-        component='h1'
-        noWrap
-        onClick={() => navigate('/user/home') }
-        sx={{flexGrow:1, display:{xs:'flex',md:'none',color: '#000000',cursor:'pointer'}}}
-        >
-          WanderLuxe
-        </Typography>
-        {!currentUser ? (<Button color='inherit' sx={{display:{color: '#000000'}}} startIcon={<Lock/>} onClick={handleOpenLogin}>
-          Login
-        </Button>) : (<UserIcons/>)}
-        
-       </Toolbar>
-      </Container>
-    </AppBar>
+            <Box>
+              <img src={WanderLuxeLogo} style={{ width: "35px" }} />
+            </Box>
+            <Typography
+              variant="h6"
+              component="h1"
+              noWrap
+              onClick={() => navigate("/user/home")}
+              sx={{
+                flexGrow: 1,
+                display: { xs: "none", md: "flex", color: "#000000" },
+                cursor: "pointer",
+              }}
+            >
+              WanderLuxe
+            </Typography>
+            <Typography
+              variant="h6"
+              component="h1"
+              noWrap
+              onClick={() => navigate("/user/home")}
+              sx={{
+                flexGrow: 1,
+                display: {
+                  xs: "flex",
+                  md: "none",
+                  color: "#000000",
+                  cursor: "pointer",
+                },
+              }}
+            >
+              WanderLuxe
+            </Typography>
+            {!currentUser ? (
+              <Button
+                color="inherit"
+                sx={{ display: { color: "#000000" } }}
+                startIcon={<Lock />}
+                onClick={handleOpenLogin}
+              >
+                Login
+              </Button>
+            ) : (
+              <UserIcons />
+            )}
+          </Toolbar>
+        </Container>
+      </AppBar>
     </>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

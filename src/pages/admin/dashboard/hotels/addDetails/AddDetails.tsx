@@ -12,14 +12,14 @@ import {
   Typography,
 } from "@mui/material";
 import { RootState } from "../../../../../store/types";
-import { updateHotelDetails } from "../../../../../store/slices/adminSlice";
 import InfoFields from "./InfoFields";
+import { updateHotelDetails } from "../../../../../store/slices/adminSlices/adminHotelSlice";
 
 const AddDetails: React.FC = () => {
   const dispatch = useDispatch();
 
   const hotelDetails = useSelector(
-    (state: RootState) => state.admin.hotelDetails
+    (state: RootState) => state.adminHotel.hotelDetails
   );
   const [parkingType, setparkingType] = useState(
     hotelDetails.parkingPrice ? 1 : 0
@@ -118,8 +118,8 @@ const AddDetails: React.FC = () => {
               name: "description",
               label: "Description",
               value: hotelDetails.description,
-              multiline: true, 
-              rows: 4
+              multiline: true,
+              rows: 4,
             }}
             minLength={15}
           />

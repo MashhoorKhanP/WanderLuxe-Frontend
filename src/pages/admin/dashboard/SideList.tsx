@@ -40,7 +40,7 @@ import Bookings from "./bookings/Bookings";
 import Coupons from "./coupons/Coupons";
 import Offers from "./offers/Offers";
 import Banners from "./banners/Banners";
-import { logoutAdmin } from "../../../store/slices/adminSlice";
+import { logoutAdmin } from "../../../store/slices/adminSlices/adminSlice";
 import AddHotel from "./hotels/AddHotel";
 
 const drawerWidth = 240;

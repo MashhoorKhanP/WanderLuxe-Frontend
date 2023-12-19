@@ -7,6 +7,7 @@ import { DataGrid, GridColDef, gridClasses } from "@mui/x-data-grid";
 import moment from "moment";
 import { grey } from "@mui/material/colors";
 import UsersActions from "./UsersActions";
+import useCheckToken from "../../../../components/hooks/useCheckToken";
 
 interface UsersProps {
   setSelectedLink: React.Dispatch<React.SetStateAction<string>>;
@@ -26,6 +27,8 @@ interface Users {
 }
 
 const Users: React.FC<UsersProps> = ({ setSelectedLink, link }) => {
+  const checkToken = useCheckToken();
+
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.admin.users);
   console.log("Users List from User.tsx", users);
@@ -38,7 +41,8 @@ const Users: React.FC<UsersProps> = ({ setSelectedLink, link }) => {
     // Dispatch the action to fetch users when the component mounts
     const result = dispatch(getUsers() as any);
   }, [dispatch, setSelectedLink, link]);
-
+  
+  checkToken;
   const columns: GridColDef[] = useMemo(
     () => [
       {

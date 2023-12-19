@@ -14,17 +14,23 @@ import {
   ImageListItem,
   ImageListItemBar,
   Rating,
-  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { NotFound, SpinnerGif } from "../../../assets/extraImages";
 import { StarBorder } from "@mui/icons-material";
-import { filterRooms, setRooms } from "../../../store/slices/userSlice";
+import {
+  filterRooms,
+  setRooms,
+} from "../../../store/slices/userSlices/userSlice";
 import SearchBar from "../../../components/common/SearchBar";
 import PriceSlider from "../../../components/user/searchbar/PriceSlider";
 import MyDatePicker from "./MyDatePicker";
-import { openRoomOverview, setRoomId } from "../../../store/slices/roomSlice";
+import {
+  openRoomOverview,
+  setRoomId,
+} from "../../../store/slices/userSlices/roomSlice";
+import AdultChildrenPicker from "./AdultChildrenPicker";
 
 const RoomListScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -37,6 +43,10 @@ const RoomListScreen: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [allRooms, setAllRooms] = useState<any>([]);
   const [searchParams] = useSearchParams();
+  
+
+  //Show only  the rooomsNeeded + 1 > room.roomsCount matching rooms only, take the state and condition
+  //from RoomsOverviewScreen.tsx
   const roomsPerPage = 6;
 
   const hotelId = searchParams.get("hotelId");
@@ -55,7 +65,7 @@ const RoomListScreen: React.FC = () => {
       fetchRooms();
     }
     setAllRooms(rooms);
-  }, [dispatch,allRooms]);
+  }, [dispatch, allRooms]);
 
   const indexOfLastRooms = currentPage * roomsPerPage;
   const indexOfFirstRooms = indexOfLastRooms - roomsPerPage;
@@ -91,28 +101,28 @@ const RoomListScreen: React.FC = () => {
 
   const handleCardClick = (roomId: string) => {
     dispatch(openRoomOverview()); // Dispatch an action to open the RoomOverviewScreen
-    dispatch(setRoomId(roomId)); 
+    dispatch(setRoomId(roomId));
     // navigate('/user/view-rooms/room-overview');
   };
-
   return (
     <Container>
       <Box paddingTop={4}>
-      <Typography variant='h5' fontWeight='bold'>{`${currentRooms[0]?.hotelName ?currentRooms[0]?.hotelName :"Not Found" } - Rooms`}</Typography>
-      </Box> 
+        <Typography variant="h5" fontWeight="bold">{`${
+          currentRooms[0]?.hotelName ? currentRooms[0]?.hotelName : "Not Found"
+        } - Rooms`}</Typography>
+      </Box>
       <Box
         display={"flex"}
         flexDirection={"row"}
-        justifyContent={"space-evenly"}
+        justifyContent={"space-around"}
         alignItems={"center"}
         pb={2}
-        gap={3}
-        
+        gap={2}
       >
         <SearchBar onSearch={handleSearch} />
-
         <MyDatePicker isOpen={isDatePickerOpen} onToggle={toggleDatePicker} />
-        <PriceSlider/>
+        <AdultChildrenPicker/>
+        <PriceSlider />
       </Box>
 
       <ImageList
@@ -129,8 +139,8 @@ const RoomListScreen: React.FC = () => {
               position: "absolute",
               top: 50,
               width: "300px",
-              mt:'4%',
-              ml:'35%',
+              mt: "4%",
+              ml: "35%",
               height: "100vh",
               display: "flex",
               justifyContent: "center",
@@ -143,7 +153,10 @@ const RoomListScreen: React.FC = () => {
         ) : currentRooms.length > 0 ? (
           currentRooms.map((room: any) => (
             <Tooltip title="Click to view more details!" key={room._id}>
-              <Card sx={{ width: "100%", height: "270px" }} onClick={() => handleCardClick(room._id)}>
+              <Card
+                sx={{ width: "100%", height: "270px" }}
+                onClick={() => handleCardClick(room._id)}
+              >
                 <ImageListItem sx={{ height: "100% !important" }}>
                   <ImageListItemBar
                     sx={{

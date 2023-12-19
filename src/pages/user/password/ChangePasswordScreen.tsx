@@ -1,13 +1,13 @@
-import React, { useRef } from 'react';
-import PasswordField from '../../../components/user/PasswordField';
-import { Box, Button, Container, Grid, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { setAlert } from '../../../store/slices/userSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../store/types';
-import { changePassword } from '../../../actions/user';
-import { AppDispatch } from '../../../store/store';
-import { toast } from 'react-toastify';
+import React, { useRef } from "react";
+import PasswordField from "../../../components/user/PasswordField";
+import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { setAlert } from "../../../store/slices/userSlices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../store/types";
+import { changePassword } from "../../../actions/user";
+import { AppDispatch } from "../../../store/store";
+import { toast } from "react-toastify";
 
 const ChangePasswordScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const ChangePasswordScreen: React.FC = () => {
   const currentPasswordRef = useRef<HTMLInputElement>(null);
   const newPasswordRef = useRef<HTMLInputElement>(null);
   const confirmNewPasswordRef = useRef<HTMLInputElement>(null);
-  const{ currentUser} = useSelector((state:RootState) => state.user);
+  const { currentUser } = useSelector((state: RootState) => state.user);
 
   const handleChangePassword = (event: React.FormEvent) => {
     event?.preventDefault();
@@ -50,69 +50,139 @@ const ChangePasswordScreen: React.FC = () => {
       return;
     }
 
-    if (newPasswordRef.current?.value !== confirmNewPasswordRef.current?.value) {
+    if (
+      newPasswordRef.current?.value !== confirmNewPasswordRef.current?.value
+    ) {
       showErrorAlert("Confirmed password do not match.");
       return;
     }
 
     if (currentPasswordRef.current?.value === newPasswordRef.current?.value) {
-      showErrorAlert("New passwords should be different from current password!");
+      showErrorAlert(
+        "New passwords should be different from current password!"
+      );
       return;
     }
 
-    const currentPassword= currentPasswordRef.current?.value as string;
-    const newPassword:string = newPasswordRef.current?.value;
-    
+    const currentPassword = currentPasswordRef.current?.value as string;
+    const newPassword: string = newPasswordRef.current?.value;
+
     const result = dispatch(
-      changePassword({changePasswordData:{
-        userId:currentUser?._id as string,
-        currentPassword,
-        newPassword
-      }}))
-      const resultUnwrapped = result.unwrap();
-      resultUnwrapped.then((thenResult) => {
+      changePassword({
+        changePasswordData: {
+          userId: currentUser?._id as string,
+          currentPassword,
+          newPassword,
+        },
+      })
+    );
+    const resultUnwrapped = result.unwrap();
+    resultUnwrapped.then((thenResult) => {
       console.log("successThenResult", thenResult);
 
       // Check if thenResult is not null or undefined
-      if (thenResult!==null) {
-        console.log('result of changePassword',thenResult);
-        toast.success('Password changed successfully!');
+      if (thenResult !== null) {
+        console.log("result of changePassword", thenResult);
+        toast.success("Password changed successfully!");
       }
     });
-  }
+  };
   return (
-    <Container sx={{ width: '100%' }}>
+    <Container sx={{ width: "100%" }}>
       <Box p={4} display="flex" justifyContent="center">
-        <Grid container xs={12} sm={12} md={6} justifyContent="center" >
-          <Grid item  border={1}>
-      <Box display="flex" flexDirection="column" alignItems="center" paddingTop={4}>
-        <Typography variant="h5" fontWeight="bold">
-          Change Password
-        </Typography>
-      </Box>
+        <Grid container xs={12} sm={12} md={6} justifyContent="center">
+          <Grid item border={1}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              paddingTop={4}
+            >
+              <Typography variant="h5" fontWeight="bold">
+                Change Password
+              </Typography>
+            </Box>
             {/* Box 1 */}
-            <Box sx={{ width: '100%' }}  padding={6}>
+            <Box sx={{ width: "100%" }} padding={6}>
               <Typography>
                 Please fill the fields below to change password:
               </Typography>
-              <PasswordField {...{ passwordRef: currentPasswordRef, id: 'currentPassword', label: 'Current Password' }} />
-              <PasswordField {...{ passwordRef: newPasswordRef, id: 'newPassword', label: 'New Password' }} />
-              <PasswordField {...{ passwordRef: confirmNewPasswordRef, id: 'confirmPassword', label: 'Confirm New Password' }} />
-              
+              <PasswordField
+                {...{
+                  passwordRef: currentPasswordRef,
+                  id: "currentPassword",
+                  label: "Current Password",
+                }}
+              />
+              <PasswordField
+                {...{
+                  passwordRef: newPasswordRef,
+                  id: "newPassword",
+                  label: "New Password",
+                }}
+              />
+              <PasswordField
+                {...{
+                  passwordRef: confirmNewPasswordRef,
+                  id: "confirmPassword",
+                  label: "Confirm New Password",
+                }}
+              />
+
               {/* Box for the button */}
-            <Box display="flex" paddingTop={5} paddingLeft={1} paddingRight={1} gap={1} flexDirection="row">
-  <Button onClick={() => navigate('/user/home')} variant='outlined' sx={{ flex: 1, p: 1, borderRadius: 0, bgcolor: 'black', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: "color border bgColor 0.3s ease",
-    "&:hover": { bgcolor: "#d1d1d1", color: '#000000', border: '1px solid black' }, }}>
-    Cancel
-  </Button>
-  <Button onClick={handleChangePassword} variant='outlined' sx={{ flex: 1, p: 1, borderRadius: 0, bgcolor: 'black', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: "color border bgColor 0.3s ease",
-    "&:hover": { bgcolor: "#d1d1d1", color: '#000000', border: '1px solid black' }, }}>
-    Change Password
-  </Button>
-</Box>
-
-
-
+              <Box
+                display="flex"
+                paddingTop={5}
+                paddingLeft={1}
+                paddingRight={1}
+                gap={1}
+                flexDirection="row"
+              >
+                <Button
+                  onClick={() => navigate("/user/home")}
+                  variant="outlined"
+                  sx={{
+                    flex: 1,
+                    p: 1,
+                    borderRadius: 0,
+                    bgcolor: "black",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "color border bgColor 0.3s ease",
+                    "&:hover": {
+                      bgcolor: "#d1d1d1",
+                      color: "#000000",
+                      border: "1px solid black",
+                    },
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleChangePassword}
+                  variant="outlined"
+                  sx={{
+                    flex: 1,
+                    p: 1,
+                    borderRadius: 0,
+                    bgcolor: "black",
+                    color: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "color border bgColor 0.3s ease",
+                    "&:hover": {
+                      bgcolor: "#d1d1d1",
+                      color: "#000000",
+                      border: "1px solid black",
+                    },
+                  }}
+                >
+                  Change Password
+                </Button>
+              </Box>
             </Box>
           </Grid>
         </Grid>

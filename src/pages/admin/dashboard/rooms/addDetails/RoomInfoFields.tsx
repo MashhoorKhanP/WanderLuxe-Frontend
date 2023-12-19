@@ -1,14 +1,14 @@
 import { Avatar, Container, InputAdornment, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import pendingIcon from '../../hotels/icons/progress4.gif';
-import { updateRoomDetails } from "../../../../../store/slices/adminSlice";
+import pendingIcon from "../../hotels/icons/progress4.gif";
+import { updateRoomDetails } from "../../../../../store/slices/adminSlices/adminRoomSlice";
 
 interface InfoFieldsProps {
   mainProps: {};
   optionalProps?: {
     children?: React.ReactNode;
-    type?: string; 
+    type?: string;
   };
   minLength: number;
 }
