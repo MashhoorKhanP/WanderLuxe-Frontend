@@ -37,7 +37,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { addRemoveFromWishlist } from "../../../actions/user";
-import { setAdultChildrenOptions, setCheckInCheckOutRange } from "../../../store/slices/userSlices/roomSlice";
+import {
+  setAdultChildrenOptions,
+  setCheckInCheckOutRange,
+} from "../../../store/slices/userSlices/roomSlice";
 
 const HotelListScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -52,16 +55,15 @@ const HotelListScreen: React.FC = () => {
   const getTodayOrTomorrowDate = () => {
     const currentDate = new Date();
     const currentHour = currentDate.getHours();
-  
+
     // If the current hour is before 6 PM, return the current date
     // Otherwise, return the date of tomorrow
     return currentHour < 18
       ? currentDate
       : new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
   };
-  
+
   const today = getTodayOrTomorrowDate();
-  
 
   useEffect(() => {
     if (!hotels.length || !allHotels.length) {
@@ -74,17 +76,21 @@ const HotelListScreen: React.FC = () => {
       fetchHotels();
     }
     dispatch(setCheckInCheckOutRange({}));
-    dispatch(setCheckInCheckOutRange({
-      startDate: today,
-      endDate: today,
-      startTime: "",
-      endTime: "",
-      numberOfNights: 1,
-    }))
-    dispatch(setAdultChildrenOptions({
-      adult:1,
-      children:0
-    }))
+    dispatch(
+      setCheckInCheckOutRange({
+        startDate: today,
+        endDate: today,
+        startTime: "",
+        endTime: "",
+        numberOfNights: 1,
+      })
+    );
+    dispatch(
+      setAdultChildrenOptions({
+        adult: 1,
+        children: 0,
+      })
+    );
   }, [dispatch, allHotels]);
 
   const indexOfLastHotel = currentPage * hotelsPerPage;
@@ -254,7 +260,6 @@ const HotelListScreen: React.FC = () => {
                     src={hotel.images[0]}
                     alt={hotel.hotelName}
                     // style={{ cursor: "pointer" }}
-                    loading="lazy"
                   />
                   {/* Want to give room starts from with  */}
                   <ImageListItemBar
@@ -286,7 +291,6 @@ const HotelListScreen: React.FC = () => {
               alt="No Results Found"
               height="50"
               image={NotFound}
-              loading="lazy"
             />
             <CardContent>
               <Typography variant="caption">No results found.</Typography>

@@ -18,7 +18,6 @@ interface AdminHotelState {
   addedHotelImages: string[];
 }
 
-
 export interface HotelDetails {
   _id: string;
   hotelName: string;
@@ -30,7 +29,6 @@ export interface HotelDetails {
   description: string;
   parkingPrice?: number;
 }
-
 
 const initialState: AdminHotelState = {
   hotels: [],
@@ -137,7 +135,6 @@ const adminHotelSlice = createSlice({
         // Don't directly modify state.currentUser, create a new object
         state.hotels = hotels.message;
         state.allHotels = hotels.message;
-        
       } else {
         // Handle the case where currentUser or message is null or undefined
         console.error("Received invalid data in loginUser.fulfilled");

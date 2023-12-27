@@ -19,13 +19,18 @@ import AddImages from "../hotels/addImages/AddImages";
 import { toast } from "react-toastify";
 import { addRoom, getRooms, updateRoom } from "../../../../actions/room";
 import { AppDispatch } from "../../../../store/store";
-import { resetAddRoom, updateRooms } from "../../../../store/slices/adminSlices/adminRoomSlice";
+import {
+  resetAddRoom,
+  updateRooms,
+} from "../../../../store/slices/adminSlices/adminRoomSlice";
 
 const AddRoom: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
-  const roomImages = useSelector((state: RootState) => state.adminRoom.roomImages);
+  const roomImages = useSelector(
+    (state: RootState) => state.adminRoom.roomImages
+  );
   const roomDetails = useSelector(
     (state: RootState) => state.adminRoom.roomDetails
   );
@@ -115,7 +120,7 @@ const AddRoom: React.FC = () => {
     const hotel = hotelDetails.find(
       (hotel: any) => hotel.hotelName === roomDetails.hotelName
     );
-    console.log("validating hotel", hotel);
+    
     if (
       roomDetails.price > 3500 ||
       roomDetails.price < 1500 ||

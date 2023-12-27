@@ -27,10 +27,7 @@ interface CustomSwiperOptions {
 
 const PopupHotel: React.FC<PopupHotelProps> = ({ popupInfo,distance }) => {
   const navigate = useNavigate();
-  console.log("popupInfo", popupInfo.properties);
-  const { hotelName, minimumRent, hotelImages,hotelId} =
-    popupInfo.properties;
-  console.log("hotelName", hotelName, hotelImages);
+  const { hotelName, minimumRent, hotelImages,hotelId} = popupInfo.properties;
 
   return (
     <div className="popup-hotel-container" style={{ paddingBottom: "0px" }}>

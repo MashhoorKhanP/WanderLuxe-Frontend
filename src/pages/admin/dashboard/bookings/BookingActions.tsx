@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Check, Delete, Edit, Preview, Save } from "@mui/icons-material";
+import { Check, Delete, Edit, InfoOutlined, Preview, Save, TocOutlined } from "@mui/icons-material";
 import { Box, CircularProgress, Fab, IconButton, Tooltip } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -13,8 +13,9 @@ import { deleteCoupon, updateCoupon } from "../../../../actions/coupon";
 import { green } from "@mui/material/colors";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { updateBooking } from "../../../../actions/booking";
 
-interface CouponsActionsProps {
+interface BookingActionsProps {
   params: any;
   setData: any;
   selectedRowId: string;
@@ -22,7 +23,7 @@ interface CouponsActionsProps {
   setSelectedRowId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const CouponsActions: React.FC<CouponsActionsProps> = ({
+const BookingActions: React.FC<BookingActionsProps> = ({
   params,
   setData,
   selectedRowId,
@@ -35,36 +36,23 @@ const CouponsActions: React.FC<CouponsActionsProps> = ({
   const dispatch = useDispatch<AppDispatch>();
   const {
     _id,
-    couponCode,
-    discountType,
-    discount,
-    maxDiscount,
-    expiryDate,
-    couponCount,
-    description,
-    isCancelled,
+  status,
   } = params.row;
-
+  console.log('params',params);
   const handleSubmit = async () => {
     setLoading(true);
     setTimeout(async () => {
-      const { isCancelled } = params.row;
+      const { status } = params.row;
       try {
         // Assuming updateUser is an asynchronous action (thunk)
-        const result = await updateCoupon({
-          updatedCoupon: {
+        const result = await updateBooking({
+          updatedBooking: {
             _id: _id,
-            couponCode: couponCode,
-            discountType: discountType,
-            discount: discount,
-            maxDiscount: maxDiscount,
-            expiryDate: expiryDate,
-            couponCount: couponCount,
-            description: description,
-            isCancelled: isCancelled,
+            status:status,
           },
         });
         if (result) {
+          setData((prevData: any) => !prevData);
           setSuccess(true);
           setRowId("");
           setSelectedRowId("");
@@ -82,58 +70,62 @@ const CouponsActions: React.FC<CouponsActionsProps> = ({
     if (selectedRowId === params.row._id && success) setSuccess(false);
   }, [selectedRowId]);
 
-  const handleEdit = () => {
-    dispatch(
-      updateCouponDetails({
-        couponCode,
-        discountType,
-        discount,
-        maxDiscount,
-        expiryDate,
-        couponCount,
-        description,
-        isCancelled,
-      })
-    );
-    dispatch(
-      updateUpdatedCoupon({
-        _id,
-        couponCode,
-        discountType,
-        discount,
-        maxDiscount,
-        expiryDate,
-        couponCount,
-        description,
-        isCancelled,
-      })
-    );
-    setData((prevData: any) => !prevData);
-    navigate("/admin/dashboard/coupons/edit-coupon");
+  const handleViewMoreDetails = () => {
+    navigate(`/admin/dashboard/bookings/view-more?bookingId=${_id}`);
   };
 
-  const handleDelete = async (row: any) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: `Do you want to delete ${row.couponCode} coupon!`,
-      icon: "error",
-      showCancelButton: true,
-      confirmButtonText: "Yes, Delete",
-      cancelButtonText: "No, cancel!",
-      customClass: {
-        container: "custom-swal-container",
-      },
-      width: 400, // Set your desired width
-      background: "#f0f0f0",
-      iconHtml: '<i class="bi bi-trash" style="font-size:30px"></i>',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        dispatch(deleteCoupon({ couponData: row }));
-        toast.success("Coupon deleted successfully");
-        setData((prevData: any) => !prevData);
-      }
-    });
-  };
+  // const handleEdit = () => {
+  //   dispatch(
+  //     updateCouponDetails({
+  //       couponCode,
+  //       discountType,
+  //       discount,
+  //       maxDiscount,
+  //       expiryDate,
+  //       couponCount,
+  //       description,
+  //       isCancelled,
+  //     })
+  //   );
+  //   dispatch(
+  //     updateUpdatedCoupon({
+  //       _id,
+  //       couponCode,
+  //       discountType,
+  //       discount,
+  //       maxDiscount,
+  //       expiryDate,
+  //       couponCount,
+  //       description,
+  //       isCancelled,
+  //     })
+  //   );
+
+  //   navigate("/admin/dashboard/coupons/edit-coupon");
+  // };
+
+  // const handleDelete = async (row: any) => {
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     text: `Do you want to delete ${row.couponCode} coupon!`,
+  //     icon: "error",
+  //     showCancelButton: true,
+  //     confirmButtonText: "Yes, Delete",
+  //     cancelButtonText: "No, cancel!",
+  //     customClass: {
+  //       container: "custom-swal-container",
+  //     },
+  //     width: 400, // Set your desired width
+  //     background: "#f0f0f0",
+  //     iconHtml: '<i class="bi bi-trash" style="font-size:30px"></i>',
+  //   }).then(async (result) => {
+  //     if (result.isConfirmed) {
+  //       dispatch(deleteCoupon({ couponData: row }));
+  //       toast.success("Coupon deleted successfully");
+  //       setData((prevData: any) => !prevData);
+  //     }
+  //   });
+  // };
 
   return (
     <>
@@ -184,19 +176,19 @@ const CouponsActions: React.FC<CouponsActionsProps> = ({
         </Box>
       </Tooltip>
       <Box>
-        <Tooltip title="Edit this coupon">
-          <IconButton onClick={() => handleEdit()}>
-            <Edit />
+        <Tooltip title="View more details">
+          <IconButton onClick={() => handleViewMoreDetails()}>
+            <TocOutlined sx={{fontSize:'35px'}}/>
           </IconButton>
         </Tooltip>
-        <Tooltip title='Delete this coupon'>
+        {/* <Tooltip title='Delete this coupon'>
           <IconButton onClick={() => handleDelete(params.row)}>
             <Delete/>
           </IconButton>
-      </Tooltip>
+      </Tooltip> */}
       </Box>
     </>
   );
 };
 
-export default CouponsActions;
+export default BookingActions;

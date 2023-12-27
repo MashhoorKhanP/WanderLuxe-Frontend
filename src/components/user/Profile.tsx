@@ -311,22 +311,6 @@ const Profile: React.FC = () => {
           sx={{ justifyContent: "center", px: "19px", pb: "25px" }}
         >
           <Button
-            variant="contained"
-            sx={{
-              bgcolor: "black",
-              transition: "color border bgColor 0.3s ease",
-              "&:hover": {
-                bgcolor: "#ffffff",
-                color: "#000000",
-                border: "1px solid black",
-              },
-            }}
-            endIcon={<Grading />}
-          >
-            My Bookings
-          </Button>
-
-          <Button
             onClick={() => {
               handleClose && handleClose();
               navigate("/user/change-password");

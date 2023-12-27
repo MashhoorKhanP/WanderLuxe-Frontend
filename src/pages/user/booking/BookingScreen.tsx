@@ -1,13 +1,10 @@
 import {
-  AppBar,
   Box,
   Button,
   Card,
   Container,
   Divider,
   Grid,
-  ImageListItem,
-  ImageListItemBar,
   Stack,
   TextField,
   Toolbar,
@@ -18,15 +15,18 @@ import { setAlert } from "../../../store/slices/userSlices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store/store";
 import { useNavigate, useSearchParams } from "react-router-dom";
-
 import {
   openCouponOverview,
   setCoupons,
 } from "../../../store/slices/userSlices/couponSlice";
 import { getCoupons } from "../../../actions/coupon";
 import { Coupon } from "../coupons/CouponsOverviewScreen";
-import MyDatePicker from "../rooms/MyDatePicker";
-import AdultChildrenPicker, { Options } from "../rooms/AdultChildrenPicker";
+import { Options } from "../rooms/AdultChildrenPicker";
+import { postPaymentRequest } from "../../../actions/booking";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+
 
 const BookingScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -40,28 +40,39 @@ const BookingScreen: React.FC = () => {
   const couponCodeRef = useRef<HTMLInputElement>(null);
   const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
-
+  const { currentUser } : any = useSelector((state: RootState) => state.user);
   const roomId = searchParams.get("roomId");
   const additionalroomsNeeded = searchParams.get("additionalroomsNeeded");
-  const totalRoomNeeded = Number(additionalroomsNeeded)+1;
-  const adultChildOptions:Options = useSelector((state: RootState) => state.room.adultChildrenOptions);
+  const totalRoomNeeded = Number(additionalroomsNeeded) + 1;
+
+  console.log('appliedCounpon',appliedCoupon)
+
+  const [stripe, setStripe] = useState<any>();
+
+  const adultChildOptions: Options = useSelector(
+    (state: RootState) => state.room.adultChildrenOptions
+  );
   const rooms: any = useSelector(
     (state: RootState) => state.user.filteredRooms
   );
   const checkInCheckoutRange: any = useSelector(
     (state: RootState) => state.room.checkInCheckOutRange
   );
-
+  
+  if(room.price === undefined){
+    navigate('/user/view-hotels');
+  }
   const coupons = useSelector((state: RootState) => state.coupon.coupons);
   const [roomsNeeded, setRoomsNeeded] = useState<number>(1);
+  const [couponDiscount,setCouponDiscount] = useState<number>(0);
   const [payableAmount, setPayableAmount] = useState<number>(
-    (room.price * checkInCheckoutRange.numberOfNights)
+    room.price * checkInCheckoutRange.numberOfNights
   );
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const toggleDatePicker = () => {
     setIsDatePickerOpen((prev) => !prev);
   };
-  
+  console.log('couponDiscount',couponDiscount);
   useEffect(() => {
     if (roomId) {
       // Use useEffect to update room only after the component has mounted
@@ -80,9 +91,11 @@ const BookingScreen: React.FC = () => {
   useEffect(() => {
     // Check if room is not empty before calculating payableAmount
     if (room && checkInCheckoutRange.numberOfNights) {
-      setPayableAmount((room.price) * checkInCheckoutRange.numberOfNights * totalRoomNeeded);
+      setPayableAmount(
+        room.price * checkInCheckoutRange.numberOfNights * totalRoomNeeded
+      );
     }
-  }, [room, checkInCheckoutRange.numberOfNights,totalRoomNeeded]);
+  }, [room, checkInCheckoutRange.numberOfNights, totalRoomNeeded]);
 
   useEffect(() => {
     // Filter available coupons based on your conditions
@@ -110,30 +123,36 @@ const BookingScreen: React.FC = () => {
 
       if (selectedCoupon.discountType === "percentage") {
         const couponDiscount =
-        ((room.price) * selectedCoupon.discount) / 100 >
-        selectedCoupon.maxDiscount
-          ? selectedCoupon.maxDiscount
-          : ((room.price) * selectedCoupon.discount) / 100;
+          (room.price * selectedCoupon.discount) / 100 >
+          selectedCoupon.maxDiscount
+            ? selectedCoupon.maxDiscount
+            : (room.price * selectedCoupon.discount) / 100;
 
-      setPayableAmount(
-        (room.price) * checkInCheckoutRange.numberOfNights * totalRoomNeeded - couponDiscount
-      );
-    } else if (selectedCoupon.discountType === "fixedAmount") {
-      setPayableAmount(
-        (room.price) * checkInCheckoutRange.numberOfNights * totalRoomNeeded -
-          selectedCoupon.discount
-      );
+        setPayableAmount(
+          room.price * checkInCheckoutRange.numberOfNights * totalRoomNeeded -
+            couponDiscount
+        );
+        setCouponDiscount(couponDiscount);
+      } else if (selectedCoupon.discountType === "fixedAmount") {
+        setCouponDiscount(selectedCoupon.discount);
+        setPayableAmount(
+          room.price * checkInCheckoutRange.numberOfNights * totalRoomNeeded -
+            selectedCoupon.discount
+        );
       }
     }
   };
 
   const removeCoupon = () => {
     setAppliedCoupon(null);
+    setCouponDiscount(0);
     // Reset payable amount to the original amount without the coupon discount
-    setPayableAmount((room.price) * checkInCheckoutRange.numberOfNights * totalRoomNeeded);
+    setPayableAmount(
+      room.price * checkInCheckoutRange.numberOfNights * totalRoomNeeded
+    );
   };
 
-  const handlePayNow = (event: React.FormEvent) => {
+  const handlePayNow = async(event: React.FormEvent) => {
     event?.preventDefault();
 
     const showErrorAlert = (message: string) => {
@@ -181,31 +200,44 @@ const BookingScreen: React.FC = () => {
       showErrorAlert("Please enter a valid email address.");
       return;
     }
+    console.log('couponDiscount',couponDiscount);
 
     if (!mobileRef.current?.value.match(/^[6-9]\d{9}$/)) {
       showErrorAlert("Please enter a valid mobile number.");
       return;
     }
+    const bookingDetails = {
+      firstName : fNameRef.current?.value,
+      lastName : lNameRef.current?.value,
+      email : emailRef.current?.value,
+      mobile : mobileRef.current?.value,
+      userId:currentUser?._id === undefined ? currentUser?.message?._id : currentUser?._id,
+      roomId:room._id,
+      roomType:room.roomType,
+      hotelName:room.hotelName,
+      roomImage:room.images[0],
+      appliedCouponId:appliedCoupon?._id ? appliedCoupon?._id: 'No Coupon Applied',
+      couponDiscount:couponDiscount,
+      totalRoomsCount:totalRoomNeeded,
+      checkInDate:checkInCheckoutRange.startDate.toDateString(),
+      checkOutDate:checkInCheckoutRange.endDate.toDateString(),
+      checkInTime:checkInCheckoutRange.startTime,
+      checkOutTime:checkInCheckoutRange.endTime,
+      numberOfNights:checkInCheckoutRange.numberOfNights,
+      adults:adultChildOptions.adult,
+      children:adultChildOptions.children,
+      totalAmount:payableAmount,
+      paymentMethod:'Online Payment' // when adding wallet add condition here wallet ? Wallet : Online Payment
+    }
 
-    // Perform registration logic
-    const firstName = fNameRef.current?.value;
-    const lastName = lNameRef.current?.value;
-    const email = emailRef.current?.value;
-    const mobile = mobileRef.current?.value;
-
-    // const result = dispatch(
-    //   registerUser({ firstName, lastName, email, password, mobile }) //set this to a variable and check is userAlreadyExist then no navigate
-    // );
-    // const resultUnwrapped = result.unwrap();
-    // resultUnwrapped.then((thenResult) => {
-    //   console.log("success", thenResult);
-
-    //   // Check if thenResult is not null or undefined
-    //   if (thenResult != null) {
-    //     navigate("/user/otp-verification");
-    //   }
-    // });
+    if(!stripe){
+      const stripeInstance = await stripePromise;
+      setStripe(stripeInstance);
+    }
+    dispatch(postPaymentRequest({bookingDetails}))
+    
   };
+
   return (
     <Container>
       <Box paddingTop={4}>
@@ -283,24 +315,6 @@ const BookingScreen: React.FC = () => {
             <Divider
               sx={{ width: "96%", height: "1px", bgcolor: "#777", mt: 2 }}
             />
-            {/* <Box paddingTop={2} paddingBottom={2}>
-        <Typography variant="h6" fontWeight="bold">
-          Check-in/Check-out
-        </Typography>
-      </Box>
-            <Box
-        display={"flex"}
-        flexDirection={"row"}
-        justifyContent={"space-around"}
-        alignItems={"center"}
-        pb={2}
-        gap={2}
-      >
-        
-        <MyDatePicker
-         isOpen={isDatePickerOpen} onToggle={toggleDatePicker} />
-        <AdultChildrenPicker/>
-      </Box> */}
           </Grid>
 
           <Grid
@@ -336,7 +350,6 @@ const BookingScreen: React.FC = () => {
                         height: "300px",
                         objectFit: "cover",
                       }}
-                      loading="lazy"
                     />
                   )}
                 </Card>
@@ -347,42 +360,6 @@ const BookingScreen: React.FC = () => {
                 alignItems="flex-start"
                 justifyContent="space-between"
               >
-                {/* <Stack direction="row">
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: '75%',
-                }}
-              >
-                <Box>
-                  <Typography variant="h6" component={"span"} sx={{fontSize:'26px'}}>
-                    {`₹${room.price}`}
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    component={"span"}
-                    style={{
-                      textDecoration: "line-through",
-                      fontSize: "16px",
-                      color: "#777",
-                    }}
-                  >
-                    {`₹${room.price + room.discountPrice}`}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Stack> */}
                 <Stack>
                   <Box
                     sx={{
@@ -396,7 +373,7 @@ const BookingScreen: React.FC = () => {
                     >
                       {checkInCheckoutRange.numberOfNights > 1
                         ? `${checkInCheckoutRange.numberOfNights} Nights`
-                        : `${1}Night`}
+                        : `${1} Night`}
                     </Typography>
                   </Box>
                   <Box
@@ -424,24 +401,24 @@ const BookingScreen: React.FC = () => {
                   </Box>
                 </Stack>
                 {adultChildOptions && (
-                <Stack direction="row">
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "100%",
-                    }}
-                  >
-                    <Typography
-                      variant="h6"
-                      component={"span"}
-                      sx={{ fontSize: "14px" }}
+                  <Stack direction="row">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
                     >
-                      {`${adultChildOptions.adult} Adult • ${adultChildOptions.children} Children`}
-                    </Typography>
-                  </Box>
-                </Stack>
+                      <Typography
+                        variant="h6"
+                        component={"span"}
+                        sx={{ fontSize: "14px" }}
+                      >
+                        {`${adultChildOptions.adult} Adult • ${adultChildOptions.children} Children`}
+                      </Typography>
+                    </Box>
+                  </Stack>
                 )}
                 <Stack direction="row">
                   <Box
@@ -512,7 +489,7 @@ const BookingScreen: React.FC = () => {
                       sx={{ fontSize: "14px" }}
                     >
                       {checkInCheckoutRange.startDate
-                        ? `Check In: ${checkInCheckoutRange.startDate.toDateString()} - ${
+                        ? `Check-In: ${checkInCheckoutRange.startDate.toDateString()} - ${
                             checkInCheckoutRange.startTime
                           }`
                         : ""}
@@ -524,7 +501,7 @@ const BookingScreen: React.FC = () => {
                       sx={{ fontSize: "14px" }}
                     >
                       {checkInCheckoutRange.endDate
-                        ? `Check Out: ${checkInCheckoutRange.endDate.toDateString()} - ${
+                        ? `Check-Out: ${checkInCheckoutRange.endDate.toDateString()} - ${
                             checkInCheckoutRange.endTime
                           }`
                         : ""}
@@ -607,7 +584,7 @@ const BookingScreen: React.FC = () => {
                         sx={{ fontSize: "14px" }}
                       >
                         {`Rent for a night (1Room): ₹${
-                          (room.price + room.discountPrice)
+                          room.price + room.discountPrice
                         }`}
                       </Typography>
 
@@ -622,12 +599,13 @@ const BookingScreen: React.FC = () => {
                           checkInCheckoutRange.numberOfNights
                         } night x ${totalRoomNeeded} rooms: ₹${
                           (room.price + room.discountPrice) *
-                          checkInCheckoutRange.numberOfNights * totalRoomNeeded
+                          checkInCheckoutRange.numberOfNights *
+                          totalRoomNeeded
                         }`}
                       </Typography>
 
                       <br />
-                      
+
                       <Typography
                         variant="h6"
                         component={"span"}
@@ -635,7 +613,8 @@ const BookingScreen: React.FC = () => {
                       >
                         {`Instant discount: -₹${
                           room.discountPrice *
-                          checkInCheckoutRange.numberOfNights * totalRoomNeeded
+                          checkInCheckoutRange.numberOfNights *
+                          totalRoomNeeded
                         }`}
                       </Typography>
                       <br />
@@ -704,51 +683,60 @@ const BookingScreen: React.FC = () => {
                     </Box>
                   </Stack>
                 )}
-                <Stack direction="row" width={"100%"} spacing={0.5} paddingBottom={2} paddingTop={2}>
-  <Button
-    variant="outlined"
-    sx={{ width: "100%", p: 1, borderRadius: 0 }}
-    color="inherit"
-    onClick={() => navigate(`/user/view-rooms?hotelId=${room.hotelId}`)}
-  >
-    <span>Go back</span>
-  </Button>
+                <Stack
+                  direction="row"
+                  width={"100%"}
+                  spacing={0.5}
+                  paddingBottom={2}
+                  paddingTop={2}
+                >
+                  <Button
+                    variant="outlined"
+                    sx={{ width: "100%", p: 1, borderRadius: 0 }}
+                    color="inherit"
+                    onClick={() =>
+                      navigate(`/user/view-rooms?hotelId=${room.hotelId}`)
+                    }
+                  >
+                    <span>Go back</span>
+                  </Button>
 
-  {checkInCheckoutRange &&
-    (checkInCheckoutRange.startDate === undefined ||
-    checkInCheckoutRange.endDate === undefined ||
-    checkInCheckoutRange.startTime === undefined ||
-    checkInCheckoutRange.endTime === undefined ||
-    checkInCheckoutRange.startDate.toLocaleDateString() ===
-      checkInCheckoutRange.endDate.toLocaleDateString() ? (
-      <Button
-        variant="outlined"
-        sx={{
-          width: "100%",
-          p: 1,
-          borderRadius: 0,
-          borderColor: "red",
-          color: "red",
-          "&:hover": {
-            border: "1.5px solid red",
-            borderColor: "red",
-          },
-        }}
-      >
-        Select checkout date
-      </Button>
-    ) : (
-      <Button
-        className="book_room_btn"
-        variant="outlined"
-        sx={{ width: "100%", p: 1, borderRadius: 0 }}
-        color="inherit"
-        onClick={handlePayNow}
-      >
-        <span>Pay Now</span>
-      </Button>
-    ))}
-</Stack>
+                  {checkInCheckoutRange &&
+                    (checkInCheckoutRange.startDate === undefined ||
+                    checkInCheckoutRange.endDate === undefined ||
+                    checkInCheckoutRange.startTime === undefined ||
+                    checkInCheckoutRange.endTime === undefined ||
+                    checkInCheckoutRange.startDate.toLocaleDateString() ===
+                      checkInCheckoutRange.endDate.toLocaleDateString() ? (
+                      <Button
+                        variant="outlined"
+                        onClick={() => navigate('/user/view-rooms')}
+                        sx={{
+                          width: "100%",
+                          p: 1,
+                          borderRadius: 0,
+                          borderColor: "red",
+                          color: "red",
+                          "&:hover": {
+                            border: "1.5px solid red",
+                            borderColor: "red",
+                          },
+                        }}
+                      >
+                        Select checkout date
+                      </Button>
+                    ) : (
+                      <Button
+                        className="book_room_btn"
+                        variant="outlined"
+                        sx={{ width: "100%", p: 1, borderRadius: 0 }}
+                        color="inherit"
+                        onClick={handlePayNow}
+                      >
+                        <span>Pay Now</span>
+                      </Button>
+                    ))}
+                </Stack>
               </Stack>
             </Box>
           </Grid>

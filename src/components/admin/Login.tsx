@@ -70,10 +70,10 @@ const AdminLogin: React.FC = () => {
 
   return (
     <>
-    <Dialog open={true} /**onClose={handleClose}*/>
-      <DialogTitle>
-        Admin login
-        {/* <IconButton
+      <Dialog open={true} /**onClose={handleClose}*/>
+        <DialogTitle>
+          Admin login
+          {/* <IconButton
           sx={{
             position: "absolute",
             top: 8,
@@ -84,39 +84,41 @@ const AdminLogin: React.FC = () => {
         >
           <Close />
         </IconButton> */}
-      </DialogTitle>
-      <form onSubmit={handleSubmit}>
-        <DialogContent>
-          <DialogContentText>
-            Please fill your details in the fields below:
-          </DialogContentText>
-          <>
-            {/* Email */}
-            <TextField
-              margin="normal"
-              variant="standard"
-              id="email"
-              label="Email"
-              type="email"
-              fullWidth
-              inputRef={emailRef}
-            />
-            {/* Password */}
-            <PasswordField {...{ passwordRef }} />
-          </>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: "center", px: "19px", p: "40px" }}>
-          <Button
-            type="submit"
-            sx={{ width: "50%", fontSize: "16px", bgcolor: "black" }}
-            variant="contained"
-            endIcon={<Send />}
+        </DialogTitle>
+        <form onSubmit={handleSubmit}>
+          <DialogContent>
+            <DialogContentText>
+              Please fill your details in the fields below:
+            </DialogContentText>
+            <>
+              {/* Email */}
+              <TextField
+                margin="normal"
+                variant="standard"
+                id="email"
+                label="Email"
+                type="email"
+                fullWidth
+                inputRef={emailRef}
+              />
+              {/* Password */}
+              <PasswordField {...{ passwordRef }} />
+            </>
+          </DialogContent>
+          <DialogActions
+            sx={{ justifyContent: "center", px: "19px", p: "40px" }}
           >
-            Login
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+            <Button
+              type="submit"
+              sx={{ width: "50%", fontSize: "16px", bgcolor: "black" }}
+              variant="contained"
+              endIcon={<Send />}
+            >
+              Login
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
     </>
   );
 };

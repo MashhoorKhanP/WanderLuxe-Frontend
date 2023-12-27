@@ -40,7 +40,6 @@ const AddDetails: React.FC = () => {
     }
   };
   
-  console.log('updateCouponDetails',couponDetails);
   return (
     <Stack
       sx={{

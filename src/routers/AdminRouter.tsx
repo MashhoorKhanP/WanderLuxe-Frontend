@@ -44,9 +44,9 @@ const AdminRouter: React.FC = () => {
       <Route path="/login" element={<AdminLogin />} />
       <Route path="*" element={<Navigate to="/admin/login" />} />
       {/* <Route path="dashboard" element={<Dashboard/>}/> */}
-
-      
+      <Route path="" element={<AdminPrivateRoute />}>
         <Route path="dashboard/*" element={<Admin />} />
+      </Route>
     </Routes>
   );
 };

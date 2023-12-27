@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createTheme, styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -21,6 +21,7 @@ import { updateHotels } from "../../../store/slices/adminSlices/adminHotelSlice"
 import { updateRooms } from "../../../store/slices/adminSlices/adminRoomSlice";
 import { getCoupons } from "../../../actions/coupon";
 import { updateCoupons } from "../../../store/slices/adminSlices/adminCouponSlice";
+import { Socket, io } from "socket.io-client";
 
 const drawerWidth = 240;
 
@@ -54,8 +55,15 @@ const Dashboard: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(true);
   const [title, setTitle] = useState("Admin Panel");
+  const socket = useRef<Socket | null>();
 
-  console.log(currentAdmin);
+  useEffect(()=>{
+    if(!socket.current && currentAdmin){
+      socket.current = io(import.meta.env.VITE_SERVER_URL)
+      socket.current.emit('addUser',(currentAdmin?._id))
+    }
+  },[socket, currentAdmin])
+
   const darkTheme = useMemo(
     () =>
       createTheme({

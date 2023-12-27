@@ -47,12 +47,13 @@ const AddDetails: React.FC = () => {
   const [hotelPopoverAnchor, setHotelPopoverAnchor] =
     useState<HTMLElement | null>(null);
   const [imageIndex, setImageIndex] = useState<number>(0);
-  const hotels: any = useSelector((state: RootState) => state.adminHotel.allHotels);
+  const hotels: any = useSelector(
+    (state: RootState) => state.adminHotel.allHotels
+  );
   const [selectedHotel, setSelectedHotel] = useState<any>(hotels[0]);
   const roomDetails: any = useSelector(
     (state: RootState) => state.adminRoom.roomDetails
   );
-  console.log("roomDetails ", roomDetails);
 
   const [roomFields, setRoomDetails] = useState<RoomFields>({
     hotelId: "",

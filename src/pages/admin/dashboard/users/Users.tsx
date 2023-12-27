@@ -31,7 +31,6 @@ const Users: React.FC<UsersProps> = ({ setSelectedLink, link }) => {
 
   const dispatch = useDispatch();
   const users = useSelector((state: RootState) => state.admin.users);
-  console.log("Users List from User.tsx", users);
 
   const [rowId, setRowId] = useState<string>("");
   const [selectedRowId, setSelectedRowId] = useState<string>("");

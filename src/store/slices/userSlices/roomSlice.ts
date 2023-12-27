@@ -11,9 +11,9 @@ interface RoomState {
   isRoomOverviewOpen: boolean;
   selectedRoomId: string | null;
   checkInCheckOutRange: {};
-  adultChildrenCount:number;
-  adultChildrenOptions:Options;
-  additionalRoomsNeeded:number;
+  adultChildrenCount: number;
+  adultChildrenOptions: Options;
+  additionalRoomsNeeded: number;
 }
 
 const getTodayOrTomorrowDate = () => {
@@ -41,12 +41,12 @@ const initialState: RoomState = {
     endTime: "",
     numberOfNights: 1,
   },
-  adultChildrenCount:1,
-  adultChildrenOptions:{
-    adult:1,
-    children:0
+  adultChildrenCount: 1,
+  adultChildrenOptions: {
+    adult: 1,
+    children: 0,
   },
-  additionalRoomsNeeded:1
+  additionalRoomsNeeded: 1,
 };
 
 const roomSlice = createSlice({
@@ -60,14 +60,17 @@ const roomSlice = createSlice({
       state.isRoomOverviewOpen = false;
       state.selectedRoomId = null;
     },
-    setAdultChildren:(state,action:PayloadAction<number>) => {
-      state.adultChildrenCount= action.payload;
+    setAdultChildren: (state, action: PayloadAction<number>) => {
+      state.adultChildrenCount = action.payload;
     },
-    setAdultChildrenOptions:(state,action:PayloadAction<object>) => {
-      state.adultChildrenOptions = {...state.adultChildrenOptions,...action.payload};
+    setAdultChildrenOptions: (state, action: PayloadAction<object>) => {
+      state.adultChildrenOptions = {
+        ...state.adultChildrenOptions,
+        ...action.payload,
+      };
     },
-    setAdditionalRoomsNeeded:(state,action:PayloadAction<number>) => {
-      state.additionalRoomsNeeded= action.payload;
+    setAdditionalRoomsNeeded: (state, action: PayloadAction<number>) => {
+      state.additionalRoomsNeeded = action.payload;
     },
     setRoomId: (state, action: PayloadAction<string>) => {
       state.selectedRoomId = action.payload;
@@ -122,7 +125,7 @@ export const {
   setCheckInCheckOutRange,
   setAdultChildren,
   setAdditionalRoomsNeeded,
-  setAdultChildrenOptions
+  setAdultChildrenOptions,
 } = roomSlice.actions;
 
 export default roomSlice.reducer;

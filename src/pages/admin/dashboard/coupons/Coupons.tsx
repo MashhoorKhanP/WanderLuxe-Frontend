@@ -3,7 +3,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddCoupon from "./AddCoupon";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCouponDetails, updateCoupons, updateUpdatedCoupon } from "../../../../store/slices/adminSlices/adminCouponSlice";
+import {
+  updateCouponDetails,
+  updateCoupons,
+  updateUpdatedCoupon,
+} from "../../../../store/slices/adminSlices/adminCouponSlice";
 import dayjs from "dayjs";
 import { DataGrid, GridColDef, gridClasses } from "@mui/x-data-grid";
 import { getCoupons } from "../../../../actions/coupon";
@@ -27,7 +31,6 @@ const Coupons: React.FC<CouponsProps> = ({ setSelectedLink, link }) => {
 
   const [data, setData] = useState<boolean>(true);
   
-  console.log('coupons', coupons);
   useEffect(() => {
     setSelectedLink(link);
   }, [setSelectedLink, link]);
@@ -38,18 +41,20 @@ const Coupons: React.FC<CouponsProps> = ({ setSelectedLink, link }) => {
   }, [data, dispatch]);
 
   const handleAddCoupon = () => {
-    dispatch(updateCouponDetails({ 
-      couponCode: '',
-      discountType:'',
-      discount:0,
-      maxDiscount:0,
-      expiryDate:dayjs(),
-      couponCount:0,
-      description:'',
-  }))
+    dispatch(
+      updateCouponDetails({
+        couponCode: "",
+        discountType: "",
+        discount: 0,
+        maxDiscount: 0,
+        expiryDate: dayjs(),
+        couponCount: 0,
+        description: "",
+      })
+    );
     dispatch(updateUpdatedCoupon({}));
-    navigate("/admin/dashboard/coupons/add-coupon")
-  }
+    navigate("/admin/dashboard/coupons/add-coupon");
+  };
 
   const renderCouponsCountCell = (params: any) => {
     const couponCount = params.row.couponCount;
@@ -68,22 +73,20 @@ const Coupons: React.FC<CouponsProps> = ({ setSelectedLink, link }) => {
 
   const columns: GridColDef[] = useMemo(
     () => [
-      { field: "couponCode", headerName: "Coupon Code", width: 120, },
-      { field: "discountType", headerName: "Discount Type", width: 120 ,},
+      { field: "couponCode", headerName: "Coupon Code", width: 120 },
+      { field: "discountType", headerName: "Discount Type", width: 120 },
       {
         field: "discount",
         headerName: "Discount",
         width: 80,
-        align: 'center',
+        align: "center",
         renderCell: (params) => {
           const { discountType, discount } = params.row;
-  
+
           // Format the discount based on the discountType
           const formattedDiscount =
-            discountType === 'percentage'
-              ? `${discount}%`
-              : `₹${discount}`;
-  
+            discountType === "percentage" ? `${discount}%` : `₹${discount}`;
+
           return <span>{formattedDiscount}</span>;
         },
       },
@@ -101,94 +104,109 @@ const Coupons: React.FC<CouponsProps> = ({ setSelectedLink, link }) => {
         align: "center",
         renderCell: (params) => renderCouponsCountCell(params),
       },
-      { field: "description", headerName: "Description", width: 150,align:'center' },
+      {
+        field: "description",
+        headerName: "Description",
+        width: 150,
+        align: "center",
+      },
       {
         field: "createdAt",
         headerName: "Created At",
-        align:'center',
+        align: "center",
         width: 150,
         renderCell: (params) =>
           moment(params.row.createdAt).format("YYYY-MM-DD HH:MM:SS"),
       },
-      
+
       {
-          field: "isCancelled",
-          headerName: "Cancelled",
-          width: 110,
-          type: "boolean",
-          editable: true,
-        },
-        {
-          field: "actions",
-          headerName: "Actions",
-          width: 150,
-          type: "actions",
-          renderCell: (params) => (
-            <CouponsActions
+        field: "isCancelled",
+        headerName: "Cancelled",
+        width: 110,
+        type: "boolean",
+        editable: true,
+      },
+      {
+        field: "actions",
+        headerName: "Actions",
+        width: 150,
+        type: "actions",
+        renderCell: (params) => (
+          <CouponsActions
             {...{
               params,
-              setData ,selectedRowId, setRowId, setSelectedRowId,
+              setData,
+              selectedRowId,
+              setRowId,
+              setSelectedRowId,
             }}
-            />
-            ),
-          },
-          { field: "_id", headerName: "Coupon ID", type: "string", width: 150,align:'center' },
-        ],
+          />
+        ),
+      },
+      {
+        field: "_id",
+        headerName: "Coupon ID",
+        type: "string",
+        width: 150,
+        align: "center",
+      },
+    ],
     [rowId, selectedRowId]
   );
 
   return (
     <>
-    {location.pathname === "/admin/dashboard/coupons" ? (
-      <div className="container" style={{ display: "flex", flexDirection: "column"}}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          paddingRight: 8,
-          paddingTop: 1,
-        }}
-      >
-        <Button
-          onClick={handleAddCoupon}
+      {location.pathname === "/admin/dashboard/coupons" ? (
+        <div
+          className="container"
+          style={{ display: "flex", flexDirection: "column" }}
         >
-          ADD COUPON
-        </Button>
-      </Box>
-        <Box sx={{ height: 400, width: "95%" }}>
-    <Typography
-      variant="h4"
-      component="h4"
-      sx={{ textAlign: "center", mt: 3, mb: 3 }}
-    >
-      Manage Coupons
-    </Typography>
-    <DataGrid
-      columns={columns}
-      rows={coupons}
-      getRowId={(row) => row._id}
-      pageSizeOptions={[10, 25, 50, 75, 100]}
-      getRowSpacing={(params) => ({
-        top: params.isFirstVisible ? 0 : 5,
-        bottom: params.isLastVisible ? 0 : 5,
-      })}
-      sx={{
-        [`& .${gridClasses.row}`]: {
-          bgcolor: (theme) =>
-            theme.palette.mode === "light" ? grey[200] : grey[900],
-        },
-      }}
-      onCellEditStop={(params) => setSelectedRowId(params.id.toString())} //give on onCellEditStart
-      onCellEditStart={(params) => setRowId(params.id.toString())}
-    />
-  </Box>
-      </div>
-    ) : location.pathname === "/admin/dashboard/coupons/add-coupon" ? (
-      <AddCoupon />
-    ) : location.pathname === "/admin/dashboard/coupons/edit-coupon" ? (
-      <AddCoupon />
-    ) : null}
-  </>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              paddingRight: 8,
+              paddingTop: 1,
+            }}
+          >
+            <Button onClick={handleAddCoupon}>ADD COUPON</Button>
+          </Box>
+          <Box sx={{ height: 400, width: "95%" }}>
+            <Typography
+              variant="h4"
+              component="h4"
+              sx={{ textAlign: "center", mt: 3, mb: 3 }}
+            >
+              Manage Coupons
+            </Typography>
+            <DataGrid
+              columns={columns}
+              rows={coupons}
+              getRowId={(row) => row._id}
+              pageSizeOptions={[10, 25, 50, 75, 100]}
+              getRowSpacing={(params) => ({
+                top: params.isFirstVisible ? 0 : 5,
+                bottom: params.isLastVisible ? 0 : 5,
+              })}
+              sx={{
+                [`& .${gridClasses.row}`]: {
+                  bgcolor: (theme) =>
+                    theme.palette.mode === "light" ? grey[200] : grey[900],
+                },
+              }}
+              onCellEditStop={(params) =>
+                setSelectedRowId(params.id.toString())
+              } //give on onCellEditStart
+              onCellEditStart={(params) => setRowId(params.id.toString())}
+            />
+          </Box>
+        </div>
+      ) : location.pathname === "/admin/dashboard/coupons/add-coupon" ? (
+        <AddCoupon />
+      ) : location.pathname === "/admin/dashboard/coupons/edit-coupon" ? (
+        <AddCoupon />
+      ) : null}
+    </>
   );
 };
 

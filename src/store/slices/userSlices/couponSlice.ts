@@ -5,29 +5,28 @@ import { toast } from "react-toastify";
 import { getCoupons } from "../../../actions/coupon";
 
 interface CouponState {
-  coupons:[];
+  coupons: [];
   loading: boolean;
   isCouponOverviewOpen: boolean;
-
 }
 
 const initialState: CouponState = {
-  coupons:[],
+  coupons: [],
   loading: false,
-  isCouponOverviewOpen:false,
+  isCouponOverviewOpen: false,
 };
 
 const couponSlice = createSlice({
   name: "coupon",
   initialState,
   reducers: {
-    openCouponOverview:(state)=> {
+    openCouponOverview: (state) => {
       state.isCouponOverviewOpen = true;
     },
     closeCouponOverview: (state) => {
       state.isCouponOverviewOpen = false;
     },
-    setCoupons:(state,action: PayloadAction<any>) => {
+    setCoupons: (state, action: PayloadAction<any>) => {
       state.coupons = action.payload;
     },
     startLoading: (state) => {
@@ -48,7 +47,6 @@ const couponSlice = createSlice({
       if (coupons && coupons.message) {
         // Don't directly modify state.currentUser, create a new object
         state.coupons = coupons.message;
-        
       } else {
         // Handle the case where currentUser or message is null or undefined
         console.error("Received invalid data in loginUser.fulfilled");
@@ -63,7 +61,10 @@ const couponSlice = createSlice({
         toast.error(error.message);
       } else {
         // Handle non-Error rejection (if needed)
-        console.error("Get coupon failed, Something went wrong!:", action.error);
+        console.error(
+          "Get coupon failed, Something went wrong!:",
+          action.error
+        );
       }
       state.loading = false;
     });

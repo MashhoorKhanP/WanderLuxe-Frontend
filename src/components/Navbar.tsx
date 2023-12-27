@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Lock } from "@mui/icons-material";
 import {
   AppBar,
@@ -12,9 +12,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import UserIcons from "./user/UserIcons";
 import { RootState } from "../store/types";
-import { setOpenLogin } from "../store/slices/userSlices/userSlice";
+import { User, logoutUser, setOpenLogin } from "../store/slices/userSlices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { WanderLuxeLogo } from "../assets/extraImages";
+import { Socket, io } from "socket.io-client";
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,29 @@ const Navbar: React.FC = () => {
     navigate("/user/login-register");
     dispatch(setOpenLogin(true));
   };
+  const socket = useRef<Socket | null>();
+  
+  useEffect(()=>{
+    if(!socket.current && currentUser){
+      socket.current = io(import.meta.env.VITE_SERVER_URL);
+      if(currentUser.message){
+        const userId = currentUser.message._id;
+        socket.current.emit('addUser',(userId))  
+      }else{
+        socket.current.emit('addUser',(currentUser?._id))
+      }
+      socket.current.on('getUser',(data)=>{
+        console.log(data);
+      })
+      socket.current.on('responseIsBlocked',(data:{isBlocked:boolean})=>{
+        console.log('dataSocket',data);
+        if(data.isBlocked){
+         dispatch(logoutUser());
+        }
+      })
+      
+    }
+  },[socket,currentUser])
 
   return (
     <>

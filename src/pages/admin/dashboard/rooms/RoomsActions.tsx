@@ -9,7 +9,11 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch } from "../../../../store/store";
 import { deleteRoom } from "../../../../actions/room";
-import { updateRoomDetails, updateRoomImages, updateUpdatedRoom } from "../../../../store/slices/adminSlices/adminRoomSlice";
+import {
+  updateRoomDetails,
+  updateRoomImages,
+  updateUpdatedRoom,
+} from "../../../../store/slices/adminSlices/adminRoomSlice";
 
 interface RoomsActionsProps {
   params: any;
@@ -17,7 +21,7 @@ interface RoomsActionsProps {
 }
 
 const RoomsActions: React.FC<RoomsActionsProps> = ({ params, setData }) => {
-  console.log("HotelsActionsParams.row", params.row);
+  
   const {
     _id,
     roomType,
@@ -86,7 +90,7 @@ const RoomsActions: React.FC<RoomsActionsProps> = ({ params, setData }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         dispatch(deleteRoom({ roomData: row, admin }));
-        toast.success("Hotels deleted successfully");
+        toast.success("Room deleted successfully");
         setData((prevData: any) => !prevData);
       }
     });

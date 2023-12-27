@@ -54,6 +54,9 @@ const UserRouter: React.FC = () => {
         <Route path="change-password" element={<Home />} />
         <Route path="wishlist" element={<Home />} />
         <Route path="book-room" element={<Home />} />
+        <Route path='payment-success' element={<Home/>}/>
+        <Route path='payment-failed' element={<Home/>}/>
+        <Route path='my-bookings' element={<Home/>}/>
       </Route>
     </Routes>
   );

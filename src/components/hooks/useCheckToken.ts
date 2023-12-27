@@ -6,9 +6,11 @@ import { logoutUser } from "../../store/slices/userSlices/userSlice";
 import { logoutAdmin } from "../../store/slices/adminSlices/adminSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getUsers } from "../../actions/admin";
+import { AppDispatch } from "../../store/store";
 
 const useCheckToken = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const warningShownRef = useRef(false);
   const currentUserToken = localStorage.getItem("UserToken");
@@ -17,7 +19,6 @@ const useCheckToken = () => {
   useEffect(() => {
     if (currentUserToken) {
       const decodedUserToken: any = jwtDecode(currentUserToken);
-
       if (
         decodedUserToken.exp * 1000 < new Date().getTime() &&
         !warningShownRef.current
@@ -31,7 +32,7 @@ const useCheckToken = () => {
 
     if (currentAdminToken) {
       const decodedAdminToken: any = jwtDecode(currentAdminToken);
-      
+
       if (
         decodedAdminToken.exp * 1000 < new Date().getTime() &&
         !warningShownRef.current

@@ -43,7 +43,6 @@ const RoomListScreen: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [allRooms, setAllRooms] = useState<any>([]);
   const [searchParams] = useSearchParams();
-  
 
   //Show only  the rooomsNeeded + 1 > room.roomsCount matching rooms only, take the state and condition
   //from RoomsOverviewScreen.tsx
@@ -121,7 +120,7 @@ const RoomListScreen: React.FC = () => {
       >
         <SearchBar onSearch={handleSearch} />
         <MyDatePicker isOpen={isDatePickerOpen} onToggle={toggleDatePicker} />
-        <AdultChildrenPicker/>
+        <AdultChildrenPicker />
         <PriceSlider />
       </Box>
 
@@ -171,7 +170,6 @@ const RoomListScreen: React.FC = () => {
                     src={room.images[0]}
                     alt={room.roomType}
                     style={{ cursor: "pointer" }}
-                    loading="lazy"
                   />
                   {/* Want to give room starts from with  */}
                   <ImageListItemBar
@@ -242,7 +240,6 @@ const RoomListScreen: React.FC = () => {
               alt="No Results Found"
               height="50"
               image={NotFound}
-              loading="lazy"
             />
             <CardContent>
               <Typography variant="caption">No results found.</Typography>

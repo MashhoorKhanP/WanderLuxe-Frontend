@@ -78,11 +78,9 @@ const ChangePasswordScreen: React.FC = () => {
     );
     const resultUnwrapped = result.unwrap();
     resultUnwrapped.then((thenResult) => {
-      console.log("successThenResult", thenResult);
 
       // Check if thenResult is not null or undefined
       if (thenResult !== null) {
-        console.log("result of changePassword", thenResult);
         toast.success("Password changed successfully!");
       }
     });

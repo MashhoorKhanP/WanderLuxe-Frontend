@@ -1,5 +1,5 @@
 import React from "react";
-import { Logout, ManageAccounts } from "@mui/icons-material";
+import { GradingOutlined, Logout, ManageAccounts } from "@mui/icons-material";
 import { ListItemIcon, Menu, MenuItem } from "@mui/material";
 import {
   logoutUser,
@@ -66,6 +66,12 @@ const UserMenu: React.FC<UserMenuProps> = ({
             <ManageAccounts fontSize="small" />
           </ListItemIcon>
           Profile
+        </MenuItem>
+        <MenuItem onClick={() => navigate('/user/my-bookings')}>
+          <ListItemIcon>
+            <GradingOutlined fontSize="small" />
+          </ListItemIcon>
+          My Bookings
         </MenuItem>
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>

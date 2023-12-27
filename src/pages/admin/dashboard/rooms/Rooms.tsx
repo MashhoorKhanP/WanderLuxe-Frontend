@@ -10,7 +10,12 @@ import { DataGrid, GridColDef, gridClasses } from "@mui/x-data-grid";
 import moment from "moment";
 import RoomsActions from "./RoomsActions";
 import { grey } from "@mui/material/colors";
-import { updateRoomDetails, updateRoomImages, updateRooms, updateUpdatedRoom } from "../../../../store/slices/adminSlices/adminRoomSlice";
+import {
+  updateRoomDetails,
+  updateRoomImages,
+  updateRooms,
+  updateUpdatedRoom,
+} from "../../../../store/slices/adminSlices/adminRoomSlice";
 
 interface RoomsProps {
   setSelectedLink: React.Dispatch<React.SetStateAction<string>>;
@@ -23,7 +28,6 @@ const Rooms: React.FC<RoomsProps> = ({ setSelectedLink, link }) => {
   const navigate = useNavigate();
 
   const rooms = useSelector((state: RootState) => state.adminRoom.rooms);
-  console.log("Rooms.tsx", rooms);
 
   const [data, setData] = useState<boolean>(true);
 

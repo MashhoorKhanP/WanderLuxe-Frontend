@@ -8,7 +8,7 @@ interface SearchBarProps {
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const location = useLocation()
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,26 +26,37 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <Box  width={'70%'}>
-    <TextField
-      label={location.pathname=== '/user/view-hotels'? "Search hotels/location" : location.pathname=== '/user/view-rooms'?'Search room types':'Search'}
-      variant="outlined"
-      size="small"
-      sx={{
-        width:location.pathname=== '/user/view-hotels' ? '50%' :location.pathname=== '/user/view-rooms'? '200px':'60%',
-        mt: 2,
-      }}
-      value={searchQuery}
-      onChange={handleChange}
-      onKeyPress={handleKeyPress}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <Search/>
-          </InputAdornment>
-        ),
-      }}
-    />
+    <Box width={"70%"}>
+      <TextField
+        label={
+          location.pathname === "/user/view-hotels"
+            ? "Search hotels/location"
+            : location.pathname === "/user/view-rooms"
+            ? "Search room types"
+            : "Search"
+        }
+        variant="outlined"
+        size="small"
+        sx={{
+          width:
+            location.pathname === "/user/view-hotels"
+              ? "50%"
+              : location.pathname === "/user/view-rooms"
+              ? "200px"
+              : "60%",
+          mt: 2,
+        }}
+        value={searchQuery}
+        onChange={handleChange}
+        onKeyPress={handleKeyPress}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Search />
+            </InputAdornment>
+          ),
+        }}
+      />
     </Box>
   );
 };

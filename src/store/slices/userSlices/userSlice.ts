@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { getHotels } from "../../../actions/hotel";
 import { MapRef } from "react-map-gl";
 import { getCoupons } from "../../../actions/coupon";
+import { getUserBookings } from "../../../actions/booking";
 
 interface UserState {
   currentUser: User | null; //Want to update according to database
@@ -28,6 +29,7 @@ interface UserState {
   addressFilter: {};
   filteredHotels: any[];
   filteredRooms: any[];
+  bookings:[]
 }
 
 const initialState: UserState = {
@@ -44,9 +46,10 @@ const initialState: UserState = {
   addressFilter: {},
   filteredHotels: [],
   filteredRooms: [],
+  bookings:[]
 };
 
-interface User {
+export interface User {
   _id?: string;
   email?: string;
   firstName?: string;
@@ -55,6 +58,7 @@ interface User {
   mobile?: string;
   token?: string;
   message?: {
+    _id:string;
     firstName: string;
     profileImage: string;
   };
@@ -223,6 +227,9 @@ const userSlice = createSlice({
       state.addressFilter = {};
       state.priceFilter = 3500;
       state.filteredHotels = state.hotels;
+    },
+    setBookings: (state, action: PayloadAction<any>) => {
+      state.bookings = action.payload;
     },
     logoutUser: (state) => {
       state.currentUser = null;
@@ -546,6 +553,36 @@ const userSlice = createSlice({
       }
       state.loading = false;
     });
+
+    //User Bookings
+    builder.addCase(getUserBookings.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(getUserBookings.fulfilled, (state, action) => {
+      state.loading = false;
+      const bookings = action.payload;
+      if (bookings && bookings.message) {
+        // Don't directly modify state.currentUser, create a new object
+        state.bookings = bookings.message;
+      } else {
+        // Handle the case where currentUser or message is null or undefined
+        console.error("Received invalid data in loginUser.fulfilled");
+      }
+    });
+    builder.addCase(getUserBookings.rejected, (state, action) => {
+      const error = action.error as Error | AxiosError;
+
+      if (error instanceof Error) {
+        // Handle specific error messages from the server if available
+        errorHandle(error);
+        toast.error(error.message);
+      } else {
+        // Handle non-Error rejection (if needed)
+        console.error("Login failed with non-Error rejection:", action.error);
+      }
+      state.loading = false;
+    });
   },
 });
 
@@ -566,6 +603,7 @@ export const {
   setOpenLogin,
   setCloseLogin,
   setAlert,
+  setBookings,
   clearAlert,
   startLoading,
   stopLoading,

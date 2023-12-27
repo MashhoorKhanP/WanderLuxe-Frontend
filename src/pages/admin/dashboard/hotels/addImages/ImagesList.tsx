@@ -100,7 +100,6 @@ const ImagesList: React.FC = () => {
           <img
             src={image}
             alt="hotels"
-            loading="lazy"
             style={{ height: "100%", width: "100%", objectFit: "cover" }}
           />
           <ImageListItemBar

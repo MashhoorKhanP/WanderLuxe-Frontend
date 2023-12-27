@@ -5,13 +5,12 @@ import errorHandle from "../components/hooks/errorHandler";
 import deleteImages from "./utils/deleteImages";
 import { CouponDetails } from "../store/slices/adminSlices/adminCouponSlice";
 
-
 // export interface Admin {
 //   _id: string;
 //   email: string;
 // }
 
-interface DeleteHotelPayload {
+interface DeleteCouponPayload {
   couponData: CouponDetails;
 }
 
@@ -20,7 +19,7 @@ interface UpdateCouponPayload {
 }
 
 //Admin actions
-export const addCoupon = async (couponData:CouponDetails) => {
+export const addCoupon = async (couponData: CouponDetails) => {
   try {
     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + "/api/admin/coupons/add-coupon",
@@ -44,28 +43,29 @@ export const addCoupon = async (couponData:CouponDetails) => {
   }
 };
 
-// export const deleteHotel = createAsyncThunk(
-//   "hotel/deleteHotel",
-//   async ({ hotelData, admin }: DeleteHotelPayload) => {
-//     const result = await fetchData({
-//       url:
-//         import.meta.env.VITE_SERVER_URL +
-//         `/api/admin/hotels/delete-hotel/${hotelData._id}`,
-//       method: "DELETE",
-//       body: {},
-//     });
+export const deleteCoupon = createAsyncThunk(
+  "hotel/deleteCoupon",
+  async ({ couponData}: DeleteCouponPayload) => {
+    console.log('couponData from deleteCoupon coupon.ts',couponData);
+    
+    const result = await fetchData({
+      url:
+        import.meta.env.VITE_SERVER_URL +
+        `/api/admin/coupons/delete-coupon/${couponData._id}`,
+      method: "DELETE",
+      body: {},
+    });
 
-//     // Check for errors in the result and throw if necessary
-//     if (result?.data && result.data.message) {
-//       throw new Error(result.data.message);
-//     }
+    // Check for errors in the result and throw if necessary
+    if (result?.data && result.data.message) {
+      throw new Error(result.data.message);
+    }
 
-//     // Delete images after successful deletion
-//     deleteImages(hotelData.images, admin._id);
+    
 
-//     return { hotelData } as DeleteHotelPayload;
-//   }
-// );
+    return { couponData } as DeleteCouponPayload;
+  }
+);
 
 export const updateCoupon = async ({ updatedCoupon }: UpdateCouponPayload) => {
   console.log("udatedcoupon from coupon.ts", updatedCoupon);

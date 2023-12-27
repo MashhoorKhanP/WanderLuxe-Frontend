@@ -78,14 +78,20 @@ const RoomOverviewScreen: React.FC = () => {
   const checkInCheckoutRange: any = useSelector(
     (state: RootState) => state.room.checkInCheckOutRange
   );
-  const adultChildCount = useSelector((state: RootState) => state.room.adultChildrenCount);
-  const additionalRoomsNeeded = useSelector((state: RootState) => state.room.additionalRoomsNeeded);
-  
+  const adultChildCount = useSelector(
+    (state: RootState) => state.room.adultChildrenCount
+  );
+  const additionalRoomsNeeded = useSelector(
+    (state: RootState) => state.room.additionalRoomsNeeded
+  );
+
   console.log("checkInCheckout", checkInCheckoutRange);
   const [room, setRoom] = useState<any>([]);
   const [hotel, setHotel] = useState<any>([]);
   const [place, setPlace] = useState<Place | null>(null);
-  const [roomsNeeded, setRoomsNeeded] = useState<number>(additionalRoomsNeeded? additionalRoomsNeeded:1);
+  const [roomsNeeded, setRoomsNeeded] = useState<number>(
+    additionalRoomsNeeded ? additionalRoomsNeeded : 1
+  );
 
   useEffect(() => {
     if (isOpen && roomId) {
@@ -113,9 +119,6 @@ const RoomOverviewScreen: React.FC = () => {
           .then((data) => setPlace(data.features[0]));
       }
     }
-   
-
-      
   }, [roomId, isOpen, rooms, hotels, room]);
 
   useEffect(() => {
@@ -124,51 +127,49 @@ const RoomOverviewScreen: React.FC = () => {
       Math.ceil((totalPeople - room.maxPeople) / room.maxPeople),
       0
     );
-  
+
     setRoomsNeeded(additionalRoomsNeeded);
     dispatch(setAdditionalRoomsNeeded(additionalRoomsNeeded));
   }, [adultChildCount, room]);
-  
 
   const handleClose = () => {
     dispatch(closeRoomOverview());
-    
+
     dispatch(setRoomId(""));
     // setHotel([]);
     // Dispatch an action to close the RoomOverviewScreen
     // navigate('/user/view-rooms');
   };
-  console.log('adultChildrencount',adultChildCount)
-  console.log('roomsNeeded',roomsNeeded)
+  console.log("adultChildrencount", adultChildCount);
+  console.log("roomsNeeded", roomsNeeded);
   const handleBooking = () => {
-      dispatch(closeRoomOverview());
-      Swal.fire({
-        title: "Are you sure?",
-        text: `Book ${room.roomType} on ${
-          room.hotelName
-        } hotel! (Check-In: ${checkInCheckoutRange.startDate.toDateString()} ${
-          checkInCheckoutRange.startTime
-        } & Check-Out: ${checkInCheckoutRange.endDate.toDateString()} ${
-          checkInCheckoutRange.endTime
-        })`,
-        icon: "success",
-        showCancelButton: true,
-        confirmButtonText: "Yes, Book",
-        confirmButtonColor: "green",
-        cancelButtonText: "No, cancel!",
-        customClass: {
-          container: "custom-swal-container",
-        },
-        width: 450,
-        background: "#f0f0f0",
-        iconHtml: '<i class="bi bi-check-lg" style="font-size:55px"></i>',
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          navigate(`/user/book-room?roomId=${roomId}&additionalroomsNeeded=${roomsNeeded}`);
-        }
-      });
-    
-  };
+    dispatch(closeRoomOverview());
+    Swal.fire({
+      title: "Confirm Details?",
+      html: `Check-In: <h6 style="font-weight:bold;">${checkInCheckoutRange.startDate.toDateString()} ${
+        checkInCheckoutRange.startTime
+      }</h6>Check-Out: <h6 style="font-weight:bold;">${checkInCheckoutRange.endDate.toDateString()} ${
+        checkInCheckoutRange.endTime
+      }</h6>`,
+      icon: "success",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Book",
+      confirmButtonColor: "green",
+      cancelButtonText: "No, cancel!",
+      customClass: {
+        container: "custom-swal-container",
+      },
+      width: 450,
+      background: "#f0f0f0",
+      iconHtml: '<i class="bi bi-check-lg" style="font-size:55px"></i>',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        navigate(
+          `/user/book-room?roomId=${roomId}&additionalroomsNeeded=${roomsNeeded}`
+        );
+      }
+    });
+ };
 
   console.log("Room from overview", room);
   console.log("Hotel from overview", hotel);
@@ -226,7 +227,7 @@ const RoomOverviewScreen: React.FC = () => {
             clickable: true,
           }}
           autoplay={{
-            delay: 2000, // Set the delay between transitions
+            delay: 4000, // Set the delay between transitions
             disableOnInteraction: true,
           }}
           speed={1000}
@@ -269,14 +270,10 @@ const RoomOverviewScreen: React.FC = () => {
           justifyContent="space-between"
         >
           <Stack direction="row" p={0}>
-           
-           <Typography
-             variant="h6"
-             sx={{ fontSize: "12px", color: "#666" }}
-           >
-             {`₹ = 1 room x ${checkInCheckoutRange.numberOfNights} night`}
-           </Typography>
-       </Stack>
+            <Typography variant="h6" sx={{ fontSize: "12px", color: "#666" }}>
+              {`₹ = 1 room x ${checkInCheckoutRange.numberOfNights} night`}
+            </Typography>
+          </Stack>
           <Stack direction="row">
             <Box
               sx={{
@@ -294,7 +291,6 @@ const RoomOverviewScreen: React.FC = () => {
                   gap: "75%",
                 }}
               >
-                
                 <Box>
                   <Typography
                     variant="h6"
@@ -321,7 +317,6 @@ const RoomOverviewScreen: React.FC = () => {
                         }`
                       : `₹${room.price + room.discountPrice}`}
                   </Typography>
-                  
                 </Box>
                 <Box
                   sx={{
@@ -346,7 +341,7 @@ const RoomOverviewScreen: React.FC = () => {
               </Box>
             </Box>
           </Stack>
-          
+
           <Stack direction="row">
             <Box
               sx={{
@@ -510,47 +505,47 @@ const RoomOverviewScreen: React.FC = () => {
             </Typography>
           </Stack>
           <Stack direction="row" width={"100%"}>
-  {checkInCheckoutRange &&
-    (checkInCheckoutRange.startDate.toLocaleDateString() ===
-      checkInCheckoutRange.endDate.toLocaleDateString() ||
-    checkInCheckoutRange.startDate === undefined ||
-    checkInCheckoutRange.endDate === undefined ||
-    checkInCheckoutRange.startTime === undefined ||
-    checkInCheckoutRange.endTime === undefined ? (
-      <Button
-        variant="outlined"
-        onClick={handleClose}
-        sx={{
-          width: "100%",
-          p: 1,
-          borderRadius: 0,
-          borderColor: "red",
-          color: "red",
-          "&:hover": {
-            border: "1.5px solid red",
-            borderColor: "red",
-          },
-        }}
-      >
-        Select a valid CheckIn/CheckOut to proceed!
-      </Button>
-    ) : (
-      <Button
-        className="book_room_btn"
-        variant="outlined"
-        sx={{ width: "100%", p: 1, borderRadius: 0 }}
-        color="inherit"
-        disabled={room.roomsCount <= roomsNeeded} // Disable button if rooms are not available
-        onClick={handleBooking}
-      >
-        {room.roomsCount > roomsNeeded ? (
-          <span>Book room</span>
-        ) : (
-          <span>Room availability exceeded</span>
-        )}
-      </Button>
-    ))}
-</Stack>
+            {checkInCheckoutRange &&
+              (checkInCheckoutRange.startDate.toLocaleDateString() ===
+                checkInCheckoutRange.endDate.toLocaleDateString() ||
+              checkInCheckoutRange.startDate === undefined ||
+              checkInCheckoutRange.endDate === undefined ||
+              checkInCheckoutRange.startTime === undefined ||
+              checkInCheckoutRange.endTime === undefined ? (
+                <Button
+                  variant="outlined"
+                  onClick={handleClose}
+                  sx={{
+                    width: "100%",
+                    p: 1,
+                    borderRadius: 0,
+                    borderColor: "red",
+                    color: "red",
+                    "&:hover": {
+                      border: "1.5px solid red",
+                      borderColor: "red",
+                    },
+                  }}
+                >
+                  Select a valid CheckIn/CheckOut to proceed!
+                </Button>
+              ) : (
+                <Button
+                  className="book_room_btn"
+                  variant="outlined"
+                  sx={{ width: "100%", p: 1, borderRadius: 0 }}
+                  color="inherit"
+                  disabled={room.roomsCount <= roomsNeeded} // Disable button if rooms are not available
+                  onClick={handleBooking}
+                >
+                  {room.roomsCount > roomsNeeded ? (
+                    <span>Book room</span>
+                  ) : (
+                    <span>Room availability exceeded</span>
+                  )}
+                </Button>
+              ))}
+          </Stack>
         </Stack>
       </Container>
     </Dialog>

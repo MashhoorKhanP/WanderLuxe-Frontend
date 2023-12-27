@@ -38,7 +38,7 @@ import Hotels from "./hotels/Hotels";
 import Rooms from "./rooms/Rooms";
 import Bookings from "./bookings/Bookings";
 import Coupons from "./coupons/Coupons";
-import Offers from "./offers/Offers";
+// import Offers from "./offers/Offers";
 import Banners from "./banners/Banners";
 import { logoutAdmin } from "../../../store/slices/adminSlices/adminSlice";
 import AddHotel from "./hotels/AddHotel";
@@ -147,12 +147,12 @@ const SideList: React.FC<SideListProps> = ({ open, setOpen, updateTitle }) => {
         link: "coupons",
         component: <Coupons {...{ setSelectedLink, link: "coupons" }} />,
       },
-      {
-        title: "Offers",
-        icon: <Discount />,
-        link: "offers",
-        component: <Offers {...{ setSelectedLink, link: "offers" }} />,
-      },
+      // {
+      //   title: "Offers",
+      //   icon: <Discount />,
+      //   link: "offers",
+      //   component: <Offers {...{ setSelectedLink, link: "offers" }} />,
+      // },
       {
         title: "Banners",
         icon: <ViewCarousel />,

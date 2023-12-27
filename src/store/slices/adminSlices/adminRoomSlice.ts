@@ -27,7 +27,6 @@ export interface RoomDetails {
 }
 
 const initialState: AdminRoomState = {
-  
   adminLoading: false,
 
   roomImages: [],
@@ -92,7 +91,6 @@ const adminRoomSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-
     builder.addCase(getRooms.pending, (state) => {
       state.adminLoading = true;
     });

@@ -1,52 +1,51 @@
-.headerSearch{
+.headerSearch {
   height: 40px;
   background-color: #ffffff;
-  border:1px solid #a0a0a0;
+  border: 1px solid #a0a0a0;
   display: flex;
   border-radius: 5px;
   position: absolute;
   margin-top: 17px;
 }
 
-.headerSearchItem{
+.headerSearchItem {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px;
-
 }
 
-.headerSearchText{
-  color:#7a7a7a;
+.headerSearchText {
+  color: #7a7a7a;
   cursor: pointer;
 }
 
-.headerIcon{
-  color:#7a7a7a;
+.headerIcon {
+  color: #7a7a7a;
 }
 
-.options{
+.options {
   z-index: 1;
   position: relative;
   background-color: #ffffff;
   color: #000000;
   border-radius: 2px;
-  border:1px solid #7a7a7a;
-  -webkit-box-shadow:0 px 0px 10px -5px rgba(0,0,0,0.4);
-  box-shadow: 0 px 0px 10px -5px rgba(0,0,0,0.4);
+  border: 1px solid #7a7a7a;
+  -webkit-box-shadow: 0 px 0px 10px -5px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 px 0px 10px -5px rgba(0, 0, 0, 0.4);
 }
 
-.optionItem{
+.optionItem {
   width: 200px;
   display: flex;
   justify-content: space-between;
   margin: 10px;
 }
 
-.optionCounter{
+.optionCounter {
   display: flex;
   align-items: center;
-  gap:10px;
+  gap: 10px;
   font-size: 12px;
   color: #000000;
 }

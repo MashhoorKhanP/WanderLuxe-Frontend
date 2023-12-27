@@ -9,7 +9,7 @@ import roomReducer from "./slices/userSlices/roomSlice";
 import couponReducer from "./slices/userSlices/couponSlice";
 
 import adminReducer from "./slices/adminSlices/adminSlice";
-import adminRoomReducer from "./slices/adminSlices/adminRoomSlice"
+import adminRoomReducer from "./slices/adminSlices/adminRoomSlice";
 import adminHotelReducer from "./slices/adminSlices/adminHotelSlice";
 import adminCouponReducer from "./slices/adminSlices/adminCouponSlice";
 import thunk from "redux-thunk";
@@ -20,7 +20,15 @@ const persistConfig = {
   key: "root",
   storage,
   // Add any reducer that you want to persist here
-  whitelist: ["user", "room", "coupon", "admin","adminRoom","adminHotel","adminCoupon"],
+  whitelist: [
+    "user",
+    "room",
+    "coupon",
+    "admin",
+    "adminRoom",
+    "adminHotel",
+    "adminCoupon",
+  ],
 };
 
 const persistedUserReducer = persistReducer(persistConfig, userReducer);
@@ -28,17 +36,25 @@ const persistedRoomReducer = persistReducer(persistConfig, roomReducer);
 const persistedCouponReducer = persistReducer(persistConfig, couponReducer);
 
 const persistedAdminReducer = persistReducer(persistConfig, adminReducer);
-const persistedAdminRoomReducer = persistReducer(persistConfig, adminRoomReducer);
-const persistedAdminHotelReducer = persistReducer(persistConfig, adminHotelReducer);
-const persistedAdminCouponReducer = persistReducer(persistConfig, adminCouponReducer);
-
+const persistedAdminRoomReducer = persistReducer(
+  persistConfig,
+  adminRoomReducer
+);
+const persistedAdminHotelReducer = persistReducer(
+  persistConfig,
+  adminHotelReducer
+);
+const persistedAdminCouponReducer = persistReducer(
+  persistConfig,
+  adminCouponReducer
+);
 
 const store = configureStore({
   reducer: {
     user: persistedUserReducer,
     room: persistedRoomReducer,
-    coupon:persistedCouponReducer,
-    
+    coupon: persistedCouponReducer,
+
     admin: persistedAdminReducer,
     adminHotel: persistedAdminHotelReducer,
     adminRoom: persistedAdminRoomReducer,

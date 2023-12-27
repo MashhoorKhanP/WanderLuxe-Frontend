@@ -1,9 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react';
-import './adultPicker.css';
-import { Box } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { setAdultChildren, setAdultChildrenOptions } from '../../../store/slices/userSlices/roomSlice';
-import { RootState } from '../../../store/types';
+import React, { useEffect, useState, useRef } from "react";
+import "./adultPicker.css";
+import { Box } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setAdultChildren,
+  setAdultChildrenOptions,
+} from "../../../store/slices/userSlices/roomSlice";
+import { RootState } from "../../../store/types";
 
 export interface Options {
   adult: number;
@@ -12,7 +15,9 @@ export interface Options {
 
 const AdultChildrenPicker: React.FC = () => {
   const dispatch = useDispatch();
-  const adultChildOptions: Options = useSelector((state: RootState) => state.room.adultChildrenOptions);
+  const adultChildOptions: Options = useSelector(
+    (state: RootState) => state.room.adultChildrenOptions
+  );
   const [openOptions, setOpenOptions] = useState(false);
   const [options, setOptions] = useState<Options>({
     adult: adultChildOptions.adult ? adultChildOptions.adult : 1,
@@ -27,33 +32,42 @@ const AdultChildrenPicker: React.FC = () => {
 
     // Event listener for clicking outside the component
     const handleClickOutside = (event: MouseEvent) => {
-      if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
+      if (
+        pickerRef.current &&
+        !pickerRef.current.contains(event.target as Node)
+      ) {
         setOpenOptions(false);
       }
     };
 
     // Add event listener when component mounts
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
 
     // Clean up the event listener when component unmounts
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [options.adult, options.children, dispatch]);
 
-  const handleOption = (name: keyof Options, operation: 'i' | 'd') => {
+  const handleOption = (name: keyof Options, operation: "i" | "d") => {
     setOptions((prev) => ({
       ...prev,
-      [name]: operation === 'i' ? options[name] + 1 : options[name] - 1,
+      [name]: operation === "i" ? options[name] + 1 : options[name] - 1,
     }));
   };
 
   return (
-    <Box ref={pickerRef} sx={{ width: '50%', display: 'flex', alignItems: 'center' }}>
-      <div className='headerSearch'>
-        <div className='headerSearchItem'>
+    <Box
+      ref={pickerRef}
+      sx={{ width: "50%", display: "flex", alignItems: "center" }}
+    >
+      <div className="headerSearch">
+        <div className="headerSearchItem">
           <i className="bi bi-person-standing headerIcon"></i>
-          <span onClick={() => setOpenOptions(!openOptions)} className='headerSearchText'>
+          <span
+            onClick={() => setOpenOptions(!openOptions)}
+            className="headerSearchText"
+          >
             {`${options.adult} adult • ${options.children} children`}
           </span>
           {openOptions && (
@@ -68,7 +82,11 @@ const AdultChildrenPicker: React.FC = () => {
                   >
                     -
                   </button>
-                  <span className="optionCounterNumber">{adultChildOptions.adult ? adultChildOptions.adult : options.adult}</span>
+                  <span className="optionCounterNumber">
+                    {adultChildOptions.adult
+                      ? adultChildOptions.adult
+                      : options.adult}
+                  </span>
                   <button
                     className="optionCounterButton"
                     onClick={() => handleOption("adult", "i")}
@@ -87,7 +105,11 @@ const AdultChildrenPicker: React.FC = () => {
                   >
                     -
                   </button>
-                  <span className="optionCounterNumber">{adultChildOptions.children ? adultChildOptions.children : options.children}</span>
+                  <span className="optionCounterNumber">
+                    {adultChildOptions.children
+                      ? adultChildOptions.children
+                      : options.children}
+                  </span>
                   <button
                     className="optionCounterButton"
                     onClick={() => handleOption("children", "i")}

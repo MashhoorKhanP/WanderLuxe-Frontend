@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect, useRef} from "react";
 import BackgroundImage from "../../../../src/assets/backgroundImage.jpg";
 import { HomeImage1 } from "../../../assets/extraImages";
 import { Box, Button, TextField } from "@mui/material";
@@ -11,26 +11,29 @@ import MapScreen from "../map/MapScreen";
 import HotelListScreen from "../hotels/HotelListScreen";
 import RoomListScreen from "../rooms/RoomListScreen";
 import { getRooms } from "../../../actions/room";
-import RoomOverviewScreen from "../rooms/RoomOverviewScreen";
 import WishListScreen from "../wishlist/WishlistScreen";
 import BookingScreen from "../booking/BookingScreen";
 import ChangePasswordScreen from "../password/ChangePasswordScreen";
+import PaymentSuccessScreen from "../booking/PaymentSuccessScreen";
+import PaymentFailedScreen from "../booking/PaymentFailedScreen";
+import MyBookingsScreen from "../booking/MyBookingsScreen";
+
 
 const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
-
+  
   const handleFindHotels = () => {
     navigate("/user/find-hotels");
     dispatch(getHotels());
   };
 
   const handleViewHotels = () => {
-    navigate('/user/view-hotels');
+    navigate("/user/view-hotels");
     dispatch(getRooms());
   };
-
+  
   return (
     <>
       {location.pathname === "/user/find-hotels" ? (
@@ -39,23 +42,35 @@ const HomeScreen: React.FC = () => {
         <>
           <HotelListScreen />
         </>
-      ): location.pathname === "/user/view-rooms" ? (
+      ) : location.pathname === "/user/view-rooms" ? (
         <>
-          <RoomListScreen/>
+          <RoomListScreen />
         </>
-      ): location.pathname === "/user/wishlist" ? (
+      ) : location.pathname === "/user/wishlist" ? (
         <>
-          <WishListScreen/>
+          <WishListScreen />
         </>
       ) : location.pathname === "/user/book-room" ? (
         <>
-          <BookingScreen/>
+          <BookingScreen />
+        </>
+      ): location.pathname === "/user/payment-success" ? (
+        <>
+          <PaymentSuccessScreen />
+        </>
+      ) : location.pathname === "/user/payment-failed" ? (
+        <>
+          <PaymentFailedScreen />
         </>
       ): location.pathname === "/user/change-password" ? (
         <>
-          <ChangePasswordScreen/>
+          <ChangePasswordScreen />
         </>
-      ) : (
+      ) : location.pathname === "/user/my-bookings" ? (
+        <>
+          <MyBookingsScreen/>
+        </>
+      ): (
         <Box sx={{ position: "relative" }}>
           <Box
             sx={{
@@ -69,7 +84,12 @@ const HomeScreen: React.FC = () => {
               transform: "translateY(-50%)",
             }}
           >
-            <Button variant='outlined' onClick={handleViewHotels}  sx={{ borderColor: 'white', color: 'white' }} endIcon={<CorporateFare />}>
+            <Button
+              variant="outlined"
+              onClick={handleViewHotels}
+              sx={{ borderColor: "white", color: "white" }}
+              endIcon={<CorporateFare />}
+            >
               View Hotels
             </Button>
             <Button
@@ -88,11 +108,16 @@ const HomeScreen: React.FC = () => {
               zIndex: -1,
             }}
           >
-            <img src={HomeImage1} style={{ width: "50%" }} alt="HomeImage1"  loading="lazy"/>
+            <img
+              src={HomeImage1}
+              style={{ width: "50%" }}
+              alt="HomeImage1"
+             
+            />
             <img
               src={BackgroundImage}
               style={{ width: "50%" }}
-              alt="BackgroundImage" loading="lazy"
+              alt="BackgroundImage"
             />
           </Box>
         </Box>

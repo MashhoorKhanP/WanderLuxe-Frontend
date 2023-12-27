@@ -3,13 +3,14 @@ import errorHandle from "../../../components/hooks/errorHandler";
 import { AxiosError } from "axios";
 import { getUsers, loginAdmin } from "../../../actions/admin";
 import { toast } from "react-toastify";
+import { getBookings } from "../../../actions/booking";
 
 interface AdminState {
   currentAdmin: Admin | null; //Want to update according to database
   openLogin: boolean;
   adminLoading: boolean;
   users: Users[];
-  
+  bookings:BookingDetails[];
 }
 
 interface Admin {
@@ -30,6 +31,34 @@ interface Users {
   createdAt: string | Date;
   isVerified: boolean;
   isBlocked: boolean;
+}
+
+export interface BookingDetails {
+  _id?:string;
+  firstName : string;
+  lastName : string;
+  email : string;
+  mobile : string;
+  roomId: string;
+  userId: string;
+  roomType: string;
+  hotelName: string;
+  roomImage:string,
+  totalRoomsCount:number,
+  checkInDate:Date|any,
+  checkOutDate:Date|any,
+  checkInTime:string | any,
+  checkOutTime:string | any,
+  appliedCouponId:string,
+  couponDiscount:number,
+  numberOfNights:number,
+  totalAmount:number,
+  adults:number,
+  children:number,
+  status:string,
+  transactionId:string,
+  receiptUrl:string,
+  paymentMethod:string,
 }
 
 export interface HotelDetails {
@@ -61,6 +90,7 @@ export interface RoomDetails {
 const initialState: AdminState = {
   currentAdmin: null,
   users: [],
+  bookings:[],
   openLogin: false,
   adminLoading: false,
 };
@@ -162,6 +192,41 @@ const adminSlice = createSlice({
       }
     });
     builder.addCase(getUsers.rejected, (state, action) => {
+      const error = action.error as Error | AxiosError;
+
+      if (error instanceof Error) {
+        // Handle specific error messages from the server if available
+        errorHandle(error);
+        toast.error(error.message);
+      } else {
+        // Handle non-Error rejection (if needed)
+        console.error("Login failed with non-Error rejection:", action.error);
+      }
+      state.adminLoading = false;
+    });
+
+    //Get Bookings
+    builder.addCase(getBookings.pending, (state) => {
+      state.adminLoading = true;
+    });
+
+    builder.addCase(getBookings.fulfilled, (state, action) => {
+      state.adminLoading = false;
+      const bookings = action.payload;
+      if (bookings && bookings.message) {
+        console.log(
+          "JSON.Stingify of  users List",
+          JSON.stringify(bookings.message)
+        );
+        console.log("user.message", bookings.message);
+        // Don't directly modify state.currentUser, create a new object
+        state.bookings = bookings.message;
+      } else {
+        // Handle the case where currentUser or message is null or undefined
+        console.error("Received invalid data in loginUser.fulfilled");
+      }
+    });
+    builder.addCase(getBookings.rejected, (state, action) => {
       const error = action.error as Error | AxiosError;
 
       if (error instanceof Error) {

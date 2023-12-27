@@ -18,12 +18,16 @@ const errorHandle = (error: Error | AxiosError | {}) => {
       console.log("Entered inside the toast.error");
       // location.href = '/';
       toast.error(errorResponse.message);
-    } else if(errorResponse.message === "You have been blocked by admin!") {
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem('UserToken');
+    } else if (errorResponse.message === "You have been blocked by admin!") {
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("UserToken");
+      
       toast.error(errorResponse.message);
-    }else if(errorResponse.message === "Cannot read properties of undefined (reading 'success')") {
-      toast.error('Something went wrong, please try again!');
+    } else if (
+      errorResponse.message ===
+      "Cannot read properties of undefined (reading 'success')"
+    ) {
+      toast.error("Something went wrong, please try again!");
     } else {
       toast.error(errorResponse.message);
     }

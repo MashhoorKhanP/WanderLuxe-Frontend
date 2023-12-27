@@ -1,8 +1,11 @@
 import { Check, Save } from "@mui/icons-material";
 import { Box, CircularProgress, Fab } from "@mui/material";
 import { green } from "@mui/material/colors";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { adminUpdateUser } from "../../../../actions/admin";
+import { Socket, io } from "socket.io-client";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store/types";
 
 interface UsersActionsProps {
   params: {
@@ -27,16 +30,28 @@ const UsersActions: React.FC<UsersActionsProps> = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const { currentAdmin } = useSelector((state: RootState) => state.admin);
+  const socket = useRef<Socket | null>();
+
+  useEffect(()=>{
+    if(!socket.current && currentAdmin){
+      socket.current = io(import.meta.env.VITE_SERVER_URL)
+      socket.current.emit('addUser',(currentAdmin?._id))
+    }
+  },[socket, currentAdmin])
 
   const handleSubmit = async () => {
     setLoading(true);
     setTimeout(async () => {
       const { isVerified, isBlocked, _id } = params.row;
-      console.log("Params.row", params.row, isVerified, isBlocked);
       try {
         // Assuming updateUser is an asynchronous action (thunk)
         const result = await adminUpdateUser(isVerified, isBlocked, _id);
         if (result) {
+          if(socket.current){
+            socket.current.emit('join-room',_id);
+            socket.current.emit('isBlocked',{userId:_id});
+          }
           setSuccess(true);
           setRowId("");
           setSelectedRowId("");

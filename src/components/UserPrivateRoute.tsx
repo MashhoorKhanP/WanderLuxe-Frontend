@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 const UserPrivateRoute: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state: RootState) => state.user);
+  const currentUser = localStorage.getItem('currentUser');
 
   useEffect(() => {
     if (!currentUser) {

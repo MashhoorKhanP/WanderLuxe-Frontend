@@ -15,23 +15,26 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/types";
 import { useNavigate } from "react-router-dom";
-import { Close, ContentPasteOutlined, } from "@mui/icons-material";
+import { Close, ContentPasteOutlined } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import { getCoupons } from "../../../actions/coupon";
 import { AppDispatch } from "../../../store/store";
-import { closeCouponOverview, setCoupons } from "../../../store/slices/userSlices/couponSlice";
+import {
+  closeCouponOverview,
+  setCoupons,
+} from "../../../store/slices/userSlices/couponSlice";
 import dayjs from "dayjs";
 
 export interface Coupon {
-  _id:string;
+  _id: string;
   couponCode: string;
   description: string;
-  expiryDate:string;
-  couponCount:number;
-  discountType:string;
-  discount:number;
-  maxDiscount?:number;
-  isCancelled:boolean;
+  expiryDate: string;
+  couponCount: number;
+  discountType: string;
+  discount: number;
+  maxDiscount?: number;
+  isCancelled: boolean;
 }
 const Transition = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
   const transitionSpeed = 500;
@@ -50,14 +53,16 @@ const CouponsOverviewScreen: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
-  const isOpen = useSelector((state: RootState) => state.coupon.isCouponOverviewOpen);
+  const isOpen = useSelector(
+    (state: RootState) => state.coupon.isCouponOverviewOpen
+  );
   // const roomId = useSelector((state: RootState) => state.room.selectedRoomId);
-  
-  const coupons = useSelector((state:RootState) => state.coupon.coupons);
+
+  const coupons = useSelector((state: RootState) => state.coupon.coupons);
   const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
 
   useEffect(() => {
-    if(!coupons.length){
+    if (!coupons.length) {
       const fetchCoupons = async () => {
         const response = await dispatch(getCoupons());
         dispatch(setCoupons(response.payload.message)); // assuming getHotels returns { payload: hotels }
@@ -65,12 +70,11 @@ const CouponsOverviewScreen: React.FC = () => {
       fetchCoupons();
     }
   }, [dispatch]);
-  console.log('AvailableCoupons',availableCoupons,coupons)
 
   useEffect(() => {
     // Filter available coupons based on your conditions
     const filteredCoupons = coupons.filter(
-      (coupon:Coupon) =>
+      (coupon: Coupon) =>
         new Date(coupon.expiryDate) > new Date() &&
         coupon.couponCount > 0 &&
         !coupon.isCancelled
@@ -80,7 +84,6 @@ const CouponsOverviewScreen: React.FC = () => {
 
   const handleClose = () => {
     dispatch(closeCouponOverview());
-    
   };
 
   const handleCopyCouponCode = (couponCode: string) => {
@@ -99,7 +102,6 @@ const CouponsOverviewScreen: React.FC = () => {
         }
       }}
       TransitionComponent={Transition}
-
     >
       <Container>
         <Toolbar sx={{ paddingTop: 2, paddingBottom: 2 }}>
@@ -122,7 +124,15 @@ const CouponsOverviewScreen: React.FC = () => {
         <Box>
           {/* Display available coupons */}
           {availableCoupons.map((coupon) => (
-            <Box key={coupon.couponCode} sx={{ marginBottom: 2,p:2,border:'1.5px solid black',borderRadius:1.5}}>
+            <Box
+              key={coupon.couponCode}
+              sx={{
+                marginBottom: 2,
+                p: 2,
+                border: "1.5px solid black",
+                borderRadius: 1.5,
+              }}
+            >
               <Typography variant="subtitle1">{coupon.couponCode}</Typography>
               <Typography variant="h6">{coupon.description}</Typography>
               <Typography variant="subtitle2">{`A discount of ${
@@ -142,22 +152,22 @@ const CouponsOverviewScreen: React.FC = () => {
                 }}
               >
                 <Tooltip title={coupon.couponCode}>
-                <Button
-                 sx={{
-                  bgcolor: "black",
-                  transition: "color border bgColor 0.3s ease",
-                  "&:hover": {
-                    bgcolor: "#ffffff",
-                    color: "#000000",
-                    border: "1px solid black",
-                  },
-                }}
-                variant="contained"
-                endIcon={<ContentPasteOutlined/>}
-                  onClick={() => handleCopyCouponCode(coupon.couponCode)}
-                >
-                  Copy Code
-                </Button>
+                  <Button
+                    sx={{
+                      bgcolor: "black",
+                      transition: "color border bgColor 0.3s ease",
+                      "&:hover": {
+                        bgcolor: "#ffffff",
+                        color: "#000000",
+                        border: "1px solid black",
+                      },
+                    }}
+                    variant="contained"
+                    endIcon={<ContentPasteOutlined />}
+                    onClick={() => handleCopyCouponCode(coupon.couponCode)}
+                  >
+                    Copy Code
+                  </Button>
                 </Tooltip>
               </Box>
             </Box>
