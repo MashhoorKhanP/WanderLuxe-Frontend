@@ -1,8 +1,8 @@
 import React,{useEffect, useRef} from "react";
 import BackgroundImage from "../../../../src/assets/backgroundImage.jpg";
-import { HomeImage1 } from "../../../assets/extraImages";
-import { Box, Button, TextField } from "@mui/material";
-import { CorporateFare, LockTwoTone, TravelExplore } from "@mui/icons-material";
+import { HomeImage1, NotFound } from "../../../assets/extraImages";
+import { Box, Button } from "@mui/material";
+import { CorporateFare,  TravelExplore } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../store/store";
@@ -17,6 +17,7 @@ import ChangePasswordScreen from "../password/ChangePasswordScreen";
 import PaymentSuccessScreen from "../booking/PaymentSuccessScreen";
 import PaymentFailedScreen from "../booking/PaymentFailedScreen";
 import MyBookingsScreen from "../booking/MyBookingsScreen";
+import MyWalletScreen from "../wallet/MyWalletScreen";
 
 
 const HomeScreen: React.FC = () => {
@@ -69,6 +70,14 @@ const HomeScreen: React.FC = () => {
       ) : location.pathname === "/user/my-bookings" ? (
         <>
           <MyBookingsScreen/>
+        </>
+      ): location.pathname === "/user/my-wallet" ? (
+        <>
+          <MyWalletScreen/>
+        </>
+      ): location.pathname === "/404" ? (
+        <>
+          <NotFound/>
         </>
       ): (
         <Box sx={{ position: "relative" }}>

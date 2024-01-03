@@ -36,10 +36,11 @@ import "swiper/css/zoom";
 import "./swiper.css";
 import "./bookRoom.css";
 import { WanderLuxeLogo } from "../../../assets/extraImages";
-import { HotelDetails } from "../../../store/slices/adminSlices/adminSlice";
+import { BookingDetails, HotelDetails } from "../../../store/slices/adminSlices/adminSlice";
 import {
   closeRoomOverview,
   setAdditionalRoomsNeeded,
+  setRoomBookings,
   setRoomId,
 } from "../../../store/slices/userSlices/roomSlice";
 import Swal from "sweetalert2";
@@ -84,21 +85,25 @@ const RoomOverviewScreen: React.FC = () => {
   const additionalRoomsNeeded = useSelector(
     (state: RootState) => state.room.additionalRoomsNeeded
   );
+  const fullHotelBookings: any = useSelector((state: RootState) => state.user.hotelBookings);
+  const roomBookings = useSelector((state:RootState) => state.room.roomBookings);
+  
+  console.log('roomBookings',roomBookings)
 
-  console.log("checkInCheckout", checkInCheckoutRange);
+  console.log("checkInCheckout from Global State", checkInCheckoutRange);
   const [room, setRoom] = useState<any>([]);
   const [hotel, setHotel] = useState<any>([]);
   const [place, setPlace] = useState<Place | null>(null);
   const [roomsNeeded, setRoomsNeeded] = useState<number>(
     additionalRoomsNeeded ? additionalRoomsNeeded : 1
   );
-
+ 
   useEffect(() => {
     if (isOpen && roomId) {
       // Use useEffect to update room only after the component has mounted
       const roomDetails = rooms.find((room: any) => room._id === roomId);
       setRoom(roomDetails);
-
+      dispatch(setRoomBookings(fullHotelBookings.filter((booking:any) => booking.roomId === roomId )));
       // Ensure hotel is defined before attempting to access its properties
       const selectedHotel = hotels.find(
         (selectedHotel: HotelDetails) =>
@@ -134,7 +139,7 @@ const RoomOverviewScreen: React.FC = () => {
 
   const handleClose = () => {
     dispatch(closeRoomOverview());
-
+    
     dispatch(setRoomId(""));
     // setHotel([]);
     // Dispatch an action to close the RoomOverviewScreen
@@ -418,7 +423,8 @@ const RoomOverviewScreen: React.FC = () => {
               </Typography>
             </Box>
           </Stack>
-          <Stack direction="row">
+          {room.parkingPrice>0 && (
+            <Stack direction="row">
             <Box
               sx={{
                 display: "flex",
@@ -432,17 +438,19 @@ const RoomOverviewScreen: React.FC = () => {
                 component={"span"}
                 sx={{ fontSize: "16px", pr: 0.5, color: "#666" }}
               >
-                Rooms Available:
+                Parking fee:
               </Typography>
               <Typography
                 variant="h6"
                 component={"span"}
                 sx={{ fontSize: "14px" }}
               >
-                {room.roomsCount}
+                {`₹${room.parkingPrice}`}
               </Typography>
             </Box>
           </Stack>
+          )}
+          
           <Stack>
             <Box
               sx={{
@@ -535,14 +543,14 @@ const RoomOverviewScreen: React.FC = () => {
                   variant="outlined"
                   sx={{ width: "100%", p: 1, borderRadius: 0 }}
                   color="inherit"
-                  disabled={room.roomsCount <= roomsNeeded} // Disable button if rooms are not available
+                  disabled={room.roomsCount <= roomsNeeded+1} // Disable button if rooms are not available
                   onClick={handleBooking}
                 >
-                  {room.roomsCount > roomsNeeded ? (
+                  {room.roomsCount > roomsNeeded+1 ? (
                     <span>Book room</span>
-                  ) : (
-                    <span>Room availability exceeded</span>
-                  )}
+                    ) : ( 
+                     <span>Room availability exceeded</span>
+                   )} 
                 </Button>
               ))}
           </Stack>

@@ -22,6 +22,8 @@ import { updateRooms } from "../../../store/slices/adminSlices/adminRoomSlice";
 import { getCoupons } from "../../../actions/coupon";
 import { updateCoupons } from "../../../store/slices/adminSlices/adminCouponSlice";
 import { Socket, io } from "socket.io-client";
+import ChatScreen from "./dashboardHome/ChatScreen";
+import { getUsers } from "../../../actions/admin";
 
 const drawerWidth = 240;
 
@@ -54,7 +56,7 @@ const Dashboard: React.FC = () => {
   const { currentAdmin } = useSelector((state: RootState) => state.admin);
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(true);
-  const [title, setTitle] = useState("Admin Panel");
+  const [title, setTitle] = useState("Dashboard");
   const socket = useRef<Socket | null>();
 
   useEffect(()=>{
@@ -91,6 +93,7 @@ const Dashboard: React.FC = () => {
     dispatch(updateRooms({ rooms }));
     const coupons = dispatch(getCoupons() as any);
     dispatch(updateCoupons({coupons}))
+    dispatch(getUsers() as any)
   }, [dispatch]);
 
   return (

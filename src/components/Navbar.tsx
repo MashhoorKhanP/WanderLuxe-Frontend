@@ -16,9 +16,12 @@ import { User, logoutUser, setOpenLogin } from "../store/slices/userSlices/userS
 import { useNavigate } from "react-router-dom";
 import { WanderLuxeLogo } from "../assets/extraImages";
 import { Socket, io } from "socket.io-client";
+import { getUpdatedUser } from "../actions/user";
+import { AppDispatch } from "../store/store";
+import { getBookings } from "../actions/booking";
 
 const Navbar: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const handleOpenLogin = () => {
@@ -49,9 +52,37 @@ const Navbar: React.FC = () => {
     }
   },[socket,currentUser])
 
+  const [message,setMessage] = useState<any>([currentUser]);
+
+  useEffect(() => {
+    // const socket = io(import.meta.env.VITE_SERVER_URL); // Remove this line
+    socket.current = io(import.meta.env.VITE_SERVER_URL);
+  
+    // console.log('socket', socket.current);
+    // socket.current.on('connection', (data) => {
+    //   console.log('Connected!', data);
+    // });
+  
+    // Listen for incoming messages
+    socket.current.on('message', (newMessage) => {
+      console.log('newMessage', newMessage);
+      setMessage((prevMessages:any) => [...prevMessages, newMessage]);
+    });
+  
+    // return () => {
+    //   if (socket.current) {
+    //     socket.current.disconnect();
+    //   }
+    // };
+  }, []);
+
+  useEffect(() => {
+    console.log('socket message',message);
+  },[message])
+
   return (
     <>
-      <AppBar position="static" sx={{ backgroundColor: "#9fa3a878" }}>
+      <AppBar position="static" sx={{ backgroundColor: "#ffffff" }}>
         <Container maxWidth="lg">
           <Toolbar disableGutters>
             {/* <Box>

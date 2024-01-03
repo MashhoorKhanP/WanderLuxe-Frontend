@@ -8,13 +8,14 @@ import {
   Button,
   Box,
   Typography,
+  IconButton,
 } from "@mui/material";
 import AddLocation from "./addLocation/AddLocation";
 import AddDetails from "./addDetails/AddDetails";
 import AddImages from "./addImages/AddImages";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store/types";
-import { Add, Cancel, Sync } from "@mui/icons-material";
+import { Add, ArrowBack, Cancel, Sync } from "@mui/icons-material";
 import { addHotel, getHotels, updateHotel } from "../../../../actions/hotel";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -241,7 +242,10 @@ const AddHotel: React.FC = () => {
 
   return (
     <Container>
-      <Box sx={{ p: 2 }}>
+      <Box display="flex" alignItems="center" padding={2} flexDirection="row">
+      <IconButton onClick={() => navigate(-1)}>
+          <ArrowBack/>
+        </IconButton>
         <Typography variant="h5" fontWeight="bold">
           {location.pathname === "/admin/dashboard/hotels/add-hotel"
             ? "Add Hotel"

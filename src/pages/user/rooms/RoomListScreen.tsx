@@ -10,6 +10,7 @@ import {
   CardMedia,
   Container,
   Hidden,
+  IconButton,
   ImageList,
   ImageListItem,
   ImageListItemBar,
@@ -18,7 +19,7 @@ import {
   Typography,
 } from "@mui/material";
 import { NotFound, SpinnerGif } from "../../../assets/extraImages";
-import { StarBorder } from "@mui/icons-material";
+import { ArrowBack, StarBorder } from "@mui/icons-material";
 import {
   filterRooms,
   setRooms,
@@ -28,9 +29,11 @@ import PriceSlider from "../../../components/user/searchbar/PriceSlider";
 import MyDatePicker from "./MyDatePicker";
 import {
   openRoomOverview,
+  setRoomBookings,
   setRoomId,
 } from "../../../store/slices/userSlices/roomSlice";
-import AdultChildrenPicker from "./AdultChildrenPicker";
+import AdultChildrenPicker, { Options } from "./AdultChildrenPicker";
+import { getBookings, getHotelBookings } from "../../../actions/booking";
 
 const RoomListScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -43,9 +46,17 @@ const RoomListScreen: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [allRooms, setAllRooms] = useState<any>([]);
   const [searchParams] = useSearchParams();
+  const [hotelBookings, setHotelBookings] = useState<any>([]);
+  const fullHotelBookings: any = useSelector(
+    (state: RootState) => state.user.hotelBookings
+  );
+  const checkInCheckoutRange: any = useSelector(
+    (state: RootState) => state.room.checkInCheckOutRange
+  );
 
-  //Show only  the rooomsNeeded + 1 > room.roomsCount matching rooms only, take the state and condition
-  //from RoomsOverviewScreen.tsx
+  const adultChildOptions: Options = useSelector(
+    (state: RootState) => state.room.adultChildrenOptions
+  );
   const roomsPerPage = 6;
 
   const hotelId = searchParams.get("hotelId");
@@ -54,6 +65,7 @@ const RoomListScreen: React.FC = () => {
     setIsDatePickerOpen((prev) => !prev);
   };
 
+  console.log('adultsChild', adultChildOptions.adult + adultChildOptions.children);
   useEffect(() => {
     if (!rooms.length || !allRooms.length) {
       const fetchRooms = async () => {
@@ -64,14 +76,67 @@ const RoomListScreen: React.FC = () => {
       fetchRooms();
     }
     setAllRooms(rooms);
-  }, [dispatch, allRooms]);
 
+    if (!hotelBookings.length) {
+      const fetchBookings = async () => {
+        const hotelDetails = {
+          hotelId: hotelId as string,
+        };
+        // console.log('hotelDetails', hotelDetails)
+        const response = await dispatch(getHotelBookings({ hotelDetails }));
+      };
+
+      fetchBookings();
+    }
+    setHotelBookings(fullHotelBookings);
+  }, [dispatch, allRooms, hotelBookings]); //check this video:https://www.youtube.com/fwatch?v=puP_cXa_Cuo&t=783s ,Check chatGpt last prompt
+
+  console.log("fullHotelBookings", fullHotelBookings);
   const indexOfLastRooms = currentPage * roomsPerPage;
   const indexOfFirstRooms = indexOfLastRooms - roomsPerPage;
   const currentRooms = rooms
     .slice(indexOfFirstRooms, indexOfLastRooms)
-    .filter((room: any) => room.hotelId === hotelId);
+    .filter((room: any) => room.hotelId === hotelId && adultChildOptions.adult + adultChildOptions.children <= room.maxPeople );
 
+    const isRoomAvailable = (
+      room: any,
+      checkInDate: Date,
+      checkOutDate: Date
+    ) => {
+      const roomBookings = hotelBookings.filter(
+        (booking: any) => booking.roomId === room._id
+      );
+    
+      const isAvailable = roomBookings.every((booking: any) => {
+        const bookingCheckInDate = new Date(booking.checkInDate);
+        const bookingCheckOutDate = new Date(booking.checkOutDate);
+        const bookedRoomsCount = booking.totalRoomsCount;
+    
+        return (
+          bookingCheckInDate >= checkOutDate || bookingCheckOutDate <= checkInDate
+        );
+      });
+    
+      // Check if the room has enough capacity for adults and children
+      const hasEnoughCapacity =
+        adultChildOptions.adult + adultChildOptions.children <= room.maxPeople;
+    
+      return isAvailable && hasEnoughCapacity;
+    };
+    
+    let filteredRooms;
+    if (checkInCheckoutRange.startDate === checkInCheckoutRange.endDate) {
+      filteredRooms = currentRooms;
+    } else {
+      filteredRooms = currentRooms.filter((room: any) => {
+        const checkInDate = new Date(checkInCheckoutRange.startDate);
+        const checkOutDate = new Date(checkInCheckoutRange.endDate);
+    
+        return isRoomAvailable(room, checkInDate, checkOutDate);
+      });
+    }
+
+  console.log("filteredRooms", filteredRooms);
   const handleSearch = (query: string) => {
     setLoading(true);
 
@@ -105,9 +170,19 @@ const RoomListScreen: React.FC = () => {
   };
   return (
     <Container>
-      <Box paddingTop={4}>
+      <Box
+        display="flex"
+        alignItems="center"
+        paddingTop={4}
+        flexDirection="row"
+      >
+        <IconButton onClick={() => navigate(-1)}>
+          <ArrowBack />
+        </IconButton>
         <Typography variant="h5" fontWeight="bold">{`${
-          currentRooms[0]?.hotelName ? currentRooms[0]?.hotelName : "Not Found"
+          filteredRooms[0]?.hotelName
+            ? filteredRooms[0]?.hotelName
+            : "Not Found"
         } - Rooms`}</Typography>
       </Box>
       <Box
@@ -149,8 +224,8 @@ const RoomListScreen: React.FC = () => {
           >
             <img src={SpinnerGif} alt="Loading..." />
           </Box>
-        ) : currentRooms.length > 0 ? (
-          currentRooms.map((room: any) => (
+        ) : filteredRooms.length > 0 ? (
+          filteredRooms.map((room: any) => (
             <Tooltip title="Click to view more details!" key={room._id}>
               <Card
                 sx={{ width: "100%", height: "270px" }}

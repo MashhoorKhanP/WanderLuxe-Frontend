@@ -40,7 +40,7 @@ const RoomInfoFields: React.FC<InfoFieldsProps> = ({
       }
     }, 1500);
   };
-
+ 
   return (
     <TextField
       {...mainProps}
@@ -57,6 +57,7 @@ const RoomInfoFields: React.FC<InfoFieldsProps> = ({
       variant="outlined"
       onChange={handleChange}
       required
+      onFocus={(e) => e.target.addEventListener("wheel", function (e) { e.preventDefault() }, { passive: false })}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">

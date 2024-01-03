@@ -59,19 +59,19 @@ const Rooms: React.FC<RoomsProps> = ({ setSelectedLink, link }) => {
     dispatch(updateUpdatedRoom({}));
     navigate("/admin/dashboard/rooms/add-room");
   };
-  const renderRoomsCountCell = (params: any) => {
-    const roomsCount = params.row.roomsCount;
+  const renderRoomsStatusCell = (params: any) => {
+    const roomStatus = params.row.status;
 
     let textColor;
-    if (roomsCount < 10) {
-      textColor = "red";
-    } else if (roomsCount < 20) {
+    if (roomStatus==='Available') {
+      textColor = "green";
+    } else if (roomStatus==='Occupied') {
       textColor = "orange";
     } else {
       textColor = "green";
     }
 
-    return <span style={{ color: textColor }}>{`${roomsCount}`}</span>;
+    return <span style={{ color: textColor }}>{`${roomStatus}`}</span>;
   };
 
   const columns: GridColDef[] = useMemo(
@@ -90,18 +90,25 @@ const Rooms: React.FC<RoomsProps> = ({ setSelectedLink, link }) => {
       { field: "hotelName", headerName: "Hotel Name", width: 150 },
       {
         field: "price",
-        headerName: "Rent pre night",
-        width: 75,
+        headerName: "Rent (per night)",
+        width: 120,
         align: "center",
         renderCell: (params) => `₹${params.row.price}`,
       },
       {
-        field: "roomsCount",
-        headerName: "Room Availability(current)",
-        width: 100,
+        field: "status",
+        headerName: "Room Status(current)",
+        width: 150,
         align: "center",
-        renderCell: (params) => renderRoomsCountCell(params),
+        renderCell: (params) => renderRoomsStatusCell(params),
       },
+      // {
+      //   field: "roomsCount",
+      //   headerName: "Room Count",
+      //   width: 100,
+      //   align: "center",
+      //   renderCell: (params) => (params.row.roomsCount),
+      // },
       {
         field: "maxPeople",
         headerName: "Max People",

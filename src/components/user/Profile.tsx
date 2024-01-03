@@ -203,14 +203,14 @@ const Profile: React.FC = () => {
                   <Edit
                     onClick={() => {
                       setIsEditMode(true);
-                      navigate("/user/edit-profile");
+                      // navigate("/user/edit-profile");
                     }}
                   />
                 ) : (
                   <ArrowBack
                     onClick={() => {
                       setIsEditMode(false);
-                      navigate("/user/profile");
+                      // navigate("/user/profile");
                     }}
                   />
                 )}

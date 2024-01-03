@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, Container, ImageList, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { PaymentSuccess } from '../../../assets/extraImages';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '../../../store/store';
+import { getUpdatedUser } from '../../../actions/user';
+import { RootState } from '../../../store/types';
 
 const PaymentSuccessScreen: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const { currentUser } = useSelector((state: RootState) => state.user);
 
+  
+  
   return (
     <Container
       sx={{
@@ -57,9 +65,9 @@ const PaymentSuccessScreen: React.FC = () => {
           className="book_room_btn"
           sx={{ width: '20%', p: 1, borderRadius: 0 }}
           color="inherit"
-          onClick={() => navigate(`/user/home`)}
+          onClick={() => navigate(`/user/my-bookings`)}
         >
-          <span>Back to home</span>
+          <span>My Bookings</span>
         </Button>
       </Stack>
     </Container>

@@ -10,6 +10,10 @@ import Footer from "../components/Footer";
 import HomeScreen from "./user/home/HomeScreen";
 import RoomOverviewScreen from "./user/rooms/RoomOverviewScreen";
 import CouponsOverviewScreen from "./user/coupons/CouponsOverviewScreen";
+import BookingDetailsScreen from "./user/booking/BookingDetailsScreen";
+import WalletHistoryScreen from "./user/wallet/WalletHistoryScreen";
+import { NotFound } from "../assets/extraImages";
+import ChatScreenUser from "./user/chat/ChatScreenUser";
 
 const Home: React.FC = () => {
   const location = useLocation();
@@ -24,6 +28,9 @@ const Home: React.FC = () => {
       <HomeScreen />
       <RoomOverviewScreen/>
       <CouponsOverviewScreen/>
+      <BookingDetailsScreen/>
+      <WalletHistoryScreen/>
+      <ChatScreenUser/>
       <Footer />
     </>
   );

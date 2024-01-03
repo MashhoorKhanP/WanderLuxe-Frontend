@@ -56,6 +56,7 @@ const CouponInfoFields: React.FC<InfoFieldsProps> = ({
       color={success ? "success" : "primary"}
       variant="outlined"
       onChange={handleChange}
+      onFocus={(e) => e.target.addEventListener("wheel", function (e) { e.preventDefault() }, { passive: false })}
       required
       InputProps={{
         endAdornment: (

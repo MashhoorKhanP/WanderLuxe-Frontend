@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Home from "../pages/User";
 import { useDispatch } from "react-redux";
 import { logoutUser, updateUser } from "../store/slices/userSlices/userSlice";
 import UserPrivateRoute from "../components/UserPrivateRoute";
+import PageNotFound from "../components/common/NotFound";
 
 interface User {
   _id: string;
@@ -47,6 +48,9 @@ const UserRouter: React.FC = () => {
       <Route path="find-hotels" element={<Home />} />
       <Route path="view-hotels" element={<Home />} />
       <Route path="view-rooms" element={<Home />} />
+      <Route path="*" element={<Navigate to="404" />} />
+      {/* Create a specific 404 page */}
+      <Route path="404" element={<PageNotFound />} />
       {/* <Route path='view-rooms/room-overview' element={<Home/>}/> */}
 
       <Route path="" element={<UserPrivateRoute />}>
@@ -57,6 +61,7 @@ const UserRouter: React.FC = () => {
         <Route path='payment-success' element={<Home/>}/>
         <Route path='payment-failed' element={<Home/>}/>
         <Route path='my-bookings' element={<Home/>}/>
+        <Route path='my-wallet' element={<Home/>}/>
       </Route>
     </Routes>
   );

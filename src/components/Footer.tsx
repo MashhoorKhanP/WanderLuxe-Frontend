@@ -6,13 +6,25 @@ import {
   Link,
   Divider,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import { WanderLuxeLogo } from "../assets/extraImages";
+import { SupportAgentOutlined } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { openChatScreen } from "../store/slices/userSlices/userSlice";
+import { RootState } from "../store/types";
+
 
 const Footer: React.FC = () => {
+  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state: RootState) => state.user);
+  const handleChatButton = () => {
+    dispatch(openChatScreen());
+  }
+
   return (
     <Box>
       <Paper
@@ -125,6 +137,33 @@ const Footer: React.FC = () => {
         >
           &copy; 2023 WanderLuxe. All rights reserved.
         </Typography>
+        {currentUser && 
+        <Tooltip title="Chat with Admin">
+      <IconButton
+        onClick={handleChatButton}
+        color="inherit"
+        sx={{
+          position: "fixed",
+          bottom: "10%",
+          right: "2%",
+          zIndex: 1000,
+          // transform: "translateY(-50%)",
+          bgcolor: "black",
+          color: "white",
+          margin: 1,
+          transition: "background-color 0.3s, color 0.3s, transform 0.3s",
+          "&:hover": {
+            backgroundColor: "black",
+            color: "white",
+            transform: "scale(1.1)",
+          },
+        }}
+      >
+        <SupportAgentOutlined />
+      </IconButton>
+    </Tooltip>
+     }
+
       </Paper>
     </Box>
   );

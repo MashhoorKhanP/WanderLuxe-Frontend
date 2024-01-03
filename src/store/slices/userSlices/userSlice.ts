@@ -2,8 +2,10 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import {
   addRemoveFromWishlist,
   changePassword,
+  getUpdatedUser,
   googleregister,
   loginUser,
+  postAddMoneyToWalletRequest,
   registerUser,
   verifyUser,
 } from "../../../actions/user";
@@ -13,7 +15,8 @@ import { toast } from "react-toastify";
 import { getHotels } from "../../../actions/hotel";
 import { MapRef } from "react-map-gl";
 import { getCoupons } from "../../../actions/coupon";
-import { getUserBookings } from "../../../actions/booking";
+import { getBookings, getHotelBookings, getUserBookings } from "../../../actions/booking";
+import { BookingDetails } from "../adminSlices/adminSlice";
 
 interface UserState {
   currentUser: User | null; //Want to update according to database
@@ -26,10 +29,15 @@ interface UserState {
   rooms: [];
   mapRef: React.RefObject<MapRef> | null;
   priceFilter: number;
+  isBookingDetailsOpen:boolean;
+  selectedBookingId:string;
   addressFilter: {};
   filteredHotels: any[];
   filteredRooms: any[];
   bookings:[]
+  hotelBookings:BookingDetails[]
+  isWalletHistoryOpen:boolean;
+  isChatScreenOpen:boolean;
 }
 
 const initialState: UserState = {
@@ -46,7 +54,12 @@ const initialState: UserState = {
   addressFilter: {},
   filteredHotels: [],
   filteredRooms: [],
-  bookings:[]
+  isBookingDetailsOpen:false,
+  selectedBookingId:'',
+  bookings:[],
+  hotelBookings:[],
+  isWalletHistoryOpen:false,
+  isChatScreenOpen:false
 };
 
 export interface User {
@@ -61,9 +74,29 @@ export interface User {
     _id:string;
     firstName: string;
     profileImage: string;
+    wallet:number;
+    walletHistory?:[
+      {
+        transactionDate:Date,
+        transactionDetails: string
+        transactionType: string
+        transactionAmount: number
+        currentBalance: number
+      }
+    ];
   };
   isGoogle?: boolean;
   wishlist?: [string];
+  wallet?:number;
+  walletHistory?:[
+    {
+      transactionDate:Date,
+      transactionDetails: string
+      transactionType: string
+      transactionAmount: number
+      currentBalance: number
+    }
+  ];
 }
 
 interface Alert {
@@ -160,7 +193,7 @@ const userSlice = createSlice({
       // state.currentUser = { ...state.currentUser };
       console.log("state.currentUser", state.currentUser);
       const updatedUser = state.currentUser;
-      if (updatedUser.message) {
+      if (updatedUser?.message) {
         localStorage.setItem(
           "currentUser",
           JSON.stringify(updatedUser.message)
@@ -231,8 +264,30 @@ const userSlice = createSlice({
     setBookings: (state, action: PayloadAction<any>) => {
       state.bookings = action.payload;
     },
+    openBookingDetails:(state) => {
+      state.isBookingDetailsOpen = true;
+    },
+    closeBookingDetails:(state) => {
+      state.isBookingDetailsOpen = false;
+    },
+    openWalletHistory:(state) => {
+      state.isWalletHistoryOpen = true;
+    },
+    closeWalletHistory:(state) => {
+      state.isWalletHistoryOpen = false;
+    },
+    openChatScreen:(state) => {
+      state.isChatScreenOpen = true;
+    },
+    closeChatScreen:(state) => {
+      state.isChatScreenOpen = false;
+    },
+    setBookingId:(state, action: PayloadAction<string>) => {
+      state.selectedBookingId = action.payload;
+    },
     logoutUser: (state) => {
       state.currentUser = null;
+      state.bookings = [];
       localStorage.removeItem("currentUser");
       localStorage.removeItem("UserToken");
       toast.success("Logged out successfully");
@@ -329,10 +384,10 @@ const userSlice = createSlice({
             JSON.stringify(currentUser)
           );
           // Store currentUser in localStorage
-          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+          localStorage.setItem("currentUser", JSON.stringify(currentUser.message));
           localStorage.setItem("UserToken", currentUser.token);
           // Don't directly modify state.currentUser, create a new object
-          state.currentUser = currentUser;
+          state.currentUser = currentUser.message;
 
           state.alert = {
             open: true,
@@ -583,6 +638,73 @@ const userSlice = createSlice({
       }
       state.loading = false;
     });
+
+    //Get Bookings
+    builder.addCase(getHotelBookings.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(getHotelBookings.fulfilled, (state, action) => {
+      state.loading = false;
+      const bookings = action.payload;
+      if (bookings && bookings.message) {
+        // console.log(
+        //   "JSON.Stingify of  users List",
+        //   JSON.stringify(bookings.message)
+        // );
+        // console.log("user.message", bookings.message);
+        // Don't directly modify state.currentUser, create a new object
+        state.hotelBookings = bookings.message;
+      } else {
+        // Handle the case where currentUser or message is null or undefined
+        console.error("Received invalid data in loginUser.fulfilled");
+      }
+    });
+    builder.addCase(getHotelBookings.rejected, (state, action) => {
+      const error = action.error as Error | AxiosError;
+
+      if (error instanceof Error) {
+        // Handle specific error messages from the server if available
+        errorHandle(error);
+        toast.error(error.message);
+      } else {
+        // Handle non-Error rejection (if needed)
+        console.error("Login failed with non-Error rejection:", action.error);
+      }
+      state.loading = false;
+    });
+
+    // // updated user
+    builder.addCase(getUpdatedUser.pending, (state) => {
+      // state.loading = true;
+    });
+
+    builder.addCase(getUpdatedUser.fulfilled, (state, action) => {
+      // state.loading = false;
+      const user = action.payload;
+      console.log("user", user);
+      if (user && user.message) {
+        // Don't directly modify state.currentUser, create a new object
+        state.currentUser = { ...user.message };
+        localStorage.setItem("currentUser", JSON.stringify(state.currentUser));
+      } else {
+        // Handle the case where currentUser or message is null or undefined
+        console.error("Something went wrong while wishlisting");
+      }
+    });
+    builder.addCase(getUpdatedUser.rejected, (state, action) => {
+      const error = action.error as Error | AxiosError;
+
+      if (error instanceof Error) {
+        // Handle specific error messages from the server if available
+        errorHandle(error);
+        toast.error(error.message);
+      } else {
+        // Handle non-Error rejection (if needed)
+        console.error("Getupdated user Failed", action.error);
+      }
+      // state.loading = false;
+    });
   },
 });
 
@@ -603,6 +725,13 @@ export const {
   setOpenLogin,
   setCloseLogin,
   setAlert,
+  openBookingDetails,
+  closeBookingDetails,
+  openWalletHistory,
+  closeWalletHistory,
+  openChatScreen,
+  closeChatScreen,
+  setBookingId,
   setBookings,
   clearAlert,
   startLoading,

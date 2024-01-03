@@ -44,7 +44,8 @@ const MyDatePicker: React.FC<{ isOpen: boolean; onToggle: () => void }> = ({
       : new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
   };
 
-  const today = getTodayOrTomorrowDate();
+  const today = getTodayOrTomorrowDate()
+  console.log('today', today);
 
   const [dateRange, setDateRange] = useState([
     {
@@ -65,7 +66,7 @@ const MyDatePicker: React.FC<{ isOpen: boolean; onToggle: () => void }> = ({
     },
   ]);
   console.log("dateRange", dateRange);
-  console.log('CheckInCheckoutRange',checkInCheckoutRange)
+  console.log('CheckInCheckoutRange GlobalState',checkInCheckoutRange)
 
   const handleSelect = (ranges: any) => {
     const { startDate, endDate } = ranges.selection;

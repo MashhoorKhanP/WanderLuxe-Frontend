@@ -5,11 +5,6 @@ import errorHandle from "../components/hooks/errorHandler";
 import deleteImages from "./utils/deleteImages";
 import { CouponDetails } from "../store/slices/adminSlices/adminCouponSlice";
 
-// export interface Admin {
-//   _id: string;
-//   email: string;
-// }
-
 interface DeleteCouponPayload {
   couponData: CouponDetails;
 }

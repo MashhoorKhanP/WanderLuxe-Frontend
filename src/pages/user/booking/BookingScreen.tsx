@@ -2,16 +2,22 @@ import {
   Box,
   Button,
   Card,
+  Checkbox,
   Container,
   Divider,
+  FormControl,
+  FormControlLabel,
   Grid,
+  Radio,
+  RadioGroup,
+  Select,
   Stack,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { setAlert } from "../../../store/slices/userSlices/userSlice";
+import { setAlert, stopLoading } from "../../../store/slices/userSlices/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store/store";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -22,11 +28,13 @@ import {
 import { getCoupons } from "../../../actions/coupon";
 import { Coupon } from "../coupons/CouponsOverviewScreen";
 import { Options } from "../rooms/AdultChildrenPicker";
-import { postPaymentRequest } from "../../../actions/booking";
+import { postPaymentRequest, postWalletPaymentRequest } from "../../../actions/booking";
 import { loadStripe } from "@stripe/stripe-js";
+import Swal from "sweetalert2";
+import { getUpdatedUser } from "../../../actions/user";
+import { startLoading } from "../../../store/slices/adminSlices/adminSlice";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-
 
 const BookingScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -40,13 +48,17 @@ const BookingScreen: React.FC = () => {
   const couponCodeRef = useRef<HTMLInputElement>(null);
   const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
-  const { currentUser } : any = useSelector((state: RootState) => state.user);
+                <FormControlLabel value="Online Payment" control={<Radio />} label="Online Payment" />
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("Online Payment");
+  const { currentUser }: any = useSelector((state: RootState) => state.user);
   const roomId = searchParams.get("roomId");
   const additionalroomsNeeded = searchParams.get("additionalroomsNeeded");
   const totalRoomNeeded = Number(additionalroomsNeeded) + 1;
 
-  console.log('appliedCounpon',appliedCoupon)
-
+  console.log("appliedCounpon", appliedCoupon);
+  if (room.price === undefined) {
+        navigate("/user/view-hotels");
+  }
   const [stripe, setStripe] = useState<any>();
 
   const adultChildOptions: Options = useSelector(
@@ -58,26 +70,23 @@ const BookingScreen: React.FC = () => {
   const checkInCheckoutRange: any = useSelector(
     (state: RootState) => state.room.checkInCheckOutRange
   );
+
   
-  if(room.price === undefined){
-    navigate('/user/view-hotels');
-  }
   const coupons = useSelector((state: RootState) => state.coupon.coupons);
   const [roomsNeeded, setRoomsNeeded] = useState<number>(1);
-  const [couponDiscount,setCouponDiscount] = useState<number>(0);
+  const [couponDiscount, setCouponDiscount] = useState<number>(0);
+  const [useWalletBalance, setUseWalletBalance] = useState(false);
   const [payableAmount, setPayableAmount] = useState<number>(
-    room.price * checkInCheckoutRange.numberOfNights
+    (room.price + room.parkingPrice) * checkInCheckoutRange.numberOfNights * totalRoomNeeded
   );
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  const toggleDatePicker = () => {
-    setIsDatePickerOpen((prev) => !prev);
-  };
-  console.log('couponDiscount',couponDiscount);
+ 
+  console.log("couponDiscount", couponDiscount);
   useEffect(() => {
     if (roomId) {
       // Use useEffect to update room only after the component has mounted
       const roomDetails = rooms.find((room: any) => room._id === roomId);
       setRoom(roomDetails);
+
     }
     if (!coupons.length) {
       const fetchCoupons = async () => {
@@ -86,14 +95,24 @@ const BookingScreen: React.FC = () => {
       };
       fetchCoupons();
     }
+
+    
+      
   }, [roomId, rooms, room, coupons]);
 
   useEffect(() => {
     // Check if room is not empty before calculating payableAmount
     if (room && checkInCheckoutRange.numberOfNights) {
-      setPayableAmount(
-        room.price * checkInCheckoutRange.numberOfNights * totalRoomNeeded
+      if(useWalletBalance){
+         setPayableAmount(
+        ((room.price + room.parkingPrice) * checkInCheckoutRange.numberOfNights * totalRoomNeeded)-currentUser?.wallet
       );
+      }else{
+        setPayableAmount(
+          (room.price + room.parkingPrice) * checkInCheckoutRange.numberOfNights * totalRoomNeeded
+        );
+      }
+     
     }
   }, [room, checkInCheckoutRange.numberOfNights, totalRoomNeeded]);
 
@@ -128,17 +147,33 @@ const BookingScreen: React.FC = () => {
             ? selectedCoupon.maxDiscount
             : (room.price * selectedCoupon.discount) / 100;
 
-        setPayableAmount(
-          room.price * checkInCheckoutRange.numberOfNights * totalRoomNeeded -
-            couponDiscount
+        if(useWalletBalance){
+          setPayableAmount(
+          ((room.price + room.parkingPrice) * checkInCheckoutRange.numberOfNights * totalRoomNeeded -
+            couponDiscount)-currentUser?.wallet
         );
+        }else{
+          setPayableAmount(
+            (room.price + room.parkingPrice) * checkInCheckoutRange.numberOfNights * totalRoomNeeded -
+              couponDiscount
+          );
+        }
         setCouponDiscount(couponDiscount);
+        
       } else if (selectedCoupon.discountType === "fixedAmount") {
         setCouponDiscount(selectedCoupon.discount);
-        setPayableAmount(
-          room.price * checkInCheckoutRange.numberOfNights * totalRoomNeeded -
-            selectedCoupon.discount
-        );
+        if(useWalletBalance){
+          setPayableAmount(
+            ((room.price + room.parkingPrice) * checkInCheckoutRange.numberOfNights * totalRoomNeeded -
+              selectedCoupon.discount)-currentUser?.wallet
+          );
+
+        }else{
+          setPayableAmount(
+            (room.price + room.parkingPrice) * checkInCheckoutRange.numberOfNights * totalRoomNeeded -
+              selectedCoupon.discount
+          );
+        }
       }
     }
   };
@@ -147,12 +182,23 @@ const BookingScreen: React.FC = () => {
     setAppliedCoupon(null);
     setCouponDiscount(0);
     // Reset payable amount to the original amount without the coupon discount
-    setPayableAmount(
-      room.price * checkInCheckoutRange.numberOfNights * totalRoomNeeded
+    if(useWalletBalance){
+      setPayableAmount(
+        ((room.price + room.parkingPrice) * checkInCheckoutRange.numberOfNights * totalRoomNeeded)-currentUser?.wallet
+      );
+    }else{
+      setPayableAmount(
+      (room.price + room.parkingPrice) * checkInCheckoutRange.numberOfNights * totalRoomNeeded
     );
+    }
+    
   };
 
-  const handlePayNow = async(event: React.FormEvent) => {
+  const handlePaymentMethodChange = (method: string) => {
+    setSelectedPaymentMethod(method);
+  };
+
+  const handlePayNow = async (event: React.FormEvent) => {
     event?.preventDefault();
 
     const showErrorAlert = (message: string) => {
@@ -200,42 +246,75 @@ const BookingScreen: React.FC = () => {
       showErrorAlert("Please enter a valid email address.");
       return;
     }
-    console.log('couponDiscount',couponDiscount);
+    console.log("couponDiscount", couponDiscount);
 
     if (!mobileRef.current?.value.match(/^[6-9]\d{9}$/)) {
       showErrorAlert("Please enter a valid mobile number.");
       return;
     }
     const bookingDetails = {
-      firstName : fNameRef.current?.value,
-      lastName : lNameRef.current?.value,
-      email : emailRef.current?.value,
-      mobile : mobileRef.current?.value,
-      userId:currentUser?._id === undefined ? currentUser?.message?._id : currentUser?._id,
-      roomId:room._id,
-      roomType:room.roomType,
-      hotelName:room.hotelName,
-      roomImage:room.images[0],
-      appliedCouponId:appliedCoupon?._id ? appliedCoupon?._id: 'No Coupon Applied',
-      couponDiscount:couponDiscount,
-      totalRoomsCount:totalRoomNeeded,
-      checkInDate:checkInCheckoutRange.startDate.toDateString(),
-      checkOutDate:checkInCheckoutRange.endDate.toDateString(),
-      checkInTime:checkInCheckoutRange.startTime,
-      checkOutTime:checkInCheckoutRange.endTime,
-      numberOfNights:checkInCheckoutRange.numberOfNights,
-      adults:adultChildOptions.adult,
-      children:adultChildOptions.children,
-      totalAmount:payableAmount,
-      paymentMethod:'Online Payment' // when adding wallet add condition here wallet ? Wallet : Online Payment
-    }
+      firstName: fNameRef.current?.value,
+      lastName: lNameRef.current?.value,
+      email: emailRef.current?.value,
+      mobile: mobileRef.current?.value,
+      userId:
+        currentUser?._id === undefined
+          ? currentUser?.message?._id
+          : currentUser?._id,
+      roomId: room._id,
+      hotelId: room.hotelId,
+      roomType: room.roomType,
+      hotelName: room.hotelName,
+      roomImage: room.images[0],
+      appliedCouponId: appliedCoupon?._id
+        ? appliedCoupon?._id
+        : "No Coupon Applied",
+      couponDiscount: couponDiscount,
+      totalRoomsCount: totalRoomNeeded,
+      checkInDate: checkInCheckoutRange.startDate.toLocaleDateString(),
+      checkOutDate: checkInCheckoutRange.endDate.toLocaleDateString(),
+      checkInTime: checkInCheckoutRange.startTime,
+      checkOutTime: checkInCheckoutRange.endTime,
+      numberOfNights: checkInCheckoutRange.numberOfNights,
+      adults: adultChildOptions.adult,
+      children: adultChildOptions.children,
+      totalAmount: payableAmount,
+      paymentMethod: selectedPaymentMethod,
+      isWalletBalanceUsed:useWalletBalance // when adding wallet add condition here wallet ? Wallet : Online Payment
+    };
 
-    if(!stripe){
-      const stripeInstance = await stripePromise;
-      setStripe(stripeInstance);
+
+    if(selectedPaymentMethod === 'Online Payment'){ 
+      if (!stripe) {
+        const stripeInstance = await stripePromise;
+        setStripe(stripeInstance);
+      }
+      dispatch(postPaymentRequest({ bookingDetails }));
+
     }
-    dispatch(postPaymentRequest({bookingDetails}))
-    
+    if(selectedPaymentMethod === 'Wallet Payment'){
+      Swal.fire({
+            title: "Confirm Payment?",
+            text: `Total amount: ₹${payableAmount}`,
+            icon: "success",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Pay now",
+            cancelButtonText: "No, cancel!",
+            customClass: {
+              container: "custom-swal-container",
+            },
+            width: 400, // Set your desired width
+            background: "#f0f0f0",
+            iconHtml: '<i class="bi bi-currency-rupee" style="font-size:30px"></i>',
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              dispatch(postWalletPaymentRequest({ bookingDetails }));
+              // startLoading();
+              //   dispatch(getUpdatedUser(currentUser?._id));
+              //   stopLoading();
+            }
+          });
+    }
   };
 
   return (
@@ -583,8 +662,8 @@ const BookingScreen: React.FC = () => {
                         component={"span"}
                         sx={{ fontSize: "14px" }}
                       >
-                        {`Rent for a night (1Room): ₹${
-                          room.price + room.discountPrice
+                        {`Rent for a night (1Room + Parking Price): ₹${
+                          room.price + room.discountPrice + room.parkingPrice
                         }`}
                       </Typography>
 
@@ -606,6 +685,21 @@ const BookingScreen: React.FC = () => {
 
                       <br />
 
+                      <Typography
+                        variant="h6"
+                        component={"span"}
+                        sx={{ fontSize: "14px" }}
+                      >
+                        
+                        {`Parking Fee ${room.parkingPrice} x ${
+                          checkInCheckoutRange.numberOfNights
+                        } night: +₹${
+                          (room.parkingPrice) *
+                          checkInCheckoutRange.numberOfNights
+                        }`}
+                      </Typography>
+
+                      <br />
                       <Typography
                         variant="h6"
                         component={"span"}
@@ -661,8 +755,67 @@ const BookingScreen: React.FC = () => {
                           </Button>
                         </Stack>
                       )}
+                <Box sx={{ width: "100%", paddingTop: 2, textAlign: "start" }}>
+                  <Typography variant="body1" sx={{ fontSize: "14px", fontWeight: 'bold' }}>Select Payment Method</Typography>
+                  <Stack direction="row" justifyContent="start" display={'flex'}>
+                      <FormControl component="fieldset">
+                          <RadioGroup
+                              aria-label="payment-method"
+                              name="payment-method"
+                              value={selectedPaymentMethod}
+                              onChange={(e) => handlePaymentMethodChange(e.target.value)}
+                              
+                          >
+                              {currentUser?.wallet >= (room.price + room.parkingPrice + couponDiscount) * checkInCheckoutRange.numberOfNights * totalRoomNeeded ? (
+                                  <FormControlLabel
+                                      value="Wallet Payment"
+        
+                                      hidden={currentUser?.wallet < payableAmount}
+                                      control={<Radio sx={{ fontSize: '12px' }} />}  // Adjust the font size of the radio button
+                                      label={<Typography sx={{ fontSize: '12px', fontWeight: '500' }}>Wallet {currentUser?.wallet !== undefined && (
+                                          <Typography variant="caption" color="textSecondary">
+                                              <i className="bi bi-wallet2" style={{ marginLeft: '10px' }}></i> ₹{currentUser?.wallet}
+                                          </Typography>
+                                      )}</Typography>}  // Adjust the font size of the label text
+                                  />
+                              ) : (
+                                  // Use Wallet balance CheckBox here
+                                  <FormControlLabel
+                                      control={
+                                          <Checkbox
+                                              disabled={currentUser?.wallet === 0}
+                                              checked={useWalletBalance}
+                                              onChange={(e) => {
+                                                setUseWalletBalance(e.target.checked);
+                                                setPayableAmount(
+                                                  e.target.checked
+                                                    ?( (room.price + room.parkingPrice) * checkInCheckoutRange.numberOfNights * totalRoomNeeded - currentUser?.wallet) - couponDiscount
+                                                    : ((room.price + room.parkingPrice) * checkInCheckoutRange.numberOfNights * totalRoomNeeded) - couponDiscount
+                                                );
+                                              }}
+                                              sx={{ fontSize: '12px' }}  // Adjust the font size of the checkbox
+                                            />
+                                      }
+                                      label={<Typography sx={{ fontSize: '12px', fontWeight: '500' }}>Use Wallet Balance {currentUser?.wallet !== undefined && (
+                                          <Typography variant="caption" color="textSecondary">
+                                              <i className="bi bi-wallet2" style={{ marginLeft: '10px' }}></i> ₹{currentUser?.wallet}
+                                          </Typography>
+                                      )}</Typography>}  // Adjust the font size of the label text
+                                      hidden={currentUser?.wallet <= 0 }
+                                  />
+                              )}
 
-                      <Divider
+                              <FormControlLabel
+                                  value="Online Payment"
+                                  control={<Radio sx={{ fontSize: '12px' }} />}  // Adjust the font size of the radio button
+                                  label={<Typography sx={{ fontSize: '12px', fontWeight: '500' }}>Online Payment</Typography>}  // Adjust the font size of the label text
+                              />
+                          </RadioGroup>
+                      </FormControl>
+                  </Stack>
+              </Box>
+
+                                  <Divider
                         sx={{
                           width: "100%",
                           height: ".5px",
@@ -670,6 +823,9 @@ const BookingScreen: React.FC = () => {
                           mt: 2,
                         }}
                       />
+
+                      {/* Choose Payment Method */}
+                      
                       <Box paddingTop={2}>
                         <Typography
                           variant="h6"
@@ -710,7 +866,7 @@ const BookingScreen: React.FC = () => {
                       checkInCheckoutRange.endDate.toLocaleDateString() ? (
                       <Button
                         variant="outlined"
-                        onClick={() => navigate('/user/view-rooms')}
+                        onClick={() => navigate("/user/view-rooms")}
                         sx={{
                           width: "100%",
                           p: 1,
@@ -729,7 +885,8 @@ const BookingScreen: React.FC = () => {
                       <Button
                         className="book_room_btn"
                         variant="outlined"
-                        sx={{ width: "100%", p: 1, borderRadius: 0 }}
+                        startIcon={selectedPaymentMethod === 'Wallet Payment'? <i className="bi bi-wallet-fill"></i> : <i className="bi bi-stripe"></i>}
+                        sx={{ width: "100%", p: 0.5, borderRadius: 0 }}
                         color="inherit"
                         onClick={handlePayNow}
                       >

@@ -1,5 +1,5 @@
-import { Add, Cancel, Sync } from "@mui/icons-material";
-import { Box, Button, Container, Stack, Typography } from "@mui/material";
+import { Add, ArrowBack, Cancel, Sync } from "@mui/icons-material";
+import { Box, Button, Container, IconButton, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AddDetails from "./addDetails/AddDetails";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -31,8 +31,12 @@ const AddCoupon: React.FC = () => {
   );
   const [showSubmit, setShowSubmit] = useState(false);
   let isMaxDiscountValid: any;
+  const [isEditCoupon, setIsEditCoupon]= useState(false);
 
   useEffect(() => {
+    if(location.pathname ==='/admin/dashboard/coupons/edit-coupon'){
+      setIsEditCoupon(true);
+    }
     const isPercentageDiscount = couponDetails.discountType === "percentage";
     isMaxDiscountValid = isPercentageDiscount
       ? (couponDetails.maxDiscount as number) > 0
@@ -62,14 +66,17 @@ const AddCoupon: React.FC = () => {
       return false;
     }
 
-    const isDuplicateCouponCode = coupons.some(
-      (coupon: Coupon) => coupon.couponCode === couponDetails.couponCode
-    );
-
-    if (isDuplicateCouponCode) {
-      toast.error("Coupon code must be unique");
-      return false;
+    if(isEditCoupon===false){
+      const isDuplicateCouponCode = coupons.some(
+        (coupon: Coupon) => coupon.couponCode === couponDetails.couponCode
+      );
+      if (isDuplicateCouponCode) {
+        toast.error("Coupon code must be unique");
+        return false;
+      }
+      
     }
+
     // if (!roomDetails.amenities.length) {
     //   toast.error('At least one amenity is required');
     //   return false;
@@ -81,6 +88,11 @@ const AddCoupon: React.FC = () => {
     if (couponDetails.discountType === "percentage") {
       if (couponDetails.discount < 5) {
         toast.error("Minimum discount percentage should be 5%!");
+        return false;
+      }
+
+      if (couponDetails.discount > 50) {
+        toast.error("Maximum discount percentage should be 50%!");
         return false;
       }
 
@@ -160,6 +172,7 @@ const AddCoupon: React.FC = () => {
         const coupons = dispatch(getCoupons());
         dispatch(updateCoupons({ coupons }));
         toast.success("Coupon Updated Successfully");
+        setIsEditCoupon(false);
       } else {
         toast.error("Something went wrong!");
       }
@@ -172,7 +185,10 @@ const AddCoupon: React.FC = () => {
 
   return (
     <Container>
-      <Box sx={{ p: 2 }}>
+      <Box display="flex" alignItems="center" padding={2} flexDirection="row">
+      <IconButton onClick={() => navigate(-1)}>
+          <ArrowBack/>
+        </IconButton>
         <Typography variant="h5" fontWeight="bold">
           {location.pathname === "/admin/dashboard/coupons/add-coupon"
             ? "Add Coupon"

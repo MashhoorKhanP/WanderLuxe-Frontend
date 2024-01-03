@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import { Avatar, Badge, Box, IconButton, Tooltip } from "@mui/material";
 import { FavoriteBorder } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/types";
 import UserMenu from "./UserMenu";
 import useCheckToken from "../hooks/useCheckToken";
 import { useNavigate } from "react-router-dom";
+import { getUpdatedUser } from "../../actions/user";
+import { AppDispatch } from "../../store/store";
 
 const UserIcons: React.FC = () => {
   const navigate = useNavigate();
-  const checkToken = useCheckToken();
+  const dispatch = useDispatch<AppDispatch>();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [anchorUserMenu, setAnchorUserMenu] = useState<HTMLElement | null>(
     null
   );
 
-  checkToken;
   const handleOpenWishlist = () => {
     navigate("/user/wishlist");
   };
@@ -32,7 +33,10 @@ const UserIcons: React.FC = () => {
       </Tooltip>
 
       <Tooltip title="User Profile">
-        <IconButton onClick={(e) => setAnchorUserMenu(e.currentTarget)}>
+        <IconButton onClick={(e) => {
+    setAnchorUserMenu(e.currentTarget);
+    dispatch(getUpdatedUser(currentUser?._id as string));
+    }}>
           <Avatar
             style={{ backgroundColor: "#868686" }}
             src={

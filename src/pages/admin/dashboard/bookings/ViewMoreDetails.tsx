@@ -1,4 +1,4 @@
-import { Box, Button, Card, Container, Divider, Grid, Stack, TextField, Toolbar, Typography } from '@mui/material';
+import { Box, Button, Container, Divider, Grid, Stack, TextField, Toolbar, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { RootState } from '../../../../store/types';
 import { BookingDetails, RoomDetails } from '../../../../store/slices/adminSlices/adminSlice';
 import { getRooms } from '../../../../actions/room';
 import { updateRooms } from '../../../../store/slices/adminSlices/adminRoomSlice';
+import dayjs from 'dayjs';
 
 const ViewMoreDetails: React.FC = () => {
  const navigate = useNavigate();
@@ -211,7 +212,7 @@ const ViewMoreDetails: React.FC = () => {
                       component={"span"}
                       sx={{ fontSize: "14px" }}
                     >
-                        {  `Check-In: ${bookingData?.checkInDate} - ${bookingData?.checkInTime}`}
+                        {  `Check-In: ${dayjs(bookingData?.checkInDate).format('ddd, MMM D, YYYY')} - ${bookingData?.checkInTime}`}
                           
                     </Typography>
                     <br />
@@ -220,7 +221,7 @@ const ViewMoreDetails: React.FC = () => {
                       component={"span"}
                       sx={{ fontSize: "14px" }}
                     >
-                        {`Check-Out: ${bookingData?.checkOutDate} - ${bookingData?.checkOutTime}`}
+                        {`Check-Out: ${dayjs(bookingData?.checkOutDate).format('ddd, MMM D, YYYY')} - ${bookingData?.checkOutTime}`}
                     </Typography>
                     <br />
                     <Typography
@@ -233,10 +234,20 @@ const ViewMoreDetails: React.FC = () => {
                     <Typography
                       variant="h6"
                       component={"span"}
-                      sx={{ fontSize: "14px", color:bookingData.status === 'Confirmed'? 'green': 'red',fontWeight:'bold'}}
+                      sx={{ fontSize: "14px", color: bookingData.status==='Cancelled' || bookingData.status==='Cancelled by Admin' ? '#DC3545': '#198754',fontWeight:'bold'}}
                     >
                       {` ${bookingData.status}`}
                     </Typography>
+                    <br/>
+                    <Typography
+                      variant="h6"
+                      component={"span"}
+                      sx={{ fontSize: "14px" }}
+                    >
+                        {  `Booked on: ${dayjs(bookingData?.createdAt).format('ddd, MMM D, YYYY')}`}
+                          
+                    </Typography>
+                    <br />
                   </Box>
                 </Stack>
                 <Divider
@@ -334,6 +345,8 @@ const ViewMoreDetails: React.FC = () => {
                         }`}
                       </Typography>
                       <br />
+                      {bookingData.paymentMethod === "Online Payment" && 
+                      <>
                       <Typography
                         variant="h6"
                         component={"span"}
@@ -342,6 +355,8 @@ const ViewMoreDetails: React.FC = () => {
                         Invoice: <a href={bookingData.receiptUrl} style={{textDecoration:'underline',color:'#03A9F4'}} target='_blank'>Click here</a>
                       </Typography>
                       <br />
+                      </>
+                      }
                       <Divider
                         sx={{
                           width: "100%",

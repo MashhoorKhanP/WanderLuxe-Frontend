@@ -29,8 +29,8 @@
   position: relative;
   background-color: #ffffff;
   color: #000000;
-  border-radius: 2px;
-  border: 1px solid #7a7a7a;
+  border-radius: 5px;
+  border: 2px solid #7a7a7a;
   -webkit-box-shadow: 0 px 0px 10px -5px rgba(0, 0, 0, 0.4);
   box-shadow: 0 px 0px 10px -5px rgba(0, 0, 0, 0.4);
 }

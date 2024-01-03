@@ -6,13 +6,14 @@ import {
   Box,
   Button,
   Container,
+  IconButton,
   Stack,
   Step,
   StepButton,
   Stepper,
   Typography,
 } from "@mui/material";
-import { Add, Cancel, Sync } from "@mui/icons-material";
+import { Add, ArrowBack, Cancel, Sync } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../store/types";
 import AddImages from "../hotels/addImages/AddImages";
@@ -104,6 +105,10 @@ const AddRoom: React.FC = () => {
     }
   }, [steps]);
 
+  const hotel = hotelDetails.find(
+    (hotel: any) => hotel.hotelName === roomDetails.hotelName
+  );
+
   const validateForm = (): boolean => {
     // Validation logic for each field
     if (roomDetails.roomType.length < 5) {
@@ -117,9 +122,7 @@ const AddRoom: React.FC = () => {
     //   toast.error('Select hotel is required')
     //   return false;
     // }
-    const hotel = hotelDetails.find(
-      (hotel: any) => hotel.hotelName === roomDetails.hotelName
-    );
+    
     
     if (
       roomDetails.price > 3500 ||
@@ -161,12 +164,14 @@ const AddRoom: React.FC = () => {
         hotelId: roomDetails.hotelId,
         hotelName: roomDetails.hotelName,
         amenities: roomDetails.amenities,
+        parkingPrice: hotel.parkingPrice,
         price: roomDetails.price,
         discountPrice: roomDetails.discountPrice,
         roomsCount: roomDetails.roomsCount,
         maxPeople: roomDetails.maxPeople,
         description: roomDetails.description,
         images: roomImages,
+        status:'Available'
       });
 
       if (result.success) {
@@ -190,6 +195,7 @@ const AddRoom: React.FC = () => {
           hotelId: roomDetails.hotelId,
           hotelName: roomDetails.hotelName,
           amenities: roomDetails.amenities,
+          parkingPrice: hotel.parkingPrice,
           price: roomDetails.price,
           discountPrice: roomDetails.discountPrice,
           roomsCount: roomDetails.roomsCount,
@@ -217,7 +223,10 @@ const AddRoom: React.FC = () => {
 
   return (
     <Container>
-      <Box sx={{ p: 2 }}>
+      <Box display="flex" alignItems="center" padding={2} flexDirection="row">
+      <IconButton onClick={() => navigate(-1)}>
+          <ArrowBack/>
+        </IconButton>
         <Typography variant="h5" fontWeight="bold">
           {location.pathname === "/admin/dashboard/rooms/add-room"
             ? "Add Room"

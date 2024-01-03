@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import { WishlistEmpty } from "../../../assets/extraImages";
 import {
+  ArrowBack,
   BedOutlined,
   Favorite,
   FavoriteBorder,
@@ -101,7 +102,10 @@ const WishListScreen: React.FC = () => {
 
   return (
     <Container>
-      <Box paddingTop={4}>
+      <Box display="flex" alignItems="center" paddingTop={4} flexDirection="row">
+        <IconButton onClick={() => navigate(-1)}>
+            <ArrowBack/>
+        </IconButton>
         <Typography variant="h5" fontWeight="bold">
           Wishlist
         </Typography>

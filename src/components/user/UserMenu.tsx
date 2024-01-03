@@ -1,6 +1,11 @@
 import React from "react";
-import { GradingOutlined, Logout, ManageAccounts } from "@mui/icons-material";
-import { ListItemIcon, Menu, MenuItem } from "@mui/material";
+import {
+  GradingOutlined,
+  Logout,
+  ManageAccounts,
+  WalletOutlined,
+} from "@mui/icons-material";
+import { Box, ListItemIcon, Menu, MenuItem, Typography } from "@mui/material";
 import {
   logoutUser,
   updateUserProfile,
@@ -46,7 +51,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
       file: null,
       profileImage: currentUser?.profileImage,
     };
-    navigate("/user/profile");
+    // navigate("/user/profile");
     console.log("...Current User", { ...currentUser }, "...ProfileUpdate", {
       ...profileUpdate,
     });
@@ -67,12 +72,27 @@ const UserMenu: React.FC<UserMenuProps> = ({
           </ListItemIcon>
           Profile
         </MenuItem>
-        <MenuItem onClick={() => navigate('/user/my-bookings')}>
+        <MenuItem onClick={() => navigate("/user/my-bookings")}>
           <ListItemIcon>
             <GradingOutlined fontSize="small" />
           </ListItemIcon>
           My Bookings
         </MenuItem>
+        <MenuItem onClick={() => navigate('/user/my-wallet')}>
+      <ListItemIcon>
+        <WalletOutlined fontSize="small" />
+      </ListItemIcon>
+      <Box display="flex" flexDirection="column">
+        <Typography variant="inherit" style={{ marginRight: '8px' }}>
+          My Wallet
+        </Typography>
+        {currentUser?.wallet !== undefined && (
+          <Typography variant="caption" color="textSecondary">
+            Balance: ₹{currentUser.wallet}
+          </Typography>
+        )}
+      </Box>
+    </MenuItem>
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />

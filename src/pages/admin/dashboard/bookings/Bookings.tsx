@@ -42,10 +42,12 @@ const Bookings: React.FC<BookingsProps> = ({ setSelectedLink, link }) => {
     const bookingStatus = params.row.status;
 
     let textColor;
-    if (bookingStatus === 'Confirmed') {
-      textColor = "green";
+    if (bookingStatus === 'Cancelled') {
+      textColor = "#DC3545";
+    } else if (bookingStatus ==='Cancelled by Admin') {
+      textColor = "#DC3545";
     } else {
-      textColor = "red";
+      textColor = "#198754";
     }
 
     return <span style={{ color: textColor,fontWeight:'bold' }}>{`${bookingStatus}`}</span>;
@@ -55,7 +57,7 @@ const Bookings: React.FC<BookingsProps> = ({ setSelectedLink, link }) => {
       {
         field: "roomImage",
         headerName: "Image",
-        width: 90,
+        width: 70,
         renderCell: (params) => <Avatar src={params.row.roomImage} />,
         sortable: false,
         filterable: false,
@@ -84,22 +86,27 @@ const Bookings: React.FC<BookingsProps> = ({ setSelectedLink, link }) => {
             <span>{renderStatusCell(params)}</span>
           </Tooltip>
         ),
-        renderEditCell: (params) => (
-          <Select
 
-            value={params.value}
-            onChange={(e) => {
-              // Use the api object from params to commit cell edits
-              params.api.setEditCellValue({ id: params.id, field: params.field, value: e.target.value });
-            }}
-            sx={{ color: params.value === 'Confirmed' ? 'green' : 'red',width:200}}
-          >
-            <MenuItem value="Confirmed" sx={{color:'green',fontWeight:'bold'}} >Confirm Booking</MenuItem>
-            <MenuItem value="Cancelled by Admin" sx={{color:'red',fontWeight:'bold'}}>Cancel Booking</MenuItem>
-            {/* Add other status options if needed */}
-          </Select>
-        ),
-        },
+        renderEditCell: (params) => (
+          // params.value !== 'Cancelled' && (
+            <Select
+              value={params.value}
+              onChange={(e) => {
+                // Use the api object from params to commit cell edits
+                params.api.setEditCellValue({ id: params.id, field: params.field, value: e.target.value });
+              }}
+              sx={{ fontWeight: 'bold', color: params.value === 'Cancelled' ? '#DC3545' : '#198754', width: 200 }}
+            >
+              <MenuItem value="Confirmed" sx={{ color: 'green', fontWeight: 'bold' }} >Confirm Booking</MenuItem>
+              <MenuItem value="On Check-In" sx={{ color: 'white', fontWeight: 'bold' }} >On Check-In</MenuItem>
+              <MenuItem value="Checked-Out" sx={{ color: 'white', fontWeight: 'bold' }} >Checked-Out</MenuItem>
+              {params.value === 'Confirmed' && (
+                <MenuItem value="Cancelled by Admin" sx={{ color: 'red', fontWeight: 'bold' }}>Cancel Booking</MenuItem>
+              )}
+            </Select>
+          // )
+        )
+          },
       { field: "checkInDate", headerName: "Check-In",align:'center',renderCell: (params) =>
       moment(params.row.checkInDate).format("DD-MM-YYYY") },
       { field: "checkOutDate", headerName: "Check-Out",align:'center',renderCell: (params) =>
@@ -110,6 +117,7 @@ const Bookings: React.FC<BookingsProps> = ({ setSelectedLink, link }) => {
       {
         field: "createdAt",
         headerName: "Created At",
+        width:140,
         renderCell: (params) =>
           moment(params.row.createdAt).format("DD-MM-YYYY HH:MM:SS"),
       },
@@ -126,7 +134,7 @@ const Bookings: React.FC<BookingsProps> = ({ setSelectedLink, link }) => {
         ),
       },
 
-      //{ field: "_id", headerName: "User ID", type: "string", width: 110},
+      { field: "_id", headerName: "User ID", type: "string", width: 110},
       // {
       //   field: "isVerified",
       //   headerName: "Verified",

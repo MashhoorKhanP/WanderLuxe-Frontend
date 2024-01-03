@@ -47,6 +47,7 @@
     "supercluster": "^8.0.1",
     "sweetalert2": "^11.10.1",
     "swiper": "^8.2.2",
+    "timeago.js": "^4.0.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

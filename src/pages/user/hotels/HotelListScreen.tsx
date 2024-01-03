@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  ArrowBack,
   BedOutlined,
   Favorite,
   FavoriteBorder,
@@ -148,7 +149,10 @@ const HotelListScreen: React.FC = () => {
 
   return (
     <Container>
-      <Box paddingTop={4}>
+      <Box display="flex" alignItems="center" paddingTop={4} flexDirection="row">
+      <IconButton onClick={() => navigate('/user/home')}>
+            <ArrowBack/>
+        </IconButton>
         <Typography variant="h5" fontWeight="bold">
           Hotels
         </Typography>

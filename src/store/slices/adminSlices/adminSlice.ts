@@ -40,6 +40,7 @@ export interface BookingDetails {
   email : string;
   mobile : string;
   roomId: string;
+  hotelId:string;
   userId: string;
   roomType: string;
   hotelName: string;
@@ -59,6 +60,7 @@ export interface BookingDetails {
   transactionId:string,
   receiptUrl:string,
   paymentMethod:string,
+  createdAt:Date| string
 }
 
 export interface HotelDetails {
@@ -85,6 +87,8 @@ export interface RoomDetails {
   maxPeople: number;
   description: string;
   images?: string[];
+  parkingPrice:number;
+  status:string;
 }
 
 const initialState: AdminState = {

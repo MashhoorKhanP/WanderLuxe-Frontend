@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MuiDrawer from "@mui/material/Drawer";
 import { styled, Theme, CSSObject } from "@mui/material/styles";
 import {
@@ -7,9 +7,8 @@ import {
   Dashboard,
   Discount,
   Hotel,
-  Inbox,
   Logout,
-  Mail,
+  MarkChatUnreadOutlined,
   PeopleAlt,
   Redeem,
   Style,
@@ -32,7 +31,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/types";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import Main from "./main/Main";
+import DashboardHome from "./dashboardHome/Dashboard";
 import Users from "./users/Users";
 import Hotels from "./hotels/Hotels";
 import Rooms from "./rooms/Rooms";
@@ -42,6 +41,7 @@ import Coupons from "./coupons/Coupons";
 import Banners from "./banners/Banners";
 import { logoutAdmin } from "../../../store/slices/adminSlices/adminSlice";
 import AddHotel from "./hotels/AddHotel";
+import ChatScreen from "./dashboardHome/ChatScreen";
 
 const drawerWidth = 240;
 
@@ -103,25 +103,37 @@ const SideList: React.FC<SideListProps> = ({ open, setOpen, updateTitle }) => {
   const navigate = useNavigate();
   const { currentAdmin } = useSelector((state: RootState) => state.admin); //change currentAdmin make slice
   const [selectedLink, setSelectedLink] = useState("");
+  
+  useEffect(() =>{
+    navigate('/admin/dashboard/home');
+  },[])
+  
   const handleItemClick = (link: string, title: string) => {
     setOpen(false);
     setSelectedLink(link);
     updateTitle(title);
     navigate(link.startsWith("/") ? link : `/admin/dashboard/${link}`);
   };
+
   const list = useMemo(
     () => [
       {
         title: "Dashboard",
         icon: <Dashboard />,
         link: "home",
-        component: <Main {...{ setSelectedLink, link: "home" }} />,
+        component: <DashboardHome {...{ setSelectedLink, link: "home" }} />,
       },
       {
         title: "Users",
         icon: <PeopleAlt />,
         link: "users",
         component: <Users {...{ setSelectedLink, link: "users" }} />,
+      },
+      {
+        title: "Messages",
+        icon: <MarkChatUnreadOutlined />,
+        link: "chat-screen",
+        component: <ChatScreen {...{ setSelectedLink, link: "chat-screen" }} />,
       },
       {
         title: "Hotels",

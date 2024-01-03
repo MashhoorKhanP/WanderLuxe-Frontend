@@ -65,7 +65,7 @@ const MapScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const hotels = useSelector((state: RootState) => state.user.filteredHotels);
   const { mapRef } = useValue();
-  const location = useSelector((state: RootState) => state.admin.hotelLocation);
+  const location = useSelector((state: RootState) => state.adminHotel.hotelLocation);
   const [popupInfo, setPopupInfo] = useState<PointFeature | null>(null);
   const [points, setPoints] = useState<PointFeature[]>([]);
   const [clusters, setClusters] = useState<PointFeature[]>([]);

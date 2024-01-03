@@ -8,6 +8,7 @@ import {
   updateAdmin,
 } from "../store/slices/adminSlices/adminSlice";
 import AdminPrivateRoute from "../components/AdminPrivateRoute";
+import PageNotFound from "../components/common/NotFound";
 
 interface Admin {
   _id: string;
@@ -42,7 +43,9 @@ const AdminRouter: React.FC = () => {
     <Routes>
       <Route path="/*" element={<AdminLogin />} />
       <Route path="/login" element={<AdminLogin />} />
-      <Route path="*" element={<Navigate to="/admin/login" />} />
+      <Route path="" element={<Navigate to="/admin/login" />} />
+      <Route path="*" element={<Navigate to="404" />} />
+      <Route path="404" element={<PageNotFound />} />
       {/* <Route path="dashboard" element={<Dashboard/>}/> */}
       <Route path="" element={<AdminPrivateRoute />}>
         <Route path="dashboard/*" element={<Admin />} />

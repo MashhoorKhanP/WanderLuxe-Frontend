@@ -38,7 +38,7 @@ const Login: React.FC = () => {
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
   const handleClose = () => {
-    navigate("/user/home");
+    navigate(-1);
     dispatch(setCloseLogin());
   };
 

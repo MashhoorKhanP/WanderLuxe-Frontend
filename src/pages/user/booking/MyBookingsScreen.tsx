@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/types';
 import { Box, Button, Card, Container, Hidden, IconButton, ImageList, ImageListItem, ImageListItemBar, Stack, Tooltip, Typography } from '@mui/material';
-import { BedOutlined, Favorite, FavoriteBorder } from '@mui/icons-material';
 import { NoBookingFound } from '../../../assets/extraImages';
 import { getUserBookings } from '../../../actions/booking';
 import { AppDispatch } from '../../../store/store';
-import { setBookings } from '../../../store/slices/userSlices/userSlice';
+import { openBookingDetails, setBookingId, setBookings, setRooms } from '../../../store/slices/userSlices/userSlice';
 import useCheckToken from '../../../components/hooks/useCheckToken';
 import { useNavigate } from 'react-router-dom';
+import { ArrowBack, InfoOutlined, UnfoldMoreOutlined } from '@mui/icons-material';
+import dayjs from 'dayjs';
+import { setRoomId } from '../../../store/slices/userSlices/roomSlice';
+import { getRooms } from '../../../actions/room';
 
 
 const MyBookingsScreen: React.FC = () => {
@@ -16,6 +19,7 @@ const MyBookingsScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const rooms: any = useSelector((state: RootState) => state.user.filteredRooms);
   const bookings:any = useSelector((state: RootState) => state.user.bookings);
   const [currentPage, setCurrentPage] = useState(1);
   const bookingsPerPage = 6;
@@ -27,6 +31,14 @@ const MyBookingsScreen: React.FC = () => {
   console.log('currentUser.messsge',currentUser?.message);
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
   useEffect(() => {
+    if (!rooms.length) {
+      const fetchRooms = async () => {
+        const response = await dispatch(getRooms());
+        dispatch(setRooms(response.payload.message)); // assuming getHotels returns { payload: hotels }
+      };
+      fetchRooms();
+    }
+    
       const fetchBookings = async () => {
         const userId = currentUser?.message?._id !== undefined ? currentUser?.message?._id : currentUser?._id;
         const userDetails={
@@ -37,13 +49,23 @@ const MyBookingsScreen: React.FC = () => {
       };
 
       fetchBookings();
+    
   }, [dispatch,currentUser]);
 
   checkToken;
+  const handleViewMoreDetails  = (bookingId:string,roomId:string) => {
+    dispatch(openBookingDetails());
+    dispatch(setBookingId(bookingId));
+    dispatch(setRoomId(roomId));
+  }
+
   return (
     <Container>
-      <Box paddingTop={4}>
-        <Typography variant="h5" fontWeight="bold">
+      <Box display="flex" alignItems="center" paddingTop={4} flexDirection="row">
+        <IconButton onClick={() => navigate(-1)}>
+          <ArrowBack/>
+        </IconButton>
+        <Typography variant="h5" fontWeight="bold" marginLeft={1}>
           My Bookings
         </Typography>
       </Box>
@@ -52,7 +74,7 @@ const MyBookingsScreen: React.FC = () => {
         sx={{
           paddingTop: 2,
           mb: 8,
-          display: 'flex',
+          display:currentBookings.length>0?'':'flex',
           gridTemplateColumns:
             "repeat(auto-fill,minmax(280px, 1fr)) !important",
         }}
@@ -108,67 +130,14 @@ const MyBookingsScreen: React.FC = () => {
            
       <Tooltip title="" key={booking._id}>
               <Card sx={{ width: "100%", height: "270px" }}>
-                <ImageListItem sx={{ height: "100% !important" }}>
+                <ImageListItem sx={{ height: "100% !important"}}>
                   <ImageListItemBar
                     sx={{
-                      background: "0",
+                      background: "1",
                     }}
                     title={booking.roomType}
                     subtitle={`𖡡 ${booking.hotelName}`}
-                    // actionIcon={
-                    //   <>
-                        
-                    //     <Tooltip
-                    //       title={
-                    //         currentUser?.wishlist?.includes(hotel._id)
-                    //           ? "Remove from wishlist"
-                    //           : "Add to wishlist"
-                    //       }
-                    //     >
-                    //       <IconButton
-                    //         onClick={() =>
-                    //           handleWishlist(hotel._id, hotel.hotelName)
-                    //         } // Add your wishlist logic here
-                    //         sx={{
-                    //           position: "absolute",
-                    //           top: "55px",
-                    //           right: "10px",
-                    //           color: "white",
-                    //           transition: "color 0.3s ease",
-                    //           "&:hover": { color: "red" },
-                    //         }}
-                    //       >
-                    //         {currentUser?.wishlist?.includes(hotel._id) ? (
-                    //           <Favorite sx={{ color: "red" }} />
-                    //         ) : (
-                    //           <FavoriteBorder />
-                    //         )}
-                    //       </IconButton>
-                    //     </Tooltip>
-                    //     <Tooltip title="View Rooms">
-                    //       <IconButton
-                    //         onClick={() => handleViewRoom(hotel._id)} // Add your wishlist logic here
-                    //         sx={{
-                    //           position: "absolute",
-                    //           top: "85px",
-                    //           right: "10px",
-                    //           color: "white",
-                    //           transition: "color 0.3s ease",
-                    //           "&:hover": { color: "red" },
-                    //         }}
-                    //       >
-                    //         <BedOutlined
-                    //           sx={{
-                    //             color: "white",
-                    //             transition: "color 0.3s ease",
-                    //             "&:hover": { color: "red" },
-                    //           }}
-                    //           onClick={() => handleViewRoom(hotel._id)}
-                    //         />
-                    //       </IconButton>
-                    //     </Tooltip>
-                    //   </>
-                    // }
+                    
                     position="top"
                   />
                   <img
@@ -179,22 +148,56 @@ const MyBookingsScreen: React.FC = () => {
                   />
                   {/* Want to give room starts from with  */}
                   <ImageListItemBar
-                    // onClick={() => handleViewBookingDetails(booking._id)}
-                    title={`₹${booking.totalAmount}`}
-                    subtitle={"Paid"}
-                    // actionIcon={
-                    //   <Rating
-                    //     sx={{ color: "rgba(255,255,255, 0.8)", mr: "5px" }}
-                    //     name="hotelRating"
-                    //     defaultValue={3.5}
-                    //     precision={0.5}
-                    //     emptyIcon={
-                    //       <StarBorder
-                    //         sx={{ color: "rgba(255,255,255, 0.8)" }}
-                    //       />
-                    //     }
-                    //   />
-                    // }
+                  sx={{
+                    height:'211px',
+                    pt:5
+                    
+                  }}
+                    title={
+                      <>
+                       <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px' ,color:'#ececec'}}>
+                         Amount Paid
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight: 'bold',fontSize:'12px' ,color:'#ececec' }}>
+                         {`₹${booking.totalAmount}`}
+                        </Typography>
+                        <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px',color:'#ececec' }}>
+                         Check-In
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight: 'bold',fontSize:'12px' ,color:'#ececec' }}>
+                         {`${dayjs(booking.checkInDate).format('ddd, MMM D, YYYY')} - ${booking.checkInTime}`}
+                        </Typography>
+                        <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px',color:'#ececec' }}>
+                         Check-Out
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight: 'bold',fontSize:'12px' ,color:'#ececec' }}>
+                        {`${dayjs(booking.checkOutDate).format('ddd, MMM D, YYYY')} - ${booking.checkOutTime}`}
+                        </Typography>
+                        <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px',color:'#ececec' }}>
+                         Status
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight:'bold',fontSize:'12px' ,color:booking.status==='Cancelled' || booking.status==='Cancelled by Admin' ? '#DC3545': '#15ca76' }}>
+                         {booking.status}
+                        </Typography>
+                      </>
+                    }
+                    // subtitle={"Amount Paid"}
+                    actionIcon={
+                      <Tooltip title="More Details">
+                      <UnfoldMoreOutlined
+                      sx={{
+                        color: "rgba(255,255,255, 0.8)",
+                        mr: "20px",
+                        cursor: "pointer",
+                        transition: 'transform 0.3s ease', // Add transition for smooth effect
+                        '&:hover': {
+                          transform: 'scale(1.2)', // Increase the scale on hover
+                        },
+                      }}
+                      onClick={() => handleViewMoreDetails(booking._id,booking.roomId)} // Replace with your logic
+                    />
+                    </Tooltip>
+                    }
                   />
                 </ImageListItem>
               </Card>

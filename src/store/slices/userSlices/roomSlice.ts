@@ -14,6 +14,7 @@ interface RoomState {
   adultChildrenCount: number;
   adultChildrenOptions: Options;
   additionalRoomsNeeded: number;
+  roomBookings:[]
 }
 
 const getTodayOrTomorrowDate = () => {
@@ -47,6 +48,7 @@ const initialState: RoomState = {
     children: 0,
   },
   additionalRoomsNeeded: 1,
+  roomBookings:[]
 };
 
 const roomSlice = createSlice({
@@ -68,6 +70,9 @@ const roomSlice = createSlice({
         ...state.adultChildrenOptions,
         ...action.payload,
       };
+    },
+    setRoomBookings:(state,action:PayloadAction<any>) => {
+      state.roomBookings = action.payload;
     },
     setAdditionalRoomsNeeded: (state, action: PayloadAction<number>) => {
       state.additionalRoomsNeeded = action.payload;
@@ -126,6 +131,7 @@ export const {
   setAdultChildren,
   setAdditionalRoomsNeeded,
   setAdultChildrenOptions,
+  setRoomBookings
 } = roomSlice.actions;
 
 export default roomSlice.reducer;

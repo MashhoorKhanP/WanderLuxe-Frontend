@@ -8,6 +8,7 @@ import {
   IconButton,
   Slide,
   SlideProps,
+  Stack,
   Toolbar,
   Tooltip,
   Typography,
@@ -16,7 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/types";
 import { useNavigate } from "react-router-dom";
 import { Close, ContentPasteOutlined } from "@mui/icons-material";
-import Swal from "sweetalert2";
 import { getCoupons } from "../../../actions/coupon";
 import { AppDispatch } from "../../../store/store";
 import {
@@ -24,6 +24,8 @@ import {
   setCoupons,
 } from "../../../store/slices/userSlices/couponSlice";
 import dayjs from "dayjs";
+import { NoCouponFound } from "../../../assets/extraImages";
+import { setAlert } from "../../../store/slices/userSlices/userSlice";
 
 export interface Coupon {
   _id: string;
@@ -89,7 +91,7 @@ const CouponsOverviewScreen: React.FC = () => {
   const handleCopyCouponCode = (couponCode: string) => {
     dispatch(closeCouponOverview());
     navigator.clipboard.writeText(couponCode);
-    Swal.fire("Copied to clipboard!", `Coupon Code: ${couponCode}`, "success");
+    dispatch(setAlert({open:true, severity:'success', message:`Coupon Code: ${couponCode} copied`}))
   };
 
   return (
@@ -121,8 +123,11 @@ const CouponsOverviewScreen: React.FC = () => {
           }}
         />
         <br />
+          {availableCoupons.length ?(
         <Box>
           {/* Display available coupons */}
+
+            
           {availableCoupons.map((coupon) => (
             <Box
               key={coupon.couponCode}
@@ -173,6 +178,23 @@ const CouponsOverviewScreen: React.FC = () => {
             </Box>
           ))}
         </Box>
+          ):(
+            <Box
+          sx={{
+            width: '100%',
+            display:'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+              <Typography variant="h5" fontWeight='bold' display="flex" padding={2}>
+                No coupons available!
+              </Typography>
+              <img src={NoCouponFound}  style={{ borderRadius: '15px', width: '100%', maxWidth: '400px' }}  alt="Empty wishlist..." />
+          
+            </Box>
+          )}
       </Container>
     </Dialog>
   );

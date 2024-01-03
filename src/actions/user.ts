@@ -68,6 +68,14 @@ interface ChangePasswordData {
   };
 }
 
+interface AddMoneyToWalletDetails{
+  addMoneyToWalletDetails : {
+    userId:string,
+    amount:number
+  }
+
+}
+
 //Async thunk for user register instead fetchData.ts
 export const registerUser = createAsyncThunk(
   "user/register",
@@ -271,3 +279,41 @@ export const addRemoveFromWishlist = createAsyncThunk(
     return result;
   }
 );
+
+export const postAddMoneyToWalletRequest = createAsyncThunk(
+  "user/postAddMoneyToWalletRequest",
+  async ({ addMoneyToWalletDetails }: AddMoneyToWalletDetails) => {
+    console.log("addMoneyToWallet from user.ts", addMoneyToWalletDetails);
+    const result = await fetchData({
+      url: import.meta.env.VITE_SERVER_URL + `/api/user/add-money-to-wallet`,
+      method: "POST",
+      body: addMoneyToWalletDetails,
+    });
+    console.log('result of postPaymentRequest', result);
+    // Check for errors in the result and throw if necessary
+    if (result?.data && result.data.message) {
+      throw new Error(result.data.message);
+    }
+    if(result.message.url){
+      window.location.href = result.message.url;
+    }
+    
+  }
+);
+
+export const getUpdatedUser  = createAsyncThunk(
+  "user/updatedUser",
+  async (userId:string) => {
+    const result = await fetchData({
+      url: import.meta.env.VITE_SERVER_URL + `/api/user/updated-user/${userId}`,
+      method: "GET",
+      body:{},
+    });
+    console.log('result of updatedUser', result);
+    // Check for errors in the result and throw if necessary
+    if (result?.data && result.data.message) {
+      throw new Error(result.data.message);
+    }
+    return result;
+  } 
+  );
