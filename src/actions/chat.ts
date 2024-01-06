@@ -11,11 +11,11 @@ interface AddMessageData{
    
  
 }
-export const getAdminConversations = createAsyncThunk("adminORUser/getAdminConversations", async (adminId:string) => {
+export const getConversations = createAsyncThunk("adminORUser/getConversations", async (userId:string) => {
   try {
-    console.log('adminId chat.ts', adminId);
+    console.log('userId chat.ts', userId);
     const result = await fetchData({
-      url: import.meta.env.VITE_SERVER_URL + `/api/user/get-conversations/${adminId}`,
+      url: import.meta.env.VITE_SERVER_URL + `/api/user/get-conversations/${userId}`,
       method: "GET",
     });
     if (result?.data && result.data.message) {
@@ -28,7 +28,7 @@ export const getAdminConversations = createAsyncThunk("adminORUser/getAdminConve
     const typedError = error as Error | AxiosError;
 
     console.error("Error getAdminConversations :", typedError);
-    errorHandle(typedError);
+    // errorHandle(typedError);
     console.error("Error getAdminConversations :", error);
     throw error;
   }

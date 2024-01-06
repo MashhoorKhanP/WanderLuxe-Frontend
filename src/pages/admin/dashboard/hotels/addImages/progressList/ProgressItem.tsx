@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import { updateHotelImages } from "../../../../../../store/slices/adminSlices/adminHotelSlice";
 import { updateRoomImages } from "../../../../../../store/slices/adminSlices/adminRoomSlice";
+import { updateBannerImages } from "../../../../../../store/slices/adminSlices/adminSlice";
 
 interface ProgressItemProps {
   file: File;
@@ -67,6 +68,31 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ file }) => {
           );
 
           dispatch(updateRoomImages([url]));
+          // if(udpatedHotel) dispatch(updateAddedHotelImages([url]))
+          setImageURL(null);
+        } catch (error) {
+          const typedError = error as Error;
+          toast.error(typedError.message);
+          console.log(typedError);
+        }
+      };
+
+      setImageURL(URL.createObjectURL(file));
+      uploadImage();
+    }else if (
+      location.pathname === "/admin/dashboard/banners"
+    ) {
+      const uploadImage = async () => {
+        const imageName = uuidv4() + "." + file.name.split(".").pop();
+        try {
+          const url: string = await uploadFileProgress(
+            file,
+            `banners/${currentAdmin?._id}`,
+            imageName,
+            setProgress
+          );
+
+          dispatch(updateBannerImages([url]));
           // if(udpatedHotel) dispatch(updateAddedHotelImages([url]))
           setImageURL(null);
         } catch (error) {

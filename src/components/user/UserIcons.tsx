@@ -18,7 +18,7 @@ const UserIcons: React.FC = () => {
   );
 
   const handleOpenWishlist = () => {
-    navigate("/user/wishlist");
+    navigate("/wishlist");
   };
   return (
     <Box>

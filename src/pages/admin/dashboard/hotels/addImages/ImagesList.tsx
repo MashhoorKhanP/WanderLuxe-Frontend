@@ -1,35 +1,56 @@
 import {
+  Box,
+  Button,
   IconButton,
   ImageList,
   ImageListItem,
   ImageListItemBar,
+  Stack,
+  TextField,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../store/types";
-import { Cancel, Delete } from "@mui/icons-material";
+import { Add, Cancel, Delete } from "@mui/icons-material";
 import deleteFile from "../../../../../firebase/deleteFile";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { deleteHotelImages } from "../../../../../store/slices/adminSlices/adminHotelSlice";
 import { deleteRoomImages } from "../../../../../store/slices/adminSlices/adminRoomSlice";
+import { deleteBannerImages } from "../../../../../store/slices/adminSlices/adminSlice";
+import { getBanners, updateBanners } from "../../../../../actions/banner";
+import { AppDispatch } from "../../../../../store/store";
 
 const ImagesList: React.FC = () => {
   const location = useLocation();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const banner = useSelector((state: RootState) => state.admin.banners);
+  const [bannerText, setBannerText] = useState<string>(banner?.text); // State for the banner text
+  const [prevBannerImages, setPrevBannerImages] = useState<any>([]);
+
+  
   const { currentAdmin } = useSelector((state: RootState) => state.admin);
   const hotelImages = useSelector(
     (state: RootState) => state.adminHotel.hotelImages
   );
-
   const roomImages = useSelector((state: RootState) => state.adminRoom.roomImages);
+  const bannerImages = useSelector((state: RootState) => state.admin.bannerImages);
+  useEffect(() => {
+    if(!bannerImages.length){
+      dispatch(getBanners());
+      bannerImages && setPrevBannerImages(bannerImages) 
+    }
+    console.log('bannerimages from ',bannerImages)
+  }, [dispatch]);
 
   const udpatedHotel = useSelector(
     (state: RootState) => state.adminHotel.updatedHotel
   );
   const currentAdminId = currentAdmin?._id;
 
+  
   const handleDelete = async (image: string) => {
     Swal.fire({
       title: "Are you sure?",
@@ -76,16 +97,59 @@ const ImagesList: React.FC = () => {
           } catch (error) {
             console.log(error);
           }
+        }else if (
+          location.pathname === "/admin/dashboard/banners"
+        ) {
+          dispatch(deleteBannerImages(image));
+          const imageName = image
+            ?.split(`${currentAdminId}%2F`)[1]
+            ?.split("?")[0];
+          try {
+            await deleteFile(`banners/${currentAdminId}/${imageName}`);
+            toast.success("File deleted successfully");
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
     });
   };
-  const images =
+  const images:any =
     location.pathname === "/admin/dashboard/hotels/add-hotel" ||
     location.pathname === "/admin/dashboard/hotels/edit-hotel"
       ? hotelImages
-      : roomImages;
+      : location.pathname === "/admin/dashboard/rooms/add-room" ||
+      location.pathname === "/admin/dashboard/rooms/edit-room"?  roomImages
+      :"/admin/dashboard/rooms/edit-room" ? bannerImages : ''
+
+  const handleSubmit = async() => {
+    const imagesChanged = !arraysAreEqual(prevBannerImages, bannerImages);
+    if (imagesChanged) {
+  
+       const result = await updateBanners({updatedBanners:{
+        _id:banner._id as string,
+        images:bannerImages as [],
+        text: bannerText.trim(),
+       }})
+      if(result){
+        setPrevBannerImages(bannerImages);
+        toast.success('Banner updated successfully');
+      }
+    } else {
+      // No changes, display a message or handle accordingly
+      toast.info('No changes to update banner!');
+    }
+  }
+  
+  const arraysAreEqual = (arr1: string[], arr2: string[]) => {
+  
+    return (
+      arr1.length === arr2.length &&
+      arr1.every((value) => arr2.includes(value))
+    );
+  };
   return (
+    <>
     <ImageList
       rowHeight={250}
       sx={{
@@ -95,7 +159,7 @@ const ImagesList: React.FC = () => {
         },
       }}
     >
-      {images.map((image: string, index) => (
+      {images.map((image: string, index:number) => (
         <ImageListItem key={index} cols={1} rows={1} sx={{ mt: "25px" }}>
           <img
             src={image}
@@ -119,7 +183,56 @@ const ImagesList: React.FC = () => {
           />
         </ImageListItem>
       ))}
-    </ImageList>
+      </ImageList>
+      <Box
+        display="flex"
+        alignItems="center"
+        padding={2}
+        flexDirection="row" // Center vertically
+        width="100%"
+      >
+          <Stack
+            sx={{
+              alignItems: "center",
+              justifyContent: "center",
+              pt: 5,
+              gap: 4,
+            }}
+            direction="row" 
+            width={'100%'}
+            >
+            <TextField
+              multiline
+              label="Banner Text"
+              variant="outlined"
+              sx={{
+                width:'50%'
+              }}
+              value={bannerText}
+              onChange={(e) => setBannerText(e.target.value)}
+              />
+              {(!arraysAreEqual(prevBannerImages, bannerImages) && bannerImages.length === 4 || bannerText !== banner?.text) && (
+             <Button
+          variant="contained"
+          endIcon={<Add />}
+          onClick={handleSubmit}
+          disabled={!bannerText.trim()}
+        >
+          UPDATE BANNER
+        </Button>
+          )}
+          <Button
+      variant="outlined"
+      style={{ borderColor: "red", color: "red" }}
+      endIcon={<Cancel />}
+      onClick={() => navigate(-1)}
+    >
+      CANCEL
+    </Button>
+          </Stack>
+  
+      </Box>
+    </>
   );
 };
 

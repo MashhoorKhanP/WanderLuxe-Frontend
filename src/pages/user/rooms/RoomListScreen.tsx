@@ -166,7 +166,7 @@ const RoomListScreen: React.FC = () => {
   const handleCardClick = (roomId: string) => {
     dispatch(openRoomOverview()); // Dispatch an action to open the RoomOverviewScreen
     dispatch(setRoomId(roomId));
-    // navigate('/user/view-rooms/room-overview');
+    // navigate('/view-rooms/room-overview');
   };
   return (
     <Container>

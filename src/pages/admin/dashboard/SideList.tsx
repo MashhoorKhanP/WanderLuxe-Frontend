@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import MuiDrawer from "@mui/material/Drawer";
 import { styled, Theme, CSSObject } from "@mui/material/styles";
 import {
@@ -42,6 +42,7 @@ import Banners from "./banners/Banners";
 import { logoutAdmin } from "../../../store/slices/adminSlices/adminSlice";
 import AddHotel from "./hotels/AddHotel";
 import ChatScreen from "./dashboardHome/ChatScreen";
+import { Socket, io } from "socket.io-client";
 
 const drawerWidth = 240;
 
@@ -96,18 +97,20 @@ interface SideListProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   updateTitle: React.Dispatch<React.SetStateAction<string>>;
+  socket?:Socket | null;
 }
 
-const SideList: React.FC<SideListProps> = ({ open, setOpen, updateTitle }) => {
+const SideList: React.FC<SideListProps> = ({socket, open, setOpen, updateTitle}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentAdmin } = useSelector((state: RootState) => state.admin); //change currentAdmin make slice
   const [selectedLink, setSelectedLink] = useState("");
   
-  useEffect(() =>{
-    navigate('/admin/dashboard/home');
-  },[])
-  
+  // useEffect(() =>{
+  //   navigate('/admin/dashboard/home');
+  // },[])
+
+  console.log('Socket from Sidelist',socket);
   const handleItemClick = (link: string, title: string) => {
     setOpen(false);
     setSelectedLink(link);
@@ -133,7 +136,11 @@ const SideList: React.FC<SideListProps> = ({ open, setOpen, updateTitle }) => {
         title: "Messages",
         icon: <MarkChatUnreadOutlined />,
         link: "chat-screen",
-        component: <ChatScreen {...{ setSelectedLink, link: "chat-screen" }} />,
+        component:socket ? (
+          <ChatScreen socket={socket} {...{ setSelectedLink, link: "chat-screen" }} />
+        ) : (
+          <div>Loading...</div> // Or any other fallback UI
+        ),
       },
       {
         title: "Hotels",
@@ -172,7 +179,7 @@ const SideList: React.FC<SideListProps> = ({ open, setOpen, updateTitle }) => {
         component: <Banners {...{ setSelectedLink, link: "banners" }} />,
       },
     ],
-    []
+    [socket]
   );
 
   const handleLogout = () => {

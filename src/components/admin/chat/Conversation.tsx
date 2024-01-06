@@ -5,21 +5,21 @@ import { RootState } from '../../../store/types';
 
 interface ConversationProps{
   conversation:[]| any;
-  currentAdminId:string;
+  currentUserId:string;
 }
 
-const Conversation: React.FC<ConversationProps> = ({conversation,currentAdminId}) => {
+const Conversation: React.FC<ConversationProps> = ({conversation,currentUserId}) => {
 
   const allUsers = useSelector((state: RootState) => state.admin.users);
   console.log('users',allUsers)
   const [users,setUsers] = useState<any>(null);
 
   useEffect (() => {
-    const userId = conversation.members.find((member:any) => member !== currentAdminId );
+    const userId = conversation.members.find((member:any) => member !== currentUserId );
     const usersData = allUsers.find((user:any) => user._id === userId);
-    console.log('user',usersData);
+   
     setUsers(usersData);
-  },[currentAdminId,conversation])
+  },[currentUserId,conversation])
  
   return (
     <div className='conversation'>

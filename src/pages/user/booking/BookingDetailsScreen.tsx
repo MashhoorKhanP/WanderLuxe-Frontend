@@ -117,7 +117,7 @@ const BookingDetailsScreen: React.FC = () => {
     <Dialog
       fullScreen
       className="dialog_container"
-      open={isOpen && location.pathname === "/user/my-bookings"}
+      open={isOpen && location.pathname === "/my-bookings"}
       onClose={(event, reason) => {
         if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
           // Set 'open' to false, however you would do that with your particular code.

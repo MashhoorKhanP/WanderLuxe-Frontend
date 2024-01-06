@@ -97,7 +97,7 @@ const PopupHotel: React.FC<PopupHotelProps> = ({ popupInfo,distance }) => {
         </div>
         <Tooltip
           title="View available rooms"
-          onClick={() => navigate(`/user/view-rooms?hotelId=${hotelId}`)}
+          onClick={() => navigate(`/view-rooms?hotelId=${hotelId}`)}
         >
           <VisibilityOutlined
             style={{ fontSize: "20px", marginRight: "4px", cursor: "pointer" }}

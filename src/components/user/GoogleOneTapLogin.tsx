@@ -56,7 +56,7 @@ const GoogleOneTapLogin: React.FC = () => {
   };
 
   const handleGoogleLogin = () => {
-    navigate("/user/google-login");
+    navigate("/google-login");
     setDisabled(true);
     try {
       window.google.accounts.id.initialize({

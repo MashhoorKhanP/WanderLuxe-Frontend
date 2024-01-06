@@ -76,7 +76,7 @@ const OtpVerification: React.FC = () => {
 
   const handleClose = () => {
     dispatch(setCloseOTPVerification());
-    navigate("/user/home");
+    navigate("/home");
   };
 
   const handleVerifyOTP = (event: React.FormEvent) => {

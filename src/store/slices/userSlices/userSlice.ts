@@ -17,6 +17,7 @@ import { MapRef } from "react-map-gl";
 import { getCoupons } from "../../../actions/coupon";
 import { getBookings, getHotelBookings, getUserBookings } from "../../../actions/booking";
 import { BookingDetails } from "../adminSlices/adminSlice";
+import { getBanners } from "../../../actions/banner";
 
 interface UserState {
   currentUser: User | null; //Want to update according to database
@@ -419,8 +420,8 @@ const userSlice = createSlice({
       state.loading = false;
     });
 
-    //Verify User
-    builder.addCase(verifyUser.pending, (state) => {
+     //Verify User
+     builder.addCase(verifyUser.pending, (state) => {
       state.loading = true;
     });
 
@@ -442,11 +443,9 @@ const userSlice = createSlice({
 
     builder.addCase(verifyUser.rejected, (state, action) => {
       state.loading = false;
-      state.alert = {
-        open: true,
+      state.alert={open: true,
         severity: "error",
-        message: "Invalid OTP, Please confirm your OTP",
-      };
+        message: 'Invalid OTP, Please confirm your OTP'}
       if (action.error instanceof Error) {
         state.alert = {
           open: true,
@@ -461,6 +460,7 @@ const userSlice = createSlice({
         );
       }
     });
+
 
     //Login User
     builder.addCase(loginUser.pending, (state) => {

@@ -33,6 +33,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import Swal from "sweetalert2";
 import { getUpdatedUser } from "../../../actions/user";
 import { startLoading } from "../../../store/slices/adminSlices/adminSlice";
+import BookingDetailsScreen from "./BookingDetailsScreen";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
@@ -57,7 +58,7 @@ const BookingScreen: React.FC = () => {
 
   console.log("appliedCounpon", appliedCoupon);
   if (room.price === undefined) {
-        navigate("/user/view-hotels");
+        navigate("/view-hotels");
   }
   const [stripe, setStripe] = useState<any>();
 
@@ -283,6 +284,7 @@ const BookingScreen: React.FC = () => {
       isWalletBalanceUsed:useWalletBalance // when adding wallet add condition here wallet ? Wallet : Online Payment
     };
 
+    console.log('BookingDetails', bookingDetails.isWalletBalanceUsed);
 
     if(selectedPaymentMethod === 'Online Payment'){ 
       if (!stripe) {
@@ -851,7 +853,7 @@ const BookingScreen: React.FC = () => {
                     sx={{ width: "100%", p: 1, borderRadius: 0 }}
                     color="inherit"
                     onClick={() =>
-                      navigate(`/user/view-rooms?hotelId=${room.hotelId}`)
+                      navigate(`/view-rooms?hotelId=${room.hotelId}`)
                     }
                   >
                     <span>Go back</span>
@@ -866,7 +868,7 @@ const BookingScreen: React.FC = () => {
                       checkInCheckoutRange.endDate.toLocaleDateString() ? (
                       <Button
                         variant="outlined"
-                        onClick={() => navigate("/user/view-rooms")}
+                        onClick={() => navigate("/view-rooms")}
                         sx={{
                           width: "100%",
                           p: 1,

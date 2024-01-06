@@ -41,7 +41,7 @@ const Message: React.FC<MessageProps> = ({message,own}) => {
       
 
   },[location.pathname])
-  console.log('message',message)
+  
   return (
     <div className={own ? "message own" : "message"}>
       <div className="messageTop">

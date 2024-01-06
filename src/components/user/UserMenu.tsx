@@ -41,7 +41,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
   };
 
   const handleLogout = () => {
-    navigate("/user/home");
+    navigate("/home");
     dispatch(logoutUser());
   };
 
@@ -51,7 +51,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
       file: null,
       profileImage: currentUser?.profileImage,
     };
-    // navigate("/user/profile");
+    // navigate("/profile");
     console.log("...Current User", { ...currentUser }, "...ProfileUpdate", {
       ...profileUpdate,
     });
@@ -72,13 +72,13 @@ const UserMenu: React.FC<UserMenuProps> = ({
           </ListItemIcon>
           Profile
         </MenuItem>
-        <MenuItem onClick={() => navigate("/user/my-bookings")}>
+        <MenuItem onClick={() => navigate("/my-bookings")}>
           <ListItemIcon>
             <GradingOutlined fontSize="small" />
           </ListItemIcon>
           My Bookings
         </MenuItem>
-        <MenuItem onClick={() => navigate('/user/my-wallet')}>
+        <MenuItem onClick={() => navigate('/my-wallet')}>
       <ListItemIcon>
         <WalletOutlined fontSize="small" />
       </ListItemIcon>

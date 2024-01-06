@@ -59,7 +59,7 @@ const WishListScreen: React.FC = () => {
   }, [dispatch, allHotels]);
 
   const handleViewRoom = (hotelId: string) => {
-    navigate(`/user/view-rooms?hotelId=${hotelId}`);
+    navigate(`/view-rooms?hotelId=${hotelId}`);
   };
 
   const handleWishlist = (hotelId: string, hotelName: string) => {
@@ -86,7 +86,7 @@ const WishListScreen: React.FC = () => {
             },
           })
         );
-        navigate("/user/wishlist");
+        navigate("/wishlist");
         toast.success("Hotel removed from wishlist!");
       }
     });
@@ -149,7 +149,7 @@ const WishListScreen: React.FC = () => {
         className="book_room_btn"
         sx={{ width: '20%', p: 1, borderRadius: 0 }}
         color="inherit"
-        onClick={() => navigate(`/user/view-hotels`)}
+        onClick={() => navigate(`/view-hotels`)}
       >
         <span>Wishtlist Now</span>
       </Button>
@@ -158,7 +158,7 @@ const WishListScreen: React.FC = () => {
         className="book_room_btn"
         sx={{ width: '20%', p: 1, borderRadius: 0 }}
         color="inherit"
-        onClick={() => navigate(`/user/home`)}
+        onClick={() => navigate(`/home`)}
       >
         <span>Back to home</span>
       </Button>

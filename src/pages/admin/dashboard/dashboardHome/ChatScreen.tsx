@@ -6,71 +6,96 @@ import { TextField } from '@mui/material';
 import Conversation from '../../../../components/admin/chat/Conversation';
 import Message from '../../../../components/admin/chatMessage/Message';
 import { KeyboardDoubleArrowDownOutlined, Send } from '@mui/icons-material';
-import ChatOnline from '../../../../components/admin/chatOnline/ChatOnline';
+// import ChatOnline from '../../../../components/admin/chatOnline/ChatOnline';
 import { useLocation } from 'react-router-dom';
 import { RootState } from '../../../../store/types';
-import { addNewMessage, getAdminConversations, getMessages } from '../../../../actions/chat';
+import { addNewMessage, getConversations, getMessages } from '../../../../actions/chat';
 import { AppDispatch } from '../../../../store/store';
-import { LoadingGif, SpinnerGif } from '../../../../assets/extraImages';
+import { LoadingGif} from '../../../../assets/extraImages';
+import { Socket, io } from 'socket.io-client';
+import { setNewMessages } from '../../../../store/slices/adminSlices/adminSlice';
+import { jwtDecode } from 'jwt-decode';
 
 interface ChatProps {
   setSelectedLink?: React.Dispatch<React.SetStateAction<string>>;
   link?: string;
+  socket?:Socket| null;
 }
 
-const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link }) => {
+const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
+  console.log('Socket in ChatScreen:', socket);
   const checkToken = useCheckToken();
   const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
-  let currentAdmin:any;
-  let currentUser:any;
+  
 
-  if (location.pathname === '/admin/dashboard/chat-screen') {
-    ({ currentAdmin } = useSelector((state: RootState) => state.admin));
-  } else {
-    ({ currentUser } = useSelector((state: RootState) => state.user));
-  }
+  
   const [conversations,setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState<any>(null);
   const [messages,setMessages] = useState<any>([]);
   const [newMessage, setNewMessage] = useState('');
+  const [arrivalMessage, setArrivalMessage] = useState<any>(null);
+  const [onlineUsers,setOnlineUsers] = useState([]); 
   const [userId,setUserId] = useState('');
+  const [decodedToken, setDecodedToken] = useState<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+
   useEffect(() => {
-    if(location.pathname==='/admin/dashboard/chat-screen'){
-      setUserId(currentAdmin._id)
-    }else{
-      setUserId(currentUser._id);
+
+    console.log('Socket', socket?.id)
+    if(socket){
+      socket.on('getMessage', (data) => {
+        console.log('Arrival Message', data);
+        setArrivalMessage({
+          sender: data.senderId,
+          text: data.text,
+          createdAt: Date.now(),
+        });
+      });
+      socket.on('getUser', (users) => {
+        console.log('Socket Users from Chat screen', users);
+      });
     }
-  },[currentAdmin,currentUser])
+  
+    console.log('socket currendfsfsfsdfs');
+  }, [socket]);
+  
+  useEffect(() => {
+    const token = localStorage.getItem('AdminToken') || localStorage.getItem('UserToken') ;
+    const decodedToken:any = jwtDecode(token as string);
+    setDecodedToken(decodedToken);
+    console.log('decoded token',decodedToken.role)
+    setUserId(decodedToken._id);
 
+
+  },[userId]);
 
   useEffect(() => {
-    if (location.pathname !=='/admin/dashboard/chat-screen' && conversations.length > 0 && !currentChat) {
+    arrivalMessage && currentChat?.members.includes(arrivalMessage.sender) && 
+    setMessages((prev:any) => [...prev,arrivalMessage])
+    console.log('setted Arrived message',arrivalMessage);
+  },[arrivalMessage,currentChat])
+ 
+  console.log('decoded token',decodedToken?.role)
+
+  useEffect(() => {
+    if (decodedToken?.role === 'user' && conversations.length > 0 && !currentChat) {
       setTimeout(()=> {
         setCurrentChat(conversations[0]);
+        
       },500)
     }
-  }, [location.pathname, conversations, currentChat]);
+    dispatch(setNewMessages(messages.length))
+  }, [conversations, currentChat]);
 
   useEffect(() => {
-      if(location.pathname == '/admin/dashboard/chat-screen'){
-      const response = dispatch(getAdminConversations(currentAdmin._id))
+      const response = dispatch(getConversations(userId))
       const responseUnwrapped = response.unwrap();
       responseUnwrapped.then((thenResponse) => {
         console.log("thenResponse", thenResponse.message.conv);
         setConversations(thenResponse.message.conv)
       });
-      }else{
-        const response = dispatch(getAdminConversations(currentUser._id))
-        const responseUnwrapped = response.unwrap();
-        responseUnwrapped.then((thenResponse) => {
-          console.log("thenResponse", thenResponse.message.conv);
-          setConversations(thenResponse.message.conv)
-        });
-      }
-      
     },[userId])
 
   useEffect(() => {
@@ -79,6 +104,7 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link }) => {
     responseUnwrapped.then((thenResponse) => {
       console.log("thenResponseMessage", thenResponse.message);
       setMessages(thenResponse.message)
+      
     });
   },[currentChat])
   
@@ -90,8 +116,6 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link }) => {
     if(setSelectedLink && link){
       setSelectedLink(link);
     }
-    
-    // Dispatch the action to fetch users when the component mounts
   }, [dispatch, setSelectedLink, link]);
 
   checkToken
@@ -143,11 +167,21 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link }) => {
  const handleSubmit = (e:React.FormEvent) => {
   e.preventDefault();
   const messageData = {
-    sender: userId, // location.pathname ==='/admin/dashboard/chat-screen' ? currentAdmin._id : currentUser._id,
+    sender:userId,
     text:newMessage,
     conversationId:currentChat._id
   }
 
+  const receiverId = currentChat.members.find((member:any) => member !== messageData.sender)
+  console.log('receiverId',receiverId);
+  console.log('senderId',messageData.sender);
+  console.log('text',messageData.text);
+  
+  socket?.emit('sendMessage',{
+    senderId:userId,
+    receiverId:receiverId,
+    text:messageData.text
+  })
   const response = dispatch(addNewMessage(messageData))
     const responseUnwrapped = response.unwrap();
     responseUnwrapped.then((thenResponse) => {
@@ -159,8 +193,6 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link }) => {
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({behavior:'smooth'})
-    const goDownButton = goDownButtonRef.current;
-    if (goDownButton) goDownButton.style.display  = 'none'
     
   },[messages])
   
@@ -168,13 +200,13 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link }) => {
   return (
     
     <div className='messenger'> 
-     {location.pathname === '/admin/dashboard/chat-screen' && 
+     {decodedToken?.role === 'admin' && 
      <div className="chatMenu">
       <div className="chatMenuWrapper">
         <TextField variant='standard' placeholder='Search for users' sx={{pb:1}} className='chatMenuInput' />
         {conversations.map((conversation:any) => (
           <div key={conversation._id} onClick={() =>  setCurrentChat(conversation)}>
-            <Conversation conversation={conversation} currentAdminId={userId}/>
+            <Conversation conversation={conversation} currentUserId={userId}/>
           </div>
         ))}
       </div>
@@ -205,17 +237,17 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link }) => {
           value={newMessage}
           placeholder='Your message here' />
           <button hidden={newMessage.trim().length<=0} className='chatSubmitButton' onClick={handleSubmit}><Send  sx={{fontSize:'20px'}}/></button>
-          <button className={location.pathname =='/admin/dashboard/chat-screen' ? 'goDownButton':'goDownButtonUser'} ref={goDownButtonRef}><KeyboardDoubleArrowDownOutlined sx={{fontSize:'20px'}}/></button>
+          <button className={decodedToken?.role === 'admin'  ? 'goDownButton':'goDownButtonUser'} ref={goDownButtonRef}><KeyboardDoubleArrowDownOutlined sx={{fontSize:'20px'}}/></button>
         </div>
         </>
-        :location.pathname =='/admin/dashboard/chat-screen' ? <span className='noConversationText'>Open a conversation to start a chat.</span> 
+        :decodedToken?.role === 'admin' ? <span className='noConversationText'>Open a conversation to start a chat.</span> 
         :<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
         <span className='noConversationText'>Opening chat...</span>
         <img className='spinnerGif' src={LoadingGif} alt='Loading' />
       </div>}
       </div>
      </div>
-     {/* {location.pathname === '/admin/dashboard/chat-screen' &&
+     {/* {decodedToken?.role === 'admin' &&
      <div className="chatOnline">
       <div className="chatOnlineWrapper">
         <ChatOnline/>

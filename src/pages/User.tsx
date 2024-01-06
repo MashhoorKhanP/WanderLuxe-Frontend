@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "../App.css";
 import Navbar from "../components/Navbar";
 import Login from "../components/user/Login";
@@ -14,13 +14,39 @@ import BookingDetailsScreen from "./user/booking/BookingDetailsScreen";
 import WalletHistoryScreen from "./user/wallet/WalletHistoryScreen";
 import { NotFound } from "../assets/extraImages";
 import ChatScreenUser from "./user/chat/ChatScreenUser";
+import { Socket, io } from "socket.io-client";
+import { logoutUser } from "../store/slices/userSlices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store/types";
+import { getBanners } from "../actions/banner";
+import { AppDispatch } from "../store/store";
 
 const Home: React.FC = () => {
   const location = useLocation();
+  const dispatch = useDispatch<AppDispatch>();
+  const socket = useRef<Socket | null>();
+  const { currentUser } = useSelector((state: RootState) => state.user);
+  
+  useEffect(() => {
+    dispatch(getBanners());
+  },[dispatch]);
 
+  useEffect(()=>{
+    if(!socket.current && currentUser){
+      socket.current = io(import.meta.env.VITE_SERVER_URL);
+      socket.current.emit('addUser',(currentUser?._id))
+      socket.current.on('responseIsBlocked',(data:{isBlocked:boolean})=>{
+        console.log('dataSocket',data);
+        if(data.isBlocked){
+         dispatch(logoutUser());
+        }
+      })
+      
+    }
+  },[socket,currentUser])
   return (
     <>
-      {location.pathname === "/user/otp-verification" && <OtpVerification />}
+      {location.pathname === "/otp-verification" && <OtpVerification />}
       <Loading />
       <Notification />
       <Login />
@@ -30,7 +56,7 @@ const Home: React.FC = () => {
       <CouponsOverviewScreen/>
       <BookingDetailsScreen/>
       <WalletHistoryScreen/>
-      <ChatScreenUser/>
+      <ChatScreenUser socket={socket.current}/>
       <Footer />
     </>
   );

@@ -130,7 +130,8 @@ const Login: React.FC = () => {
 
         // Check if thenResult is not null or undefined
         if (thenResult != null) {
-          navigate("/user/otp-verification");
+          setIsRegister(!isRegister);
+          navigate("/otp-verification");
         }
       });
     } else {
@@ -159,7 +160,7 @@ const Login: React.FC = () => {
       // Perform Login logic
       const email = emailRef.current?.value;
       const password = passwordRef.current?.value ?? "";
-      navigate("/user/home");
+      navigate("/home");
       return dispatch(loginUser({ email, password }));
     }
   };
@@ -328,12 +329,24 @@ const Login: React.FC = () => {
             onClick={() => {
               setIsRegister(!isRegister);
               // Navigate based on the isRegister state
-              isRegister ? navigate("/user/login") : navigate("/user/register");
+              isRegister ? navigate("/login") : navigate("/register");
             }}
             style={{ marginTop: "5px" }}
           >
             {isRegister ? "Login" : "Register"}
           </Button>
+          
+          {!isRegister &&
+          <Button
+            onClick={() => {
+              setIsRegister(!isRegister);
+              // Navigate based on the isRegister state
+              isRegister ? navigate("/login") : navigate("/register");
+            }}
+            style={{ marginTop: "5px" }}
+          >
+            <i className="bi bi-shield-lock" style={{paddingRight:'2px',color:'black'}}></i>Forgot Password?
+          </Button>}
         </DialogActions>
       </Dialog>
     </>

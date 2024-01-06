@@ -22,7 +22,6 @@ import { updateRooms } from "../../../store/slices/adminSlices/adminRoomSlice";
 import { getCoupons } from "../../../actions/coupon";
 import { updateCoupons } from "../../../store/slices/adminSlices/adminCouponSlice";
 import { Socket, io } from "socket.io-client";
-import ChatScreen from "./dashboardHome/ChatScreen";
 import { getUsers } from "../../../actions/admin";
 
 const drawerWidth = 240;
@@ -30,6 +29,7 @@ const drawerWidth = 240;
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
+
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -57,15 +57,19 @@ const Dashboard: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(true);
   const [title, setTitle] = useState("Dashboard");
-  const socket = useRef<Socket | null>();
-
+  
+  const socket = useRef<Socket | any>();
   useEffect(()=>{
     if(!socket.current && currentAdmin){
+      console.log('Socket from Dashboard',socket.current);
       socket.current = io(import.meta.env.VITE_SERVER_URL)
       socket.current.emit('addUser',(currentAdmin?._id))
+      socket.current.on('welcome', (message:any) => {
+        console.log('SocketIOmessage', message)
+      })
     }
   },[socket, currentAdmin])
-
+  
   const darkTheme = useMemo(
     () =>
       createTheme({
@@ -127,7 +131,6 @@ const Dashboard: React.FC = () => {
             >
               {title}
             </Typography>
-
             <Tooltip title={dark ? "Light Mode" : "Dark Mode"}>
               <IconButton onClick={() => setDark(!dark)}>
                 {dark ? <Brightness7 /> : <Brightness4Sharp />}
@@ -135,7 +138,7 @@ const Dashboard: React.FC = () => {
             </Tooltip>
           </Toolbar>
         </AppBar>
-        <SideList open={open} setOpen={setOpen} updateTitle={setTitle} />
+        <SideList socket={socket.current} open={open}  setOpen={setOpen}  updateTitle={setTitle} />
       </Box>
     </ThemeProvider>
   );

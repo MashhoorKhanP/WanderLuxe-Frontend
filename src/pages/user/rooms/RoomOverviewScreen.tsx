@@ -143,7 +143,7 @@ const RoomOverviewScreen: React.FC = () => {
     dispatch(setRoomId(""));
     // setHotel([]);
     // Dispatch an action to close the RoomOverviewScreen
-    // navigate('/user/view-rooms');
+    // navigate('/view-rooms');
   };
   console.log("adultChildrencount", adultChildCount);
   console.log("roomsNeeded", roomsNeeded);
@@ -170,7 +170,7 @@ const RoomOverviewScreen: React.FC = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         navigate(
-          `/user/book-room?roomId=${roomId}&additionalroomsNeeded=${roomsNeeded}`
+          `/book-room?roomId=${roomId}&additionalroomsNeeded=${roomsNeeded}`
         );
       }
     });
@@ -181,7 +181,7 @@ const RoomOverviewScreen: React.FC = () => {
   return (
     <Dialog
       className="dialog_container"
-      open={isOpen && location.pathname === "/user/view-rooms"}
+      open={isOpen && location.pathname === "/view-rooms"}
       onClose={(event, reason) => {
         if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
           // Set 'open' to false, however you would do that with your particular code.

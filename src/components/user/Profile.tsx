@@ -54,7 +54,7 @@ const Profile: React.FC = () => {
   // if(currentUser?.message) currentUser = currentUser.message;
   const handleClose = () => {
     dispatch(updateUserProfile({ ...profile, open: false }));
-    // navigate('/user/home')
+    // navigate('/home')
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -149,7 +149,7 @@ const Profile: React.FC = () => {
       });
 
       if (result) {
-        navigate("/user/profile");
+        navigate("/profile");
         dispatch(updateUserProfile({ ...result, open: false }));
         console.log("updated profile", result);
         setIsEditMode(false);
@@ -203,14 +203,14 @@ const Profile: React.FC = () => {
                   <Edit
                     onClick={() => {
                       setIsEditMode(true);
-                      // navigate("/user/edit-profile");
+                      // navigate("/edit-profile");
                     }}
                   />
                 ) : (
                   <ArrowBack
                     onClick={() => {
                       setIsEditMode(false);
-                      // navigate("/user/profile");
+                      // navigate("/profile");
                     }}
                   />
                 )}
@@ -313,7 +313,7 @@ const Profile: React.FC = () => {
           <Button
             onClick={() => {
               handleClose && handleClose();
-              navigate("/user/change-password");
+              navigate("/change-password");
             }}
             variant="contained"
             sx={{

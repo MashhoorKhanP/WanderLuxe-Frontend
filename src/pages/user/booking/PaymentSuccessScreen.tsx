@@ -56,7 +56,7 @@ const PaymentSuccessScreen: React.FC = () => {
           className="book_room_btn"
           sx={{ width: '20%', p: 1, borderRadius: 0 }}
           color="inherit"
-          onClick={() => navigate(`/user/view-hotels`)}
+          onClick={() => navigate(`/view-hotels`)}
         >
           <span>Book rooms</span>
         </Button>
@@ -65,7 +65,7 @@ const PaymentSuccessScreen: React.FC = () => {
           className="book_room_btn"
           sx={{ width: '20%', p: 1, borderRadius: 0 }}
           color="inherit"
-          onClick={() => navigate(`/user/my-bookings`)}
+          onClick={() => navigate(`/my-bookings`)}
         >
           <span>My Bookings</span>
         </Button>

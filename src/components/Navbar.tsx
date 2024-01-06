@@ -25,60 +25,60 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const handleOpenLogin = () => {
-    navigate("/user/login-register");
+    navigate("/login-register");
     dispatch(setOpenLogin(true));
   };
-  const socket = useRef<Socket | null>();
+  // const socket = useRef<Socket | null>();
   
-  useEffect(()=>{
-    if(!socket.current && currentUser){
-      socket.current = io(import.meta.env.VITE_SERVER_URL);
-      if(currentUser.message){
-        const userId = currentUser.message._id;
-        socket.current.emit('addUser',(userId))  
-      }else{
-        socket.current.emit('addUser',(currentUser?._id))
-      }
-      socket.current.on('getUser',(data)=>{
-        console.log(data);
-      })
-      socket.current.on('responseIsBlocked',(data:{isBlocked:boolean})=>{
-        console.log('dataSocket',data);
-        if(data.isBlocked){
-         dispatch(logoutUser());
-        }
-      })
+  // useEffect(()=>{
+  //   if(!socket.current && currentUser){
+  //     socket.current = io(import.meta.env.VITE_SERVER_URL);
+  //     socket.current.emit('addUser',(currentUser?._id))
+  //     socket.current.on('getUser',(data)=>{
+  //       console.log('Socket Users',data);
+  //     })
+  //     socket.current.on('welcome', (message:any) => {
+  //       console.log('SocketIOmessage', message)
+  //     })
+  //     socket.current.on('responseIsBlocked',(data:{isBlocked:boolean})=>{
+  //       console.log('dataSocket',data);
+  //       if(data.isBlocked){
+  //        dispatch(logoutUser());
+  //       }
+  //     })
       
-    }
-  },[socket,currentUser])
+  //   }
+  // },[socket,currentUser])
 
-  const [message,setMessage] = useState<any>([currentUser]);
+   
 
-  useEffect(() => {
-    // const socket = io(import.meta.env.VITE_SERVER_URL); // Remove this line
-    socket.current = io(import.meta.env.VITE_SERVER_URL);
-  
-    // console.log('socket', socket.current);
-    // socket.current.on('connection', (data) => {
-    //   console.log('Connected!', data);
-    // });
-  
-    // Listen for incoming messages
-    socket.current.on('message', (newMessage) => {
-      console.log('newMessage', newMessage);
-      setMessage((prevMessages:any) => [...prevMessages, newMessage]);
-    });
-  
-    // return () => {
-    //   if (socket.current) {
-    //     socket.current.disconnect();
-    //   }
-    // };
-  }, []);
+  // const [message,setMessage] = useState<any>([currentUser]);
 
-  useEffect(() => {
-    console.log('socket message',message);
-  },[message])
+  // useEffect(() => {
+  //   // const socket = io(import.meta.env.VITE_SERVER_URL); // Remove this line
+  //   socket.current = io(import.meta.env.VITE_SERVER_URL);
+  
+  //   // console.log('socket', socket.current);
+  //   // socket.current.on('connection', (data) => {
+  //   //   console.log('Connected!', data);
+  //   // });
+  
+  //   // Listen for incoming messages
+  //   socket.current.on('message', (newMessage) => {
+  //     console.log('newMessage', newMessage);
+  //     setMessage((prevMessages:any) => [...prevMessages, newMessage]);
+  //   });
+  
+  //   // return () => {
+  //   //   if (socket.current) {
+  //   //     socket.current.disconnect();
+  //   //   }
+  //   // };
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log('socket message',message);
+  // },[message])
 
   return (
     <>
@@ -97,7 +97,7 @@ const Navbar: React.FC = () => {
               variant="h6"
               component="h1"
               noWrap
-              onClick={() => navigate("/user/home")}
+              onClick={() => navigate("/home")}
               sx={{
                 flexGrow: 1,
                 display: { xs: "none", md: "flex", color: "#000000" },
@@ -110,7 +110,7 @@ const Navbar: React.FC = () => {
               variant="h6"
               component="h1"
               noWrap
-              onClick={() => navigate("/user/home")}
+              onClick={() => navigate("/home")}
               sx={{
                 flexGrow: 1,
                 display: {

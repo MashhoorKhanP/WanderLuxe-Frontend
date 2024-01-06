@@ -125,12 +125,12 @@ const HotelListScreen: React.FC = () => {
   };
 
   const handleViewRoom = (hotelId: string) => {
-    navigate(`/user/view-rooms?hotelId=${hotelId}`);
+    navigate(`/view-rooms?hotelId=${hotelId}`);
   };
 
   const handleWishlist = (hotelId: string) => {
     if (!currentUser) {
-      navigate("/user/login-register");
+      navigate("/login-register");
       dispatch(setOpenLogin(true));
       toast.warning("Please login to wishlist hotels!");
     } else {
@@ -142,7 +142,7 @@ const HotelListScreen: React.FC = () => {
           },
         })
       );
-      navigate("/user/view-hotels");
+      navigate("/view-hotels");
     }
   };
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -150,7 +150,7 @@ const HotelListScreen: React.FC = () => {
   return (
     <Container>
       <Box display="flex" alignItems="center" paddingTop={4} flexDirection="row">
-      <IconButton onClick={() => navigate('/user/home')}>
+      <IconButton onClick={() => navigate('/home')}>
             <ArrowBack/>
         </IconButton>
         <Typography variant="h5" fontWeight="bold">

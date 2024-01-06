@@ -25,11 +25,11 @@ const PriceSlider: React.FC = () => {
     // Ensure price is always a single number
     const newPrice = Array.isArray(price) ? price[0] : price;
     if (
-      location.pathname === "/user/view-hotels" ||
-      location.pathname === "/user/find-hotels"
+      location.pathname === "/view-hotels" ||
+      location.pathname === "/find-hotels"
     ) {
       dispatch(filterPrice(newPrice));
-    } else if (location.pathname === "/user/view-rooms") {
+    } else if (location.pathname === "/view-rooms") {
       dispatch(filterRoomPrice(newPrice));
     }
   };

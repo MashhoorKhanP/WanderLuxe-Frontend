@@ -23,6 +23,7 @@ import { WanderLuxeLogo } from "../../../assets/extraImages";
 import { AppDispatch } from "../../../store/store";
 import { closeChatScreen } from "../../../store/slices/userSlices/userSlice";
 import ChatScreen from "../../admin/dashboard/dashboardHome/ChatScreen";
+import { Socket } from "socket.io-client";
 
 
 
@@ -38,8 +39,11 @@ const Transition = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
     />
   );
 });
+interface ChatScreenProps{
+  socket?:Socket | null;
+}
 
-const ChatScreenUser: React.FC = () => {
+const ChatScreenUser: React.FC<ChatScreenProps> = ({socket}) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -72,7 +76,7 @@ const ChatScreenUser: React.FC = () => {
    <>
    
     {isOpen && 
-    <IconButton color="inherit" sx={{ position: 'fixed', top: '5%', right: '30%', zIndex:2000}} onClick={handleClose}>
+    <IconButton color="inherit" sx={{ position: 'fixed', top: '5%', right: '30px', zIndex:2000}} onClick={handleClose}>
       <Close sx={{color:'#DC3545'}} />
     </IconButton>
   }
@@ -87,7 +91,7 @@ const ChatScreenUser: React.FC = () => {
       TransitionComponent={Transition}
     >
       <Container sx={{width:'400px',p:1,bgcolor:'#414141'}}>
-        <ChatScreen/>
+        <ChatScreen socket={socket}/>
       </Container>
     </Dialog>
     </> 

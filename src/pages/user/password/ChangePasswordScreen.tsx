@@ -137,7 +137,7 @@ const ChangePasswordScreen: React.FC = () => {
                 flexDirection="row"
               >
                 <Button
-                  onClick={() => navigate("/user/home")}
+                  onClick={() => navigate("/home")}
                   variant="outlined"
                   sx={{
                     flex: 1,

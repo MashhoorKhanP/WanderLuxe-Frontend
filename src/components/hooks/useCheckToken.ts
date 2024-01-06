@@ -26,7 +26,7 @@ const useCheckToken = () => {
         warningShownRef.current = true;
         toast.warning("User session timed out. Please log in again.");
         dispatch(logoutUser());
-        navigate("/user/home");
+        navigate("/home");
       }
     }
 

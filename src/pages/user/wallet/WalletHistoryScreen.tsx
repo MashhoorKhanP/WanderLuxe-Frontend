@@ -77,7 +77,7 @@ const WalletHistoryScreen: React.FC = () => {
     dispatch(closeWalletHistory());
     // dispatch(setBookingId(""));
     // dispatch(setRoomId(""));
-    // navigate('/user/view-rooms');
+    // navigate('/view-rooms');
   };
 
   const rendertransactionTypeCell = (params: any) => {
@@ -85,16 +85,17 @@ const WalletHistoryScreen: React.FC = () => {
 
     let textColor;
     if (transactionType === 'Credit') {
-      textColor = "green";
+      textColor = "#DC3545";
     } else {
-      textColor = "red";
+      textColor = "#198754";
     }
 
-    return <span style={{ color: textColor,fontWeight:'bold' }}>{`${transactionType}`}</span>;
+    return <span style={{ color: textColor }}>{`${transactionType}`}</span>;
   };
 
   const columns: GridColDef[] = useMemo(
     () => [
+      
       {
         field: "transactionDate",
         headerName: "Transaction Date",
@@ -139,12 +140,21 @@ const WalletHistoryScreen: React.FC = () => {
     []
   );
   
-
+  const sortModel = useMemo(
+    () => [
+      {
+        field: 'transactionDate',
+        sort: 'desc',
+      },
+    ],
+    []
+  );
+  
   return (
     <Dialog
       fullScreen
       className="dialog_container"
-      open={isOpen && location.pathname === "/user/my-wallet"}
+      open={isOpen && location.pathname === "/my-wallet"}
       onClose={(event, reason) => {
         if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
           // Set 'open' to false, however you would do that with your particular code.

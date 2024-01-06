@@ -8,7 +8,7 @@ import { AppDispatch } from '../../../store/store';
 import { openBookingDetails, setBookingId, setBookings, setRooms } from '../../../store/slices/userSlices/userSlice';
 import useCheckToken from '../../../components/hooks/useCheckToken';
 import { useNavigate } from 'react-router-dom';
-import { ArrowBack, InfoOutlined, UnfoldMoreOutlined } from '@mui/icons-material';
+import { AccessTimeOutlined, ArrowBack, InfoOutlined, UnfoldMoreOutlined } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import { setRoomId } from '../../../store/slices/userSlices/roomSlice';
 import { getRooms } from '../../../actions/room';
@@ -59,6 +59,9 @@ const MyBookingsScreen: React.FC = () => {
     dispatch(setRoomId(roomId));
   }
 
+  const upcomingBookings = currentBookings.filter((booking:any) => booking.status === 'Confirmed');
+  const completedBookings = currentBookings.filter((booking: any) => booking.status !== 'Confirmed');
+
   return (
     <Container>
       <Box display="flex" alignItems="center" paddingTop={4} flexDirection="row">
@@ -69,67 +72,25 @@ const MyBookingsScreen: React.FC = () => {
           My Bookings
         </Typography>
       </Box>
-      <ImageList
-        gap={12}
-        sx={{
-          paddingTop: 2,
-          mb: 8,
-          display:currentBookings.length>0?'':'flex',
-          gridTemplateColumns:
-            "repeat(auto-fill,minmax(280px, 1fr)) !important",
-        }}
-      > 
-        {currentBookings.length <= 0 ? (
-            <Box
-          sx={{
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-              <Typography variant="h5" fontWeight='bold' display="flex" padding={2}>
-                Not booked yet? Book now...
-              </Typography>
-              <img src={NoBookingFound} 
-            style={{ borderRadius: '15px', width: '100%', maxWidth: '280px', height: 'auto' }}
-            alt="No Booking found..." />
-            <Stack
-      direction="row"
-      width="100%"
-      spacing={2}
-      justifyContent="center"
-      paddingTop={4}
-      paddingBottom={2}
-    >
-      <Button
-        variant="outlined"
-        className="book_room_btn"
-        sx={{ width: '20%', p: 1, borderRadius: 0 }}
-        color="inherit"
-        onClick={() => navigate(`/user/view-hotels`)}
-      >
-        <span>Book rooms</span>
-      </Button>
-      <Button
-        variant="outlined"
-        className="book_room_btn"
-        sx={{ width: '20%', p: 1, borderRadius: 0 }}
-        color="inherit"
-        onClick={() => navigate(`/user/home`)}
-      >
-        <span>Back to home</span>
-      </Button>
-    </Stack>
-            </Box>
-            
-            
-        ) : currentBookings.length > 0 ? (
-          currentBookings.map((booking:any) => (
-           
-      <Tooltip title="" key={booking._id}>
-              <Card sx={{ width: "100%", height: "270px" }}>
+ {/* Upcoming Bookings Section */}
+ {upcomingBookings.length > 0 && (
+        <Box p={2}>
+          <Typography variant="h6" sx={{color:'##505050'}} fontWeight="bold">
+            Upcoming Bookings <i className="bi bi-clock" style={{color:'#007bff'}}></i>
+          </Typography>
+          <ImageList
+            gap={12}
+            sx={{
+              paddingTop: 2,
+              mb: 4,
+              display:currentBookings.length>0?'':'flex',
+              gridTemplateColumns:
+                "repeat(auto-fill,minmax(280px, 1fr)) !important",
+            }}
+          >
+            {upcomingBookings.map((booking: any) => (
+              <Tooltip title="" key={booking._id}>
+                <Card sx={{ width: "100%", height: "270px" }}>
                 <ImageListItem sx={{ height: "100% !important"}}>
                   <ImageListItemBar
                     sx={{
@@ -200,15 +161,157 @@ const MyBookingsScreen: React.FC = () => {
                     }
                   />
                 </ImageListItem>
-              </Card>
-            </Tooltip>
-          ))
-        ) : (
-          ""
-        )}
+                </Card>
+              </Tooltip>
+            ))}
+          </ImageList>
+        </Box>
+      )}
+
+      {/* Completed Bookings Section */}
+      {completedBookings.length > 0 && (
+        <Box p={2}>
+          <Typography variant="h6" sx={{color:'##505050'}} fontWeight="bold">
+            Completed Bookings <i className="bi bi-check-circle" style={{color:'#28a745'}}></i>
+          </Typography>
+          <ImageList
+            gap={12}
+            sx={{
+              paddingTop: 2,
+              mb: 8,
+              display:currentBookings.length>0?'':'flex',
+              gridTemplateColumns:
+                "repeat(auto-fill,minmax(280px, 1fr)) !important",
+            }}
+          >
+            {completedBookings.map((booking: any) => (
+              <Tooltip title="" key={booking._id}>
+                <Card sx={{ width: "100%", height: "270px" }}>
+                <ImageListItem sx={{ height: "100% !important"}}>
+                  <ImageListItemBar
+                    sx={{
+                      background: "1",
+                    }}
+                    title={booking.roomType}
+                    subtitle={`𖡡 ${booking.hotelName}`}
+                    
+                    position="top"
+                  />
+                  <img
+                    src={booking.roomImage}
+                    alt={booking.RoomType}
+                    // style={{ cursor: "pointer" }}
+                    loading="lazy"
+                  />
+                  {/* Want to give room starts from with  */}
+                  <ImageListItemBar
+                  sx={{
+                    height:'211px',
+                    pt:5
+                    
+                  }}
+                    title={
+                      <>
+                       <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px' ,color:'#ececec'}}>
+                         Amount Paid
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight: 'bold',fontSize:'12px' ,color:'#ececec' }}>
+                         {`₹${booking.totalAmount}`}
+                        </Typography>
+                        <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px',color:'#ececec' }}>
+                         Check-In
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight: 'bold',fontSize:'12px' ,color:'#ececec' }}>
+                         {`${dayjs(booking.checkInDate).format('ddd, MMM D, YYYY')} - ${booking.checkInTime}`}
+                        </Typography>
+                        <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px',color:'#ececec' }}>
+                         Check-Out
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight: 'bold',fontSize:'12px' ,color:'#ececec' }}>
+                        {`${dayjs(booking.checkOutDate).format('ddd, MMM D, YYYY')} - ${booking.checkOutTime}`}
+                        </Typography>
+                        <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px',color:'#ececec' }}>
+                         Status
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight:'bold',fontSize:'12px' ,color:booking.status==='Cancelled' || booking.status==='Cancelled by Admin' ? '#DC3545': '#15ca76' }}>
+                         {booking.status}
+                        </Typography>
+                      </>
+                    }
+                    // subtitle={"Amount Paid"}
+                    actionIcon={
+                      <Tooltip title="More Details">
+                      <UnfoldMoreOutlined
+                      sx={{
+                        color: "rgba(255,255,255, 0.8)",
+                        mr: "20px",
+                        cursor: "pointer",
+                        transition: 'transform 0.3s ease', // Add transition for smooth effect
+                        '&:hover': {
+                          transform: 'scale(1.2)', // Increase the scale on hover
+                        },
+                      }}
+                      onClick={() => handleViewMoreDetails(booking._id,booking.roomId)} // Replace with your logic
+                    />
+                    </Tooltip>
+                    }
+                  />
+                </ImageListItem>
+                </Card>
+              </Tooltip>
+            ))}
+          </ImageList>
+        </Box>
+      )}
+
+      {/* No Booking Found Section */}
+      {currentBookings.length <= 0 && (
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h5" fontWeight='bold' display="flex" padding={2}>
+            Not booked yet? Book now...
+          </Typography>
+          <img src={NoBookingFound}
+            style={{ borderRadius: '15px', width: '100%', maxWidth: '280px', height: 'auto' }}
+            alt="No Booking found..." />
+          <Stack
+            direction="row"
+            width="100%"
+            spacing={2}
+            justifyContent="center"
+            paddingTop={4}
+            paddingBottom={2}
+          >
+            <Button
+              variant="outlined"
+              className="book_room_btn"
+              sx={{ width: '20%', p: 1, borderRadius: 0 }}
+              color="inherit"
+              onClick={() => navigate(`/view-hotels`)}
+            >
+              <span>Book rooms</span>
+            </Button>
+            <Button
+              variant="outlined"
+              className="book_room_btn"
+              sx={{ width: '20%', p: 1, borderRadius: 0 }}
+              color="inherit"
+              onClick={() => navigate(`/home`)}
+            >
+              <span>Back to home</span>
+            </Button>
+          </Stack>
+        </Box>
+      )}
       
-    
-            </ImageList>
+     
     <Box sx={{ display: "flex", justifyContent: "center", padding: 4 }}>
         {currentBookings.length > bookingsPerPage && (
           <Hidden mdDown>

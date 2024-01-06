@@ -31,7 +31,7 @@ const UserRouter: React.FC = () => {
         // Handle the error more gracefully (e.g., show a message, clear local storage)
       }
     } else if (storedUser === null || storedUser === undefined) {
-      navigate("/user/home");
+      navigate("/home");
       // dispatch(logoutUser());
       // Handle the case where storedUser is null (no user data in local storage)
     }
@@ -48,11 +48,8 @@ const UserRouter: React.FC = () => {
       <Route path="find-hotels" element={<Home />} />
       <Route path="view-hotels" element={<Home />} />
       <Route path="view-rooms" element={<Home />} />
-      <Route path="*" element={<Navigate to="404" />} />
-      {/* Create a specific 404 page */}
-      <Route path="404" element={<PageNotFound />} />
-      {/* <Route path='view-rooms/room-overview' element={<Home/>}/> */}
-
+      <Route path="*" element={<PageNotFound/>}/>
+      
       <Route path="" element={<UserPrivateRoute />}>
         <Route path="edit-profile" element={<Home />} />
         <Route path="change-password" element={<Home />} />

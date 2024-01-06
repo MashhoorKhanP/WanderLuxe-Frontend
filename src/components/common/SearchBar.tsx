@@ -29,9 +29,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     <Box width={"70%"}>
       <TextField
         label={
-          location.pathname === "/user/view-hotels"
+          location.pathname === "/view-hotels"
             ? "Search hotels/location"
-            : location.pathname === "/user/view-rooms"
+            : location.pathname === "/view-rooms"
             ? "Search room types"
             : "Search"
         }
@@ -39,9 +39,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         size="small"
         sx={{
           width:
-            location.pathname === "/user/view-hotels"
+            location.pathname === "/view-hotels"
               ? "50%"
-              : location.pathname === "/user/view-rooms"
+              : location.pathname === "/view-rooms"
               ? "200px"
               : "60%",
           mt: 2,

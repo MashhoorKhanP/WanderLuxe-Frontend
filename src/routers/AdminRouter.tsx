@@ -44,9 +44,8 @@ const AdminRouter: React.FC = () => {
       <Route path="/*" element={<AdminLogin />} />
       <Route path="/login" element={<AdminLogin />} />
       <Route path="" element={<Navigate to="/admin/login" />} />
-      <Route path="*" element={<Navigate to="404" />} />
-      <Route path="404" element={<PageNotFound />} />
-      {/* <Route path="dashboard" element={<Dashboard/>}/> */}
+      <Route path="*" element={<PageNotFound/>} />
+      
       <Route path="" element={<AdminPrivateRoute />}>
         <Route path="dashboard/*" element={<Admin />} />
       </Route>

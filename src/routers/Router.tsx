@@ -9,11 +9,10 @@ const AppRouter: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/user/*" element={<UserRouter />} />
+      <Route path="/*" element={<UserRouter />} />
       <Route path="/admin/*" element={<AdminRouter />} />
-      <Route path="*" element={<Navigate to="/404" />} />
-      {/* Create a specific 404 page */}
-      <Route path="/404" element={<PageNotFound />} />
+      {/* <Route path="*" element={<Navigate to="/404" />} /> */}
+      
     </Routes>
   );
 };
