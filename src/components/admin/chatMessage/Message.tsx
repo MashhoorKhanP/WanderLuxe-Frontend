@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './message.css';
-import { HomeImage1, WanderLuxeLogoWithBG } from '../../../assets/extraImages';
 import { format } from 'timeago.js';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/types';
@@ -33,7 +32,7 @@ const Message: React.FC<MessageProps> = ({message,own}) => {
       }
     }else{
       const currentAdmin = {
-        profileImage:WanderLuxeLogoWithBG
+        profileImage:import.meta.env.VITE_WANDERLUXE_LOGO_BG
       }
       const usersData = currentUser?._id === message.sender ? currentUser : currentAdmin;
       setUser(usersData);

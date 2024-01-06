@@ -26,7 +26,6 @@ import {
 import { RootState } from "../../../store/types";
 import PriceSlider from "../../../components/user/searchbar/PriceSlider";
 import SearchBar from "../../../components/common/SearchBar";
-import { NotFound, SpinnerGif } from "../../../assets/extraImages";
 import { getHotels } from "../../../actions/hotel";
 import { AppDispatch } from "../../../store/store";
 import {
@@ -192,7 +191,7 @@ const HotelListScreen: React.FC = () => {
                 alignItems: "center",
               }}
             >
-              <img src={SpinnerGif} alt="Loading..." />
+              <img src={import.meta.env.VITE_SPINNER_GIF} alt="Loading..." />
             </Box>
           </ImageList>
         ) : currentHotels.length > 0 ? (
@@ -294,7 +293,7 @@ const HotelListScreen: React.FC = () => {
               component="img"
               alt="No Results Found"
               height="50"
-              image={NotFound}
+              image={import.meta.env.VITE_NOTFOUND_GIF}
             />
             <CardContent>
               <Typography variant="caption">No results found.</Typography>

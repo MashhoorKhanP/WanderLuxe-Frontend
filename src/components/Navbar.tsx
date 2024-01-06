@@ -14,7 +14,6 @@ import UserIcons from "./user/UserIcons";
 import { RootState } from "../store/types";
 import { User, logoutUser, setOpenLogin } from "../store/slices/userSlices/userSlice";
 import { useNavigate } from "react-router-dom";
-import { WanderLuxeLogo } from "../assets/extraImages";
 import { Socket, io } from "socket.io-client";
 import { getUpdatedUser } from "../actions/user";
 import { AppDispatch } from "../store/store";
@@ -91,7 +90,7 @@ const Navbar: React.FC = () => {
           </IconButton>
         </Box> */}
             <Box>
-              <img src={WanderLuxeLogo} style={{ width: "35px" }} />
+              <img src={import.meta.env.VITE_WANDERLUXE_LOGO} style={{ width: "35px" }} />
             </Box>
             <Typography
               variant="h6"

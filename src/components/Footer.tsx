@@ -11,7 +11,6 @@ import {
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import { WanderLuxeLogo } from "../assets/extraImages";
 import { SupportAgentOutlined } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { openChatScreen } from "../store/slices/userSlices/userSlice";
@@ -44,7 +43,7 @@ const Footer: React.FC = () => {
         <Box sx={{ display: "flex", alignItems: "center", marginBottom: 2 }}>
           {/* WanderLuxe Logo */}
           <img
-            src={WanderLuxeLogo}
+            src={import.meta.env.VITE_WANDERLUXE_LOGO}
             alt="WanderLuxe Logo"
             style={{ width: "50px", height: "50px" }}
           />

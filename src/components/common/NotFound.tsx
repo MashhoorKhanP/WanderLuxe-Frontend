@@ -1,7 +1,6 @@
 import { Box, Button, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { NotFound404 } from '../../assets/extraImages';
 
 const PageNotFound: React.FC = () => {
  const navigate = useNavigate();
@@ -20,7 +19,7 @@ const PageNotFound: React.FC = () => {
               <Typography variant="h5" fontWeight='bold' display="flex" padding={2}>
                 Page not found!
               </Typography>
-              <img src={NotFound404}  style={{ borderRadius: '15px', width: '100%', maxWidth: '360px' }}  alt="Empty wishlist..." />
+              <img src={import.meta.env.VITE_NOTFOUND_404}  style={{ borderRadius: '15px', width: '100%', maxWidth: '360px' }}  alt="Empty wishlist..." />
               <Stack
       direction="row"
       width="100%"

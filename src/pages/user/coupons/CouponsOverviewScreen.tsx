@@ -23,8 +23,6 @@ import {
   closeCouponOverview,
   setCoupons,
 } from "../../../store/slices/userSlices/couponSlice";
-import dayjs from "dayjs";
-import { NoCouponFound } from "../../../assets/extraImages";
 import { setAlert } from "../../../store/slices/userSlices/userSlice";
 
 export interface Coupon {
@@ -191,7 +189,7 @@ const CouponsOverviewScreen: React.FC = () => {
               <Typography variant="h5" fontWeight='bold' display="flex" padding={2}>
                 No coupons available!
               </Typography>
-              <img src={NoCouponFound}  style={{ borderRadius: '15px', width: '100%', maxWidth: '400px' }}  alt="Empty wishlist..." />
+              <img src={import.meta.env.VITE_NOCOUPONFOUND_GIF}  style={{ borderRadius: '15px', width: '100%', maxWidth: '400px' }}  alt="Empty wishlist..." />
           
             </Box>
           )}

@@ -1,6 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import BackgroundImage from "../../../../src/assets/backgroundImage.jpg";
-import { HomeImage1, NotFound } from "../../../assets/extraImages";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { CorporateFare, TravelExplore } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -22,6 +20,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCreative, Lazy, Navigation, Pagination, Zoom } from "swiper";
 import { RootState } from "../../../store/types";
 import { getBanners } from "../../../actions/banner";
+import PageNotFound from "../../../components/common/NotFound";
 interface CustomSwiperOptions {
   lazy?: boolean;
 }
@@ -163,7 +162,7 @@ const HomeScreen: React.FC = () => {
         </>
       ) : location.pathname === "/404" ? (
         <>
-          <NotFound />
+          <PageNotFound />
         </>
       ) : (
         <Box sx={{ position: "relative" }}>

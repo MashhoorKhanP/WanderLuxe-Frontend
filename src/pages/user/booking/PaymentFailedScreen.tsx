@@ -1,8 +1,6 @@
 import React from 'react';
 import { Box, Button, Container, ImageList, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { PaymentFailed} from '../../../assets/extraImages';
-import { Payment } from '@mui/icons-material';
 
 const PaymentFailedScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -30,7 +28,7 @@ const PaymentFailedScreen: React.FC = () => {
         </Typography>
 
         <img
-          src={PaymentFailed}
+          src={import.meta.env.VITE_PAYMENTFAILED_GIF}
           style={{ borderRadius: '15px', width: '100%', maxWidth: '350px', height: 'auto' }}
           alt="Payment Success..."
         />

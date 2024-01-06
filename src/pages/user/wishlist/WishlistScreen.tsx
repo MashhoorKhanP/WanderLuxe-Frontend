@@ -23,7 +23,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { WishlistEmpty } from "../../../assets/extraImages";
 import {
   ArrowBack,
   BedOutlined,
@@ -135,7 +134,7 @@ const WishListScreen: React.FC = () => {
               <Typography variant="h5" fontWeight='bold' display="flex" padding={2}>
                 Your wishlist is empty!
               </Typography>
-              <img src={WishlistEmpty}  style={{ borderRadius: '15px', width: '100%', maxWidth: '360px' }}  alt="Empty wishlist..." />
+              <img src={import.meta.env.VITE_WISHLISTEMPTY_IMAGE}  style={{ borderRadius: '15px', width: '100%', maxWidth: '360px' }}  alt="Empty wishlist..." />
               <Stack
       direction="row"
       width="100%"

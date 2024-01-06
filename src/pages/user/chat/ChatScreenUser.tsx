@@ -20,7 +20,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/types";
 import { useNavigate } from "react-router-dom";
 import { Close, SupportAgentOutlined } from "@mui/icons-material";
-import { WanderLuxeLogo } from "../../../assets/extraImages";
 import { AppDispatch } from "../../../store/store";
 import { closeChatScreen } from "../../../store/slices/userSlices/userSlice";
 import ChatScreen from "../../admin/dashboard/dashboardHome/ChatScreen";

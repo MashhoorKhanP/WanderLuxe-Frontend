@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/types';
 import { Avatar, Box, Button, Card, Container, IconButton, ImageList, ImageListItem, ImageListItemBar, Modal, Slide, SlideProps, Stack, TextField, Tooltip, Typography } from '@mui/material';
-import { WalletBackground, WanderLuxeLogo } from '../../../assets/extraImages';
 import { getUserBookings } from '../../../actions/booking';
 import { AppDispatch } from '../../../store/store';
 import {  openWalletHistory, setBookings } from '../../../store/slices/userSlices/userSlice';
@@ -117,7 +116,7 @@ const MyWalletScreen: React.FC = () => {
                 position="top"
                 actionIcon={
                   <>
-                    <Avatar src={WanderLuxeLogo} sx={{ m: "10px" }} />
+                    <Avatar src={import.meta.env.VITE_WANDERLUXE_LOGO} sx={{ m: "10px" }} />
                     
                     {/* <Tooltip title="View Rooms">
                       <IconButton
@@ -145,7 +144,7 @@ const MyWalletScreen: React.FC = () => {
                 }
               />
               <img
-                src={WalletBackground}
+                src={import.meta.env.VITE_WALLETBACKGROUND_IMAGE}
                 alt="Wallet Image"
                 loading="lazy"
               />

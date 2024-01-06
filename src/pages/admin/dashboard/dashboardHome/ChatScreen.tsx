@@ -11,10 +11,10 @@ import { useLocation } from 'react-router-dom';
 import { RootState } from '../../../../store/types';
 import { addNewMessage, getConversations, getMessages } from '../../../../actions/chat';
 import { AppDispatch } from '../../../../store/store';
-import { LoadingGif} from '../../../../assets/extraImages';
 import { Socket, io } from 'socket.io-client';
 import { setNewMessages } from '../../../../store/slices/adminSlices/adminSlice';
 import { jwtDecode } from 'jwt-decode';
+import { NoChatFound } from '../../../../assets/extraImages';
 
 interface ChatProps {
   setSelectedLink?: React.Dispatch<React.SetStateAction<string>>;
@@ -227,7 +227,7 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
           ) : (
             
             <div className="noMessagesContainer">
-              <img src={'https://cdni.iconscout.com/illustration/premium/thumb/empty-inbox-8580677-6763402.png'} alt="No messages" className="noMessagesImage" />
+              <img src={NoChatFound} alt="No messages" className="noMessagesImage" />
               <div className="noMessagesText">No messages yet!, Start conversation</div>
             </div>
           )}
@@ -243,7 +243,7 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
         :decodedToken?.role === 'admin' ? <span className='noConversationText'>Open a conversation to start a chat.</span> 
         :<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
         <span className='noConversationText'>Opening chat...</span>
-        <img className='spinnerGif' src={LoadingGif} alt='Loading' />
+        <img className='spinnerGif' src={import.meta.env.VITE_LOADING_IMAGE} alt='Loading' />
       </div>}
       </div>
      </div>

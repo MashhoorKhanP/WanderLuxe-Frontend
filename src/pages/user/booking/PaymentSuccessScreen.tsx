@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, Container, ImageList, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { PaymentSuccess } from '../../../assets/extraImages';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../../store/store';
 import { getUpdatedUser } from '../../../actions/user';
@@ -38,7 +37,7 @@ const PaymentSuccessScreen: React.FC = () => {
           </Typography>
 
           <img
-            src={PaymentSuccess}
+            src={import.meta.env.VITE_PAYMENTSUCCESS_GIF}
             style={{ borderRadius: '15px', width: '100%', maxWidth: '350px', height: 'auto' }}
             alt="Payment Success..."
           />

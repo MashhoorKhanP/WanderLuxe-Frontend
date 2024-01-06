@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/types';
 import { Box, Button, Card, Container, Hidden, IconButton, ImageList, ImageListItem, ImageListItemBar, Stack, Tooltip, Typography } from '@mui/material';
-import { NoBookingFound } from '../../../assets/extraImages';
 import { getUserBookings } from '../../../actions/booking';
 import { AppDispatch } from '../../../store/store';
 import { openBookingDetails, setBookingId, setBookings, setRooms } from '../../../store/slices/userSlices/userSlice';
@@ -278,7 +277,7 @@ const MyBookingsScreen: React.FC = () => {
           <Typography variant="h5" fontWeight='bold' display="flex" padding={2}>
             Not booked yet? Book now...
           </Typography>
-          <img src={NoBookingFound}
+          <img src={import.meta.env.VITE_NOBOOKINGFOUND_GIF}
             style={{ borderRadius: '15px', width: '100%', maxWidth: '280px', height: 'auto' }}
             alt="No Booking found..." />
           <Stack

@@ -12,7 +12,6 @@ import RoomOverviewScreen from "./user/rooms/RoomOverviewScreen";
 import CouponsOverviewScreen from "./user/coupons/CouponsOverviewScreen";
 import BookingDetailsScreen from "./user/booking/BookingDetailsScreen";
 import WalletHistoryScreen from "./user/wallet/WalletHistoryScreen";
-import { NotFound } from "../assets/extraImages";
 import ChatScreenUser from "./user/chat/ChatScreenUser";
 import { Socket, io } from "socket.io-client";
 import { logoutUser } from "../store/slices/userSlices/userSlice";

@@ -129,7 +129,7 @@ const ImagesList: React.FC = () => {
        const result = await updateBanners({updatedBanners:{
         _id:banner._id as string,
         images:bannerImages as [],
-        text: bannerText.trim(),
+        text: bannerText,
        }})
       if(result){
         setPrevBannerImages(bannerImages);
@@ -216,7 +216,7 @@ const ImagesList: React.FC = () => {
           variant="contained"
           endIcon={<Add />}
           onClick={handleSubmit}
-          disabled={!bannerText.trim()}
+          disabled={!bannerText}
         >
           UPDATE BANNER
         </Button>

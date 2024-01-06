@@ -35,7 +35,6 @@ import "swiper/css/lazy";
 import "swiper/css/zoom";
 import "./swiper.css";
 import "./bookRoom.css";
-import { WanderLuxeLogo } from "../../../assets/extraImages";
 import { BookingDetails, HotelDetails } from "../../../store/slices/adminSlices/adminSlice";
 import {
   closeRoomOverview,
@@ -265,7 +264,7 @@ const RoomOverviewScreen: React.FC = () => {
               zIndex: 4000,
             }}
           >
-            <Avatar src={WanderLuxeLogo} />
+            <Avatar src={import.meta.env.VITE_WANDERLUXE_LOGO} />
           </Tooltip>
         </Swiper>
         <Stack

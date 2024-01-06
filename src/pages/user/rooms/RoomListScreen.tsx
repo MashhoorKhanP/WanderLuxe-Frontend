@@ -18,7 +18,6 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { NotFound, SpinnerGif } from "../../../assets/extraImages";
 import { ArrowBack, StarBorder } from "@mui/icons-material";
 import {
   filterRooms,
@@ -222,7 +221,7 @@ const RoomListScreen: React.FC = () => {
               paddingBottom: "250px",
             }}
           >
-            <img src={SpinnerGif} alt="Loading..." />
+            <img src={import.meta.env.VITE_SPINNER_GIF} alt="Loading..." />
           </Box>
         ) : filteredRooms.length > 0 ? (
           filteredRooms.map((room: any) => (
@@ -314,7 +313,7 @@ const RoomListScreen: React.FC = () => {
               component="img"
               alt="No Results Found"
               height="50"
-              image={NotFound}
+              image={import.meta.env.VITE_NOTFOUND_GIF}
             />
             <CardContent>
               <Typography variant="caption">No results found.</Typography>
