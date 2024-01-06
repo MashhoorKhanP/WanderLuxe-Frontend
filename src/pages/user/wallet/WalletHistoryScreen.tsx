@@ -85,9 +85,9 @@ const WalletHistoryScreen: React.FC = () => {
 
     let textColor;
     if (transactionType === 'Credit') {
-      textColor = "#DC3545";
-    } else {
       textColor = "#198754";
+    } else {
+      textColor = "#DC3545";
     }
 
     return <span style={{ color: textColor }}>{`${transactionType}`}</span>;

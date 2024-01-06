@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/types";
 import { getBanners } from "../actions/banner";
 import { AppDispatch } from "../store/store";
+import ForgotPassword from "../components/user/ForgotPassword";
 
 const Home: React.FC = () => {
   const location = useLocation();
@@ -56,6 +57,7 @@ const Home: React.FC = () => {
       <CouponsOverviewScreen/>
       <BookingDetailsScreen/>
       <WalletHistoryScreen/>
+      <ForgotPassword/>
       <ChatScreenUser socket={socket.current}/>
       <Footer />
     </>

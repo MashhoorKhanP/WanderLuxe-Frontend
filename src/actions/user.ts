@@ -34,7 +34,11 @@ interface GoogleRequestBody {
 }
 
 interface OTP {
-  otp: number;
+  otp:{
+    otp: number;
+    forgotPassword: any;
+  }
+  
 }
 
 interface LoginRequestBody {
@@ -64,6 +68,13 @@ interface ChangePasswordData {
   changePasswordData: {
     userId: string;
     currentPassword: string;
+    newPassword: string;
+  };
+}
+
+interface ForgotPasswordData {
+  forgotPasswordData: {
+    email: string;
     newPassword: string;
   };
 }
@@ -113,12 +124,12 @@ export const googleregister = createAsyncThunk(
 
 export const verifyUser = createAsyncThunk(
   "user/verifyUser",
-  async (otp: OTP, thunkAPI) => {
+  async (otp:OTP,thunkAPI) => {
     try {
       const state = thunkAPI.getState() as RootState;
-
+      console.log('isforgotPasswordquery',otp.otp.forgotPassword)
       const result = await fetchData({
-        url: import.meta.env.VITE_SERVER_URL + "/api/user/verify-otp",
+        url: import.meta.env.VITE_SERVER_URL + `/api/user/verify-otp?forgotPassword=${otp.otp.forgotPassword}`,
         method: "POST",
         body: { otp: otp.otp },
       });
@@ -253,6 +264,23 @@ export const changePassword = createAsyncThunk(
       url: import.meta.env.VITE_SERVER_URL + `/api/user/change-password`,
       method: "PATCH",
       body: { ...changePasswordData },
+    });
+    if (result?.data && result.data.message) {
+      throw new Error(result.data.message);
+    }
+
+    return result;
+  }
+);
+
+export const forgotPassword = createAsyncThunk(
+  "user/forgotPassword",
+  async ({ forgotPasswordData }: ForgotPasswordData) => {
+    console.log("Change password date:", forgotPasswordData);
+    const result = await fetchData({
+      url: import.meta.env.VITE_SERVER_URL + `/api/user/forgot-password`,
+      method: "POST",
+      body: { ...forgotPasswordData },
     });
     if (result?.data && result.data.message) {
       throw new Error(result.data.message);

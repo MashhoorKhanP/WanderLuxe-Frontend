@@ -5,6 +5,7 @@ import {
   Button,
   Container,
   Dialog,
+  DialogTitle,
   Divider,
   IconButton,
   Rating,
@@ -18,7 +19,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/types";
 import { useNavigate } from "react-router-dom";
-import { Close } from "@mui/icons-material";
+import { Close, SupportAgentOutlined } from "@mui/icons-material";
 import { WanderLuxeLogo } from "../../../assets/extraImages";
 import { AppDispatch } from "../../../store/store";
 import { closeChatScreen } from "../../../store/slices/userSlices/userSlice";
@@ -67,10 +68,25 @@ const ChatScreenUser: React.FC<ChatScreenProps> = ({socket}) => {
   // }, [roomId, isOpen, rooms, hotels, room]);
 
   
+  const [isTitleVisible, setIsTitleVisible] = useState(true);
+
   const handleClose = () => {
     dispatch(closeChatScreen());
-    
+    setIsTitleVisible(!isTitleVisible);
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      const timeoutId = setTimeout(() => {
+        setIsTitleVisible(false);
+      }, 3000);
+
+      return () => {
+        // Clear the timeout to prevent it from triggering after component unmount
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [isOpen]);
   
   return (
    <>
@@ -90,6 +106,11 @@ const ChatScreenUser: React.FC<ChatScreenProps> = ({socket}) => {
       }}
       TransitionComponent={Transition}
     >
+ 
+          <DialogTitle sx={{ bgcolor: '#414141', color: '#c9c9c9',display:isTitleVisible?'block':'none' }}>
+            Chat support <SupportAgentOutlined />
+          </DialogTitle>
+        
       <Container sx={{width:'400px',p:1,bgcolor:'#414141'}}>
         <ChatScreen socket={socket}/>
       </Container>

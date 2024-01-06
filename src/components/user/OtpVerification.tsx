@@ -20,11 +20,14 @@ import { RootState } from "../../store/types";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import { AppDispatch } from "../../store/store";
 import { resendOTP, verifyUser } from "../../actions/user";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const OtpVerification: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const forgotPassword:any = searchParams.get("forgotPassword");
+  
   const openOtpVerification = useSelector(
     (state: RootState) => state.user.openOTPVerification
   );
@@ -105,7 +108,11 @@ const OtpVerification: React.FC = () => {
     }
 
     try {
-      dispatch(verifyUser({ otp: parseInt(otpValue) }));
+      const otp={
+        otp: parseInt(otpValue),
+        forgotPassword:forgotPassword === 'true'? forgotPassword : 'false'
+      }
+      dispatch(verifyUser({otp}));
     } catch (error) {
       console.error("Error verifying OTP:", error);
     }

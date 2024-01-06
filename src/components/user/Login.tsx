@@ -13,6 +13,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  openForgotPasswordScreen,
   setAlert,
   setCloseLogin,
 } from "../../store/slices/userSlices/userSlice";
@@ -41,6 +42,11 @@ const Login: React.FC = () => {
     navigate(-1);
     dispatch(setCloseLogin());
   };
+
+  const handleForgotPassword = () => {
+    dispatch(setCloseLogin());
+    dispatch(openForgotPasswordScreen());
+  }
 
   const handleSubmit = (event: React.FormEvent) => {
     event?.preventDefault();
@@ -131,7 +137,7 @@ const Login: React.FC = () => {
         // Check if thenResult is not null or undefined
         if (thenResult != null) {
           setIsRegister(!isRegister);
-          navigate("/otp-verification");
+          navigate(`/otp-verification`);
         }
       });
     } else {
@@ -338,12 +344,8 @@ const Login: React.FC = () => {
           
           {!isRegister &&
           <Button
-            onClick={() => {
-              setIsRegister(!isRegister);
-              // Navigate based on the isRegister state
-              isRegister ? navigate("/login") : navigate("/register");
-            }}
-            style={{ marginTop: "5px" }}
+            onClick={handleForgotPassword}
+            sx={{ marginTop: "5px",textTransform:'capitalize' }}
           >
             <i className="bi bi-shield-lock" style={{paddingRight:'2px',color:'black'}}></i>Forgot Password?
           </Button>}

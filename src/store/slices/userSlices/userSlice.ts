@@ -39,6 +39,7 @@ interface UserState {
   hotelBookings:BookingDetails[]
   isWalletHistoryOpen:boolean;
   isChatScreenOpen:boolean;
+  isForgotPasswordOpen:boolean;
 }
 
 const initialState: UserState = {
@@ -60,7 +61,9 @@ const initialState: UserState = {
   bookings:[],
   hotelBookings:[],
   isWalletHistoryOpen:false,
-  isChatScreenOpen:false
+  isChatScreenOpen:false,
+  isForgotPasswordOpen:false
+
 };
 
 export interface User {
@@ -283,6 +286,12 @@ const userSlice = createSlice({
     closeChatScreen:(state) => {
       state.isChatScreenOpen = false;
     },
+    openForgotPasswordScreen:(state) => {
+      state.isForgotPasswordOpen = true;
+    },
+    closeForgotPasswordScreen:(state) => {
+      state.isForgotPasswordOpen = false;
+    },
     setBookingId:(state, action: PayloadAction<string>) => {
       state.selectedBookingId = action.payload;
     },
@@ -437,7 +446,7 @@ const userSlice = createSlice({
       state.alert = {
         open: true,
         severity: "success",
-        message: "Registration successful, Now login to your account!",
+        message: "Verification successful, Now login to your account!",
       };
     });
 
@@ -731,6 +740,8 @@ export const {
   closeWalletHistory,
   openChatScreen,
   closeChatScreen,
+  openForgotPasswordScreen,
+  closeForgotPasswordScreen,
   setBookingId,
   setBookings,
   clearAlert,
