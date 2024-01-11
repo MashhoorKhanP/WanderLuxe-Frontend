@@ -139,7 +139,7 @@ const AddDetails: React.FC = () => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="Coupon Expiry Date"
-              value={dayjs(couponDetails.expiryDate)}
+              value={dayjs(couponDetails.expiryDate) as any}
               onChange={handleExpiryDateChange}
               disablePast
             />

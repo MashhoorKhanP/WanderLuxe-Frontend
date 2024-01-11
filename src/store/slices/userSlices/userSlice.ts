@@ -466,16 +466,16 @@ const userSlice = createSlice({
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.loading = false;
       const currentUser = action.payload;
-      if (currentUser && currentUser.message) {
+      if (currentUser && currentUser.message as any) {
         localStorage.setItem("UserToken", currentUser.token);
         
         // Store currentUser in localStorage
         localStorage.setItem(
           "currentUser",
-          JSON.stringify(currentUser.message)
+          JSON.stringify(currentUser.message as any)
         );
         // Don't directly modify state.currentUser, create a new object
-        state.currentUser = currentUser.message;
+        state.currentUser = currentUser.message as any;
 
         state.alert = {
           open: true,

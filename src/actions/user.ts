@@ -247,7 +247,7 @@ export const updateProfile = async ({
       return result;
     }
   } catch (error) {
-    const typedError = error as Error | AxiosError;
+    const typedError = error as Error | AxiosError | any;
 
     console.error("Error updating user profile:", typedError);
     errorHandle(typedError);
