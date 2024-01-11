@@ -11,7 +11,12 @@ import HotelsActions from "./HotelsActions";
 import { AppDispatch } from "../../../../store/store";
 import { getHotels } from "../../../../actions/hotel";
 import AddHotel from "./AddHotel";
-import { updateHotelDetails, updateHotelImages, updateHotels, updateUpdatedHotel } from "../../../../store/slices/adminSlices/adminHotelSlice";
+import {
+  updateHotelDetails,
+  updateHotelImages,
+  updateHotels,
+  updateUpdatedHotel,
+} from "../../../../store/slices/adminSlices/adminHotelSlice";
 import useCheckToken from "../../../../components/hooks/useCheckToken";
 
 interface UsersProps {
@@ -43,7 +48,6 @@ const Hotels: React.FC<HotelsProps> = ({ setSelectedLink, link }) => {
   const dispatch = useDispatch<AppDispatch>();
   const checkToken = useCheckToken();
   const hotels = useSelector((state: RootState) => state.adminHotel.hotels);
-  console.log("Hotels List from Hotels.tsx", hotels);
 
   const [data, setData] = useState<boolean>(true);
   useEffect(() => {
@@ -167,7 +171,7 @@ const Hotels: React.FC<HotelsProps> = ({ setSelectedLink, link }) => {
             <Typography
               variant="h4"
               component="h4"
-              sx={{ textAlign: "center", mt: 3, mb: 3 }}
+              sx={{ textAlign: "center", mt: 0, mb: 3 }}
             >
               Manage Hotels
             </Typography>

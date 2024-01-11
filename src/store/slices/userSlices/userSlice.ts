@@ -186,8 +186,6 @@ const userSlice = createSlice({
     },
     updateUserProfile: (state, action: PayloadAction<Partial<Profile>>) => {
       const updatedUserProfile = action.payload;
-      console.log("UpdateUserProfile", { ...updatedUserProfile });
-      console.log("Update state.Profile", { ...state.profile });
       state.currentUser = { ...state.currentUser, ...updatedUserProfile }; // Update only the relevant part of currentUser
       state.profile = {
         ...state.currentUser,
@@ -195,7 +193,6 @@ const userSlice = createSlice({
         ...updatedUserProfile,
       }; // Update profile state
       // state.currentUser = { ...state.currentUser };
-      console.log("state.currentUser", state.currentUser);
       const updatedUser = state.currentUser;
       if (updatedUser?.message) {
         localStorage.setItem(
@@ -309,7 +306,6 @@ const userSlice = createSlice({
       state.openLogin = false;
     },
     setAlert: (state, action: PayloadAction<Alert>) => {
-      console.log(action.payload);
       state.alert = action.payload;
     },
     clearAlert: (state) => {
@@ -351,10 +347,7 @@ const userSlice = createSlice({
         }
       }
       state.loading = false;
-      // state.currentUser = action.payload;
-      // console.log('state.currentUser',state.currentUser);
-      /**I don't need set currentUser now its only
-       after otp verification */
+      
     });
     builder.addCase(registerUser.rejected, (state, action) => {
       const error = action.error as Error | AxiosError;
@@ -387,12 +380,9 @@ const userSlice = createSlice({
           message: "Google Registration Successfull!",
         };
         const currentUser = action.payload;
-        console.log("currentUser", currentUser);
+        
         if (currentUser) {
-          console.log(
-            "JSON.Stingify of current user",
-            JSON.stringify(currentUser)
-          );
+          
           // Store currentUser in localStorage
           localStorage.setItem("currentUser", JSON.stringify(currentUser.message));
           localStorage.setItem("UserToken", currentUser.token);
@@ -404,9 +394,7 @@ const userSlice = createSlice({
             severity: "success",
             message: "Login successful!",
           };
-          console.log(
-            "reached here userSlice googleRegister , next is to openLogin = false"
-          );
+          
           state.openLogin = false;
         }
       }
@@ -461,7 +449,6 @@ const userSlice = createSlice({
           severity: "error",
           message: action.error.message,
         };
-        console.log("OTP Verification failed:", action.error);
       } else {
         console.error(
           "OTP verification failed with non-Error rejection:",
@@ -478,15 +465,10 @@ const userSlice = createSlice({
 
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.loading = false;
-      console.log("loginUser.fulfilled", action.payload);
       const currentUser = action.payload;
       if (currentUser && currentUser.message) {
-        console.log(currentUser, "for token check");
         localStorage.setItem("UserToken", currentUser.token);
-        console.log(
-          "JSON.Stingify of current user",
-          JSON.stringify(currentUser.message)
-        );
+        
         // Store currentUser in localStorage
         localStorage.setItem(
           "currentUser",
@@ -500,7 +482,6 @@ const userSlice = createSlice({
           severity: "success",
           message: "Login successful!",
         };
-        console.log("reached here userSlice , next is to openLogin = false");
         state.openLogin = false;
       } else {
         // Handle the case where currentUser or message is null or undefined
@@ -563,7 +544,6 @@ const userSlice = createSlice({
     builder.addCase(addRemoveFromWishlist.fulfilled, (state, action) => {
       state.loading = false;
       const user = action.payload;
-      console.log("user", user);
       if (user && user.message) {
         // Don't directly modify state.currentUser, create a new object
         state.currentUser = { ...user.message };
@@ -594,7 +574,6 @@ const userSlice = createSlice({
     builder.addCase(changePassword.fulfilled, (state, action) => {
       state.loading = false;
       const user = action.payload;
-      console.log("user", user);
       if (user && user.message) {
         // Don't directly modify state.currentUser, create a new object
         state.currentUser = { ...user.message };
@@ -657,12 +636,7 @@ const userSlice = createSlice({
       state.loading = false;
       const bookings = action.payload;
       if (bookings && bookings.message) {
-        // console.log(
-        //   "JSON.Stingify of  users List",
-        //   JSON.stringify(bookings.message)
-        // );
-        // console.log("user.message", bookings.message);
-        // Don't directly modify state.currentUser, create a new object
+        
         state.hotelBookings = bookings.message;
       } else {
         // Handle the case where currentUser or message is null or undefined
@@ -691,7 +665,6 @@ const userSlice = createSlice({
     builder.addCase(getUpdatedUser.fulfilled, (state, action) => {
       // state.loading = false;
       const user = action.payload;
-      console.log("user", user);
       if (user && user.message) {
         // Don't directly modify state.currentUser, create a new object
         state.currentUser = { ...user.message };

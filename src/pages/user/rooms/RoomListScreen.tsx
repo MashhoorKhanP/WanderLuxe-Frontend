@@ -1,8 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../store/store";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { getRooms } from "../../../actions/room";
+import { ArrowBack, StarBorder } from "@mui/icons-material";
 import {
   Box,
   Card,
@@ -18,21 +14,24 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ArrowBack, StarBorder } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { getHotelBookings } from "../../../actions/booking";
+import { getRooms } from "../../../actions/room";
+import SearchBar from "../../../components/common/SearchBar";
+import PriceSlider from "../../../components/user/searchbar/PriceSlider";
+import {
+  openRoomOverview,
+  setRoomId,
+} from "../../../store/slices/userSlices/roomSlice";
 import {
   filterRooms,
   setRooms,
 } from "../../../store/slices/userSlices/userSlice";
-import SearchBar from "../../../components/common/SearchBar";
-import PriceSlider from "../../../components/user/searchbar/PriceSlider";
-import MyDatePicker from "./MyDatePicker";
-import {
-  openRoomOverview,
-  setRoomBookings,
-  setRoomId,
-} from "../../../store/slices/userSlices/roomSlice";
+import { AppDispatch, RootState } from "../../../store/store";
 import AdultChildrenPicker, { Options } from "./AdultChildrenPicker";
-import { getBookings, getHotelBookings } from "../../../actions/booking";
+import MyDatePicker from "./MyDatePicker";
 
 const RoomListScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -56,7 +55,7 @@ const RoomListScreen: React.FC = () => {
   const adultChildOptions: Options = useSelector(
     (state: RootState) => state.room.adultChildrenOptions
   );
-  const roomsPerPage = 6;
+  const roomsPerPage = 8;
 
   const hotelId = searchParams.get("hotelId");
 
@@ -64,7 +63,7 @@ const RoomListScreen: React.FC = () => {
     setIsDatePickerOpen((prev) => !prev);
   };
 
-  console.log('adultsChild', adultChildOptions.adult + adultChildOptions.children);
+  
   useEffect(() => {
     if (!rooms.length || !allRooms.length) {
       const fetchRooms = async () => {
@@ -81,68 +80,76 @@ const RoomListScreen: React.FC = () => {
         const hotelDetails = {
           hotelId: hotelId as string,
         };
-        // console.log('hotelDetails', hotelDetails)
         const response = await dispatch(getHotelBookings({ hotelDetails }));
       };
 
       fetchBookings();
     }
+    setCurrentPage(1);
     setHotelBookings(fullHotelBookings);
-  }, [dispatch, allRooms, hotelBookings]); //check this video:https://www.youtube.com/fwatch?v=puP_cXa_Cuo&t=783s ,Check chatGpt last prompt
+  }, [
+    dispatch,
+    allRooms,
+    hotelBookings,
+    rooms,
+    adultChildOptions,
+    checkInCheckoutRange,
+  ]); //check this video:https://www.youtube.com/fwatch?v=puP_cXa_Cuo&t=783s ,Check chatGpt last prompt
 
-  console.log("fullHotelBookings", fullHotelBookings);
   const indexOfLastRooms = currentPage * roomsPerPage;
   const indexOfFirstRooms = indexOfLastRooms - roomsPerPage;
   const currentRooms = rooms
     .slice(indexOfFirstRooms, indexOfLastRooms)
-    .filter((room: any) => room.hotelId === hotelId && adultChildOptions.adult + adultChildOptions.children <= room.maxPeople );
+    .filter(
+      (room: any) =>
+        room.hotelId === hotelId &&
+        adultChildOptions.adult + adultChildOptions.children <= room.maxPeople
+    );
 
-    const isRoomAvailable = (
-      room: any,
-      checkInDate: Date,
-      checkOutDate: Date
-    ) => {
-      const roomBookings = hotelBookings.filter(
-        (booking: any) => booking.roomId === room._id
+  const isRoomAvailable = (
+    room: any,
+    checkInDate: Date,
+    checkOutDate: Date
+  ) => {
+    const roomBookings = hotelBookings.filter(
+      (booking: any) => booking.roomId === room._id
+    );
+
+    const isAvailable = roomBookings.every((booking: any) => {
+      const bookingCheckInDate = new Date(booking.checkInDate);
+      const bookingCheckOutDate = new Date(booking.checkOutDate);
+      const bookedRoomsCount = booking.totalRoomsCount;
+
+      return (
+        bookingCheckInDate >= checkOutDate || bookingCheckOutDate <= checkInDate
       );
-    
-      const isAvailable = roomBookings.every((booking: any) => {
-        const bookingCheckInDate = new Date(booking.checkInDate);
-        const bookingCheckOutDate = new Date(booking.checkOutDate);
-        const bookedRoomsCount = booking.totalRoomsCount;
-    
-        return (
-          bookingCheckInDate >= checkOutDate || bookingCheckOutDate <= checkInDate
-        );
-      });
-    
-      // Check if the room has enough capacity for adults and children
-      const hasEnoughCapacity =
-        adultChildOptions.adult + adultChildOptions.children <= room.maxPeople;
-    
-      return isAvailable && hasEnoughCapacity;
-    };
-    
-    let filteredRooms;
-    if (checkInCheckoutRange.startDate === checkInCheckoutRange.endDate) {
-      filteredRooms = currentRooms;
-    } else {
-      filteredRooms = currentRooms.filter((room: any) => {
-        const checkInDate = new Date(checkInCheckoutRange.startDate);
-        const checkOutDate = new Date(checkInCheckoutRange.endDate);
-    
-        return isRoomAvailable(room, checkInDate, checkOutDate);
-      });
-    }
+    });
 
-  console.log("filteredRooms", filteredRooms);
+    // Check if the room has enough capacity for adults and children
+    const hasEnoughCapacity =
+      adultChildOptions.adult + adultChildOptions.children <= room.maxPeople;
+
+    return isAvailable && hasEnoughCapacity;
+  };
+
+  let filteredRooms;
+  if (checkInCheckoutRange.startDate === checkInCheckoutRange.endDate) {
+    filteredRooms = currentRooms;
+  } else {
+    filteredRooms = currentRooms.filter((room: any) => {
+      const checkInDate = new Date(checkInCheckoutRange.startDate);
+      const checkOutDate = new Date(checkInCheckoutRange.endDate);
+
+      return isRoomAvailable(room, checkInDate, checkOutDate);
+    });
+  }
+
   const handleSearch = (query: string) => {
     setLoading(true);
 
     setCurrentPage(1); // Reset to the first page when searching
     // Simulating a delay (remove this in the actual implementation)
     if (query.trim().length <= 0) {
-      console.log("allRooms", allRooms);
       setTimeout(() => {
         dispatch(filterRooms(allRooms));
         setLoading(false);
@@ -161,6 +168,7 @@ const RoomListScreen: React.FC = () => {
   };
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const totalPages = Math.ceil(filteredRooms.length / roomsPerPage);
 
   const handleCardClick = (roomId: string) => {
     dispatch(openRoomOverview()); // Dispatch an action to open the RoomOverviewScreen
@@ -327,7 +335,7 @@ const RoomListScreen: React.FC = () => {
           <Hidden mdDown>
             <Box>
               {Array.from({
-                length: Math.ceil(rooms.length / roomsPerPage),
+                length: Math.ceil(rooms.length / roomsPerPage)/2,
               }).map((_, index) => (
                 <Typography
                   key={index + 1}

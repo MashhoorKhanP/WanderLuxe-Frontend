@@ -1,15 +1,11 @@
-import React, { useState } from "react";
+import { ArrowLeft, ArrowRight, RemoveRedEye } from "@mui/icons-material";
 import {
   Box,
   Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   Grid,
-  InputAdornment,
   InputLabel,
   List,
-  ListItem,
   MenuItem,
   Popover,
   Select,
@@ -18,14 +14,14 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../../store/types";
 import { SelectInputProps } from "@mui/material/Select/SelectInput";
-import RoomInfoFields from "./RoomInfoFields";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { ArrowLeft, ArrowRight, RemoveRedEye } from "@mui/icons-material";
 import { updateRoomDetails } from "../../../../../store/slices/adminSlices/adminRoomSlice";
+import { RootState } from "../../../../../store/types";
+import RoomInfoFields from "./RoomInfoFields";
 
 type RoomFields = {
   hotelId: string;
@@ -137,19 +133,6 @@ const AddDetails: React.FC = () => {
     }
   };
 
-  // Function to handle checkbox change for existing amenities
-  // const handleAmenityCheckboxChange = (amenity: string) => {
-  //   const updatedAmenities = roomFields.amenities.includes(amenity)
-  //     ? roomFields.amenities.filter((a) => a !== amenity)
-  //     : [...roomFields.amenities, amenity];
-
-  //   setRoomDetails({
-  //     ...roomFields,
-  //     amenities: updatedAmenities,
-  //   });
-  // };
-  console.log(selectedHotel, "selectedHotel");
-
   return (
     <Stack
       sx={{
@@ -237,16 +220,13 @@ const AddDetails: React.FC = () => {
           }}
         >
           <Box p={1}>
-            {/* Content of the Popover */}
-            {/* <Typography variant="h6" sx={{fontSize:'14px',p:1}}>Hotel Details:</Typography> */}
-
             <img
               src={selectedHotel.images[imageIndex]}
               alt={`Hotel ${imageIndex + 1}`}
               style={{ width: "300px", height: "200px", objectFit: "cover" }}
               loading="lazy"
             />
-            {/* Next and Previous buttons */}
+
             <Box
               display="flex"
               flexDirection={"row"}
@@ -407,13 +387,25 @@ const AddDetails: React.FC = () => {
             minLength={3}
           />
         </Grid>
-        <Grid item xs={6}>
+        {/* <Grid item xs={6}>
           <RoomInfoFields
             mainProps={{
               name: "roomsCount",
               label: "Rooms Available",
               min: 1,
               value: roomDetails.roomsCount,
+            }}
+            optionalProps={{ type: "number" }}
+            minLength={1}
+          />
+        </Grid> */}
+        <Grid item xs={6}>
+          <RoomInfoFields
+            mainProps={{
+              name: "maxPeople",
+              label: "Max People",
+              min: 1,
+              value: roomDetails.maxPeople,
             }}
             optionalProps={{ type: "number" }}
             minLength={1}
@@ -429,18 +421,6 @@ const AddDetails: React.FC = () => {
               value: roomDetails.description,
             }}
             minLength={15}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <RoomInfoFields
-            mainProps={{
-              name: "maxPeople",
-              label: "Max People",
-              min: 1,
-              value: roomDetails.maxPeople,
-            }}
-            optionalProps={{ type: "number" }}
-            minLength={1}
           />
         </Grid>
       </Grid>

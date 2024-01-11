@@ -10,17 +10,15 @@ import ContextProvider from "./context/ContextProvider";
 import { PersistGate } from "redux-persist/integration/react";
 import "swiper/css/bundle";
 
-const LoadingSpinner = () => (
-  <div>Loading...</div>
-);
+const LoadingSpinner = () => <div>Loading...</div>;
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
-      <PersistGate loading={<LoadingSpinner/>} persistor={persistor}>
-        <ContextProvider>
-          <ToastContainer />
-          <App />
-        </ContextProvider>
+    <PersistGate loading={<LoadingSpinner />} persistor={persistor}>
+      <ContextProvider>
+        <ToastContainer />
+        <App />
+      </ContextProvider>
     </PersistGate>
   </Provider>
 );

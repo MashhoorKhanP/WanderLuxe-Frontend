@@ -1,26 +1,26 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Box, Button, Stack, Typography } from "@mui/material";
 import { CorporateFare, TravelExplore } from "@mui/icons-material";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Box, Button, Typography } from "@mui/material";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../../store/store";
-import { getHotels } from "../../../actions/hotel";
-import MapScreen from "../map/MapScreen";
-import HotelListScreen from "../hotels/HotelListScreen";
-import RoomListScreen from "../rooms/RoomListScreen";
-import { getRooms } from "../../../actions/room";
-import WishListScreen from "../wishlist/WishlistScreen";
-import BookingScreen from "../booking/BookingScreen";
-import ChangePasswordScreen from "../password/ChangePasswordScreen";
-import PaymentSuccessScreen from "../booking/PaymentSuccessScreen";
-import PaymentFailedScreen from "../booking/PaymentFailedScreen";
-import MyBookingsScreen from "../booking/MyBookingsScreen";
-import MyWalletScreen from "../wallet/MyWalletScreen";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Autoplay, EffectCreative, Lazy, Navigation, Pagination, Zoom } from "swiper";
-import { RootState } from "../../../store/types";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { getBanners } from "../../../actions/banner";
+import { getHotels } from "../../../actions/hotel";
+import { getRooms } from "../../../actions/room";
 import PageNotFound from "../../../components/common/NotFound";
+import { AppDispatch } from "../../../store/store";
+import { RootState } from "../../../store/types";
+import BookingScreen from "../booking/BookingScreen";
+import MyBookingsScreen from "../booking/MyBookingsScreen";
+import PaymentFailedScreen from "../booking/PaymentFailedScreen";
+import PaymentSuccessScreen from "../booking/PaymentSuccessScreen";
+import HotelListScreen from "../hotels/HotelListScreen";
+import MapScreen from "../map/MapScreen";
+import ChangePasswordScreen from "../password/ChangePasswordScreen";
+import RoomListScreen from "../rooms/RoomListScreen";
+import MyWalletScreen from "../wallet/MyWalletScreen";
+import WishListScreen from "../wishlist/WishlistScreen";
 interface CustomSwiperOptions {
   lazy?: boolean;
 }
@@ -31,7 +31,7 @@ const HomeScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const bannerImages = useSelector((state: RootState) => state.admin.bannerImages);
   const banner:any = useSelector((state: RootState) => state.admin.banners);
-  console.log(banner,'bannerfro home')
+  console.log(banner,'bannerfrom home')
   useEffect(() => {
     if (!bannerImages.length) {
       dispatch(getBanners());

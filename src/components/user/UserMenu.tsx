@@ -41,8 +41,8 @@ const UserMenu: React.FC<UserMenuProps> = ({
   };
 
   const handleLogout = () => {
-    navigate("/home");
     dispatch(logoutUser());
+    navigate('/home')
   };
 
   const handleOpenProfile = () => {
@@ -51,10 +51,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
       file: null,
       profileImage: currentUser?.profileImage,
     };
-    // navigate("/profile");
-    console.log("...Current User", { ...currentUser }, "...ProfileUpdate", {
-      ...profileUpdate,
-    });
+
     dispatch(updateUserProfile({ ...currentUser?.message, ...profileUpdate }));
   };
   checkToken;
@@ -78,21 +75,21 @@ const UserMenu: React.FC<UserMenuProps> = ({
           </ListItemIcon>
           My Bookings
         </MenuItem>
-        <MenuItem onClick={() => navigate('/my-wallet')}>
-      <ListItemIcon>
-        <WalletOutlined fontSize="small" />
-      </ListItemIcon>
-      <Box display="flex" flexDirection="column">
-        <Typography variant="inherit" style={{ marginRight: '8px' }}>
-          My Wallet
-        </Typography>
-        {currentUser?.wallet !== undefined && (
-          <Typography variant="caption" color="textSecondary">
-            Balance: ₹{currentUser.wallet}
-          </Typography>
-        )}
-      </Box>
-    </MenuItem>
+        <MenuItem onClick={() => navigate("/my-wallet")}>
+          <ListItemIcon>
+            <WalletOutlined fontSize="small" />
+          </ListItemIcon>
+          <Box display="flex" flexDirection="column">
+            <Typography variant="inherit" style={{ marginRight: "8px" }}>
+              My Wallet
+            </Typography>
+            {currentUser?.wallet !== undefined && (
+              <Typography variant="caption" color="textSecondary">
+                Balance: ₹{currentUser.wallet}
+              </Typography>
+            )}
+          </Box>
+        </MenuItem>
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />

@@ -20,7 +20,10 @@ import { addHotel, getHotels, updateHotel } from "../../../../actions/hotel";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppDispatch } from "../../../../store/store";
-import { resetAddHotel, updateHotels } from "../../../../store/slices/adminSlices/adminHotelSlice";
+import {
+  resetAddHotel,
+  updateHotels,
+} from "../../../../store/slices/adminSlices/adminHotelSlice";
 
 const AddHotel: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,14 +41,8 @@ const AddHotel: React.FC = () => {
   const updatedHotel: any = useSelector(
     (state: RootState) => state.adminHotel.updatedHotel
   );
-  const deletedHotelImages = useSelector(
-    (state: RootState) => state.adminHotel.deletedHotelImages
-  );
-  const addedHotelImages = useSelector(
-    (state: RootState) => state.adminHotel.addedHotelImages
-  );
+  
 
-  console.log("Addhotel.tsx updatedHotel", updatedHotel._id);
   const [activeStep, setActiveStep] = useState(0);
   const [steps, setSteps] = useState([
     { label: "Location", completed: false },
@@ -243,8 +240,8 @@ const AddHotel: React.FC = () => {
   return (
     <Container>
       <Box display="flex" alignItems="center" padding={2} flexDirection="row">
-      <IconButton onClick={() => navigate(-1)}>
-          <ArrowBack/>
+        <IconButton onClick={() => navigate(-1)}>
+          <ArrowBack />
         </IconButton>
         <Typography variant="h5" fontWeight="bold">
           {location.pathname === "/admin/dashboard/hotels/add-hotel"

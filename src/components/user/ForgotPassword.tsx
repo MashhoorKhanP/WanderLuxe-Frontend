@@ -1,16 +1,29 @@
-import React, { useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store/types';
-import { Backdrop,Button, Box, Dialog, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Typography, TextField } from '@mui/material';
-import { Close } from '@mui/icons-material';
-import PasswordField from './PasswordField';
-import { toast } from 'react-toastify';
-import { changePassword, forgotPassword } from '../../actions/user';
-import { closeForgotPasswordScreen, setAlert, setOpenLogin, setOpenOTPVerification } from '../../store/slices/userSlices/userSlice';
-import { AppDispatch } from '../../store/store';
-import { useNavigate } from 'react-router-dom';
-
-
+import { Close } from "@mui/icons-material";
+import {
+  Backdrop,
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  IconButton,
+  TextField,
+} from "@mui/material";
+import React, { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { forgotPassword } from "../../actions/user";
+import {
+  closeForgotPasswordScreen,
+  setAlert,
+  setOpenLogin,
+  setOpenOTPVerification,
+} from "../../store/slices/userSlices/userSlice";
+import { AppDispatch } from "../../store/store";
+import { RootState } from "../../store/types";
+import PasswordField from "./PasswordField";
 
 const ForgotPassword: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,11 +36,10 @@ const ForgotPassword: React.FC = () => {
     (state: RootState) => state.user.isForgotPasswordOpen
   );
 
-  const handleClose =() => {
+  const handleClose = () => {
     dispatch(closeForgotPasswordScreen());
     dispatch(setOpenLogin(true));
-
-  }
+  };
 
   const handleChangePassword = (event: React.FormEvent) => {
     event?.preventDefault();
@@ -78,11 +90,9 @@ const ForgotPassword: React.FC = () => {
       return;
     }
 
-   
-
-    const email:string = emailRef.current?.value;
+    const email: string = emailRef.current?.value;
     const newPassword: string = newPasswordRef.current?.value;
-  
+
     const result = dispatch(
       forgotPassword({
         forgotPasswordData: {
@@ -93,7 +103,6 @@ const ForgotPassword: React.FC = () => {
     );
     const resultUnwrapped = result.unwrap();
     resultUnwrapped.then((thenResult) => {
-
       // Check if thenResult is not null or undefined
       if (thenResult !== null) {
         dispatch(closeForgotPasswordScreen());
@@ -104,7 +113,7 @@ const ForgotPassword: React.FC = () => {
   };
   return (
     <>
-    <Backdrop
+      <Backdrop
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
           color: "#fff",
@@ -115,7 +124,7 @@ const ForgotPassword: React.FC = () => {
       />
       <Dialog open={isOpen} onClose={handleClose} sx={{ opacity: "90%" }}>
         <DialogTitle>
-            Forgot Password
+          Forgot Password
           <IconButton
             sx={{
               position: "absolute",
@@ -128,16 +137,16 @@ const ForgotPassword: React.FC = () => {
             <Close />
           </IconButton>
         </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Please fill the fields below to change password:
-            </DialogContentText>
-            <Box p={4} display="flex" justifyContent="center">
-        <Grid container xs={12} sm={12} md={12} justifyContent="center">
-          <Grid item >
-            {/* Box 1 */}
-            <Box sx={{ width: "100%" }} padding={2}>
-            <TextField
+        <DialogContent>
+          <DialogContentText>
+            Please fill the fields below to change password:
+          </DialogContentText>
+          <Box p={4} display="flex" justifyContent="center">
+            <Grid container xs={12} sm={12} md={12} justifyContent="center">
+              <Grid item>
+                {/* Box 1 */}
+                <Box sx={{ width: "100%" }} padding={2}>
+                  <TextField
                     autoFocus={isOpen}
                     margin="normal"
                     variant="standard"
@@ -147,82 +156,83 @@ const ForgotPassword: React.FC = () => {
                     fullWidth
                     inputRef={emailRef}
                   />
-              <PasswordField
-                {...{
-                  passwordRef: newPasswordRef,
-                  id: "newPassword",
-                  label: "New Password",
-                }}
-              />
-              <PasswordField
-                {...{
-                  passwordRef: confirmNewPasswordRef,
-                  id: "confirmPassword",
-                  label: "Confirm New Password",
-                }}
-              />
+                  <PasswordField
+                    {...{
+                      passwordRef: newPasswordRef,
+                      id: "newPassword",
+                      label: "New Password",
+                    }}
+                  />
+                  <PasswordField
+                    {...{
+                      passwordRef: confirmNewPasswordRef,
+                      id: "confirmPassword",
+                      label: "Confirm New Password",
+                    }}
+                  />
 
-              {/* Box for the button */}
-              <Box
-                display="flex"
-                paddingTop={5}
-                paddingLeft={1}
-                paddingRight={1}
-                gap={1}
-                flexDirection="row"
-              >
-                <Button
-                  onClick={handleClose}
-                  variant="outlined"
-                  sx={{
-                    flex: 1,
-                    p: 1,
-                    borderRadius: 0,
-                    bgcolor: "black",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "color border bgColor 0.3s ease",
-                    "&:hover": {
-                      bgcolor: "#d1d1d1",
-                      color: "#000000",
-                      border: "1px solid black",
-                    },
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleChangePassword}
-                  variant="outlined"
-                  sx={{
-                    flex: 1,
-                    p: 1,
-                    borderRadius: 0,
-                    bgcolor: "black",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "color border bgColor 0.3s ease",
-                    "&:hover": {
-                      bgcolor: "#d1d1d1",
-                      color: "#000000",
-                      border: "1px solid black",
-                    },
-                  }}
-                >
-                  Change Password
-                </Button>
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-      </DialogContent>
-      </Dialog>  </>
-);
-}
+                  {/* Box for the button */}
+                  <Box
+                    display="flex"
+                    paddingTop={5}
+                    paddingLeft={1}
+                    paddingRight={1}
+                    gap={1}
+                    flexDirection="row"
+                  >
+                    <Button
+                      onClick={handleClose}
+                      variant="outlined"
+                      sx={{
+                        flex: 1,
+                        p: 1,
+                        borderRadius: 0,
+                        bgcolor: "black",
+                        color: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transition: "color border bgColor 0.3s ease",
+                        "&:hover": {
+                          bgcolor: "#d1d1d1",
+                          color: "#000000",
+                          border: "1px solid black",
+                        },
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleChangePassword}
+                      variant="outlined"
+                      sx={{
+                        flex: 1,
+                        p: 1,
+                        borderRadius: 0,
+                        bgcolor: "black",
+                        color: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transition: "color border bgColor 0.3s ease",
+                        "&:hover": {
+                          bgcolor: "#d1d1d1",
+                          color: "#000000",
+                          border: "1px solid black",
+                        },
+                      }}
+                    >
+                      Change Password
+                    </Button>
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+        </DialogContent>
+      </Dialog>{" "}
+    </>
+  );
+};
 
 export default ForgotPassword;

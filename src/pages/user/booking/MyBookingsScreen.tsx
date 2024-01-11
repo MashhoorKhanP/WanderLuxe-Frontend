@@ -1,16 +1,16 @@
+import { ArrowBack, UnfoldMoreOutlined } from '@mui/icons-material';
+import { Box, Button, Card, Container, Hidden, IconButton, ImageList, ImageListItem, ImageListItemBar, Stack, Tooltip, Typography } from '@mui/material';
+import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../store/types';
-import { Box, Button, Card, Container, Hidden, IconButton, ImageList, ImageListItem, ImageListItemBar, Stack, Tooltip, Typography } from '@mui/material';
-import { getUserBookings } from '../../../actions/booking';
-import { AppDispatch } from '../../../store/store';
-import { openBookingDetails, setBookingId, setBookings, setRooms } from '../../../store/slices/userSlices/userSlice';
-import useCheckToken from '../../../components/hooks/useCheckToken';
 import { useNavigate } from 'react-router-dom';
-import { AccessTimeOutlined, ArrowBack, InfoOutlined, UnfoldMoreOutlined } from '@mui/icons-material';
-import dayjs from 'dayjs';
-import { setRoomId } from '../../../store/slices/userSlices/roomSlice';
+import { getUserBookings } from '../../../actions/booking';
 import { getRooms } from '../../../actions/room';
+import useCheckToken from '../../../components/hooks/useCheckToken';
+import { setRoomId } from '../../../store/slices/userSlices/roomSlice';
+import { openBookingDetails, setBookingId, setBookings, setRooms } from '../../../store/slices/userSlices/userSlice';
+import { AppDispatch } from '../../../store/store';
+import { RootState } from '../../../store/types';
 
 
 const MyBookingsScreen: React.FC = () => {
@@ -22,12 +22,9 @@ const MyBookingsScreen: React.FC = () => {
   const bookings:any = useSelector((state: RootState) => state.user.bookings);
   const [currentPage, setCurrentPage] = useState(1);
   const bookingsPerPage = 6;
-  console.log('currentUser from MyBookingScreen',currentUser);
-  console.log('UserBooking',bookings);
   const indexOfLastHotel = currentPage * bookingsPerPage;
   const indexOfFirstHotel = indexOfLastHotel - bookingsPerPage;
   const currentBookings = bookings.slice(indexOfFirstHotel, indexOfLastHotel);
-  console.log('currentUser.messsge',currentUser?.message);
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
   useEffect(() => {
     if (!rooms.length) {

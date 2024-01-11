@@ -40,7 +40,7 @@ const Users: React.FC<UsersProps> = ({ setSelectedLink, link }) => {
     // Dispatch the action to fetch users when the component mounts
     const result = dispatch(getUsers() as any);
   }, [dispatch, setSelectedLink, link]);
-  
+
   checkToken;
   const columns: GridColDef[] = useMemo(
     () => [
@@ -106,7 +106,7 @@ const Users: React.FC<UsersProps> = ({ setSelectedLink, link }) => {
       <Typography
         variant="h4"
         component="h4"
-        sx={{ textAlign: "center", mt: 3, mb: 3 }}
+        sx={{ textAlign: "center", mt: 2, mb: 3 }}
       >
         Manage Users
       </Typography>

@@ -1,11 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import MuiDrawer from "@mui/material/Drawer";
-import { styled, Theme, CSSObject } from "@mui/material/styles";
 import {
   Apartment,
   ChevronLeft,
   Dashboard,
-  Discount,
   Hotel,
   Logout,
   MarkChatUnreadOutlined,
@@ -13,7 +9,6 @@ import {
   Redeem,
   Style,
   ViewCarousel,
-  Villa,
 } from "@mui/icons-material";
 import {
   Avatar,
@@ -28,21 +23,22 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import MuiDrawer from "@mui/material/Drawer";
+import { CSSObject, Theme, styled } from "@mui/material/styles";
+import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../store/types";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import DashboardHome from "./dashboardHome/Dashboard";
-import Users from "./users/Users";
-import Hotels from "./hotels/Hotels";
-import Rooms from "./rooms/Rooms";
+import { Socket } from "socket.io-client";
+import { logoutAdmin } from "../../../store/slices/adminSlices/adminSlice";
+import { RootState } from "../../../store/types";
+import Banners from "./banners/Banners";
 import Bookings from "./bookings/Bookings";
 import Coupons from "./coupons/Coupons";
-// import Offers from "./offers/Offers";
-import Banners from "./banners/Banners";
-import { logoutAdmin } from "../../../store/slices/adminSlices/adminSlice";
-import AddHotel from "./hotels/AddHotel";
 import ChatScreen from "./dashboardHome/ChatScreen";
-import { Socket, io } from "socket.io-client";
+import DashboardHome from "./dashboardHome/Dashboard";
+import Hotels from "./hotels/Hotels";
+import Rooms from "./rooms/Rooms";
+import Users from "./users/Users";
 
 const drawerWidth = 240;
 
@@ -72,6 +68,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   alignItems: "center",
   justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
+  marginTop: 2,
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
@@ -97,20 +94,21 @@ interface SideListProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   updateTitle: React.Dispatch<React.SetStateAction<string>>;
-  socket?:Socket | null;
+  socket?: Socket | null;
 }
 
-const SideList: React.FC<SideListProps> = ({socket, open, setOpen, updateTitle}) => {
+const SideList: React.FC<SideListProps> = ({
+  socket,
+  open,
+  setOpen,
+  updateTitle,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentAdmin } = useSelector((state: RootState) => state.admin); //change currentAdmin make slice
   const [selectedLink, setSelectedLink] = useState("");
-  
-  // useEffect(() =>{
-  //   navigate('/admin/dashboard/home');
-  // },[])
 
-  console.log('Socket from Sidelist',socket);
+  console.log("Socket from Sidelist", socket);
   const handleItemClick = (link: string, title: string) => {
     setOpen(false);
     setSelectedLink(link);
@@ -136,8 +134,11 @@ const SideList: React.FC<SideListProps> = ({socket, open, setOpen, updateTitle})
         title: "Messages",
         icon: <MarkChatUnreadOutlined />,
         link: "chat-screen",
-        component:socket ? (
-          <ChatScreen socket={socket} {...{ setSelectedLink, link: "chat-screen" }} />
+        component: socket ? (
+          <ChatScreen
+            socket={socket}
+            {...{ setSelectedLink, link: "chat-screen" }}
+          />
         ) : (
           <div>Loading...</div> // Or any other fallback UI
         ),
@@ -248,7 +249,10 @@ const SideList: React.FC<SideListProps> = ({socket, open, setOpen, updateTitle})
           </Tooltip>
         </Box>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, padding: "30px 30px 30px 30px" }}
+      >
         <DrawerHeader />
         <Routes>
           {list.map((item) => (

@@ -163,17 +163,14 @@ const adminSlice = createSlice({
       state.adminLoading = false;
       const currentAdmin = action.payload;
       if (currentAdmin && currentAdmin.message) {
-        console.log(
-          "JSON.Stingify of current user",
-          JSON.stringify(currentAdmin.message)
-        );
+       
         console.log(currentAdmin, "for token check");
         localStorage.setItem("AdminToken", currentAdmin.token);
         localStorage.setItem(
           "currentAdmin",
           JSON.stringify(currentAdmin.message)
         );
-        console.log("currentAdmin.message", currentAdmin.message);
+        
         // Don't directly modify state.currentUser, create a new object
         state.currentAdmin = currentAdmin.message;
 

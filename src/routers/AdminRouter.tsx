@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import AdminLogin from "../components/admin/Login";
-import Admin from "../pages/Admin";
 import { useDispatch } from "react-redux";
-import {
-  logoutAdmin,
-  updateAdmin,
-} from "../store/slices/adminSlices/adminSlice";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import AdminPrivateRoute from "../components/AdminPrivateRoute";
+import AdminLogin from "../components/admin/Login";
 import PageNotFound from "../components/common/NotFound";
+import Admin from "../pages/Admin";
+import {
+  updateAdmin
+} from "../store/slices/adminSlices/adminSlice";
 
 interface Admin {
   _id: string;

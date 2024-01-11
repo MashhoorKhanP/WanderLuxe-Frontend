@@ -1,8 +1,8 @@
-import { Avatar, Container, InputAdornment, TextField } from "@mui/material";
+import { Avatar, InputAdornment, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import pendingIcon from "../icons/progress4.gif";
 import { updateHotelDetails } from "../../../../../store/slices/adminSlices/adminHotelSlice";
+import pendingIcon from "../icons/progress4.gif";
 
 interface InfoFieldsProps {
   mainProps: {};
@@ -53,7 +53,15 @@ const InfoFields: React.FC<InfoFieldsProps> = ({
       color={success ? "success" : "primary"}
       variant="outlined"
       onChange={handleChange}
-      onFocus={(e) => e.target.addEventListener("wheel", function (e) { e.preventDefault() }, { passive: false })}
+      onFocus={(e) =>
+        e.target.addEventListener(
+          "wheel",
+          function (e) {
+            e.preventDefault();
+          },
+          { passive: false }
+        )
+      }
       required
       InputProps={{
         endAdornment: (

@@ -1,37 +1,35 @@
-import React, { forwardRef, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { RootState } from "../../../store/types";
-import {
-  closeBookingDetails,
-  setBookingId,
-  setRooms,
-  stopLoading,
-} from "../../../store/slices/userSlices/userSlice";
+import { Close } from "@mui/icons-material";
 import {
   Box,
   Button,
   Container,
   Dialog,
   Divider,
-  Grid,
   IconButton,
   Slide,
   SlideProps,
   Stack,
-  TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
-import { getRooms } from "../../../actions/room";
-import { updateRooms } from "../../../store/slices/adminSlices/adminRoomSlice";
-import { RoomDetails, startLoading } from "../../../store/slices/adminSlices/adminSlice";
-import { Close } from "@mui/icons-material";
-import { setRoomId } from "../../../store/slices/userSlices/roomSlice";
-import { AppDispatch } from "../../../store/store";
 import dayjs from "dayjs";
-import { userCancelBooking } from "../../../actions/booking";
+import React, { forwardRef, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { userCancelBooking } from "../../../actions/booking";
+import {
+  RoomDetails,
+  startLoading,
+} from "../../../store/slices/adminSlices/adminSlice";
+import { setRoomId } from "../../../store/slices/userSlices/roomSlice";
+import {
+  closeBookingDetails,
+  setBookingId,
+  stopLoading,
+} from "../../../store/slices/userSlices/userSlice";
+import { AppDispatch } from "../../../store/store";
+import { RootState } from "../../../store/types";
 
 const Transition = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
   const transitionSpeed = 500;
@@ -65,7 +63,6 @@ const BookingDetailsScreen: React.FC = () => {
     (state: RootState) => state.user.filteredRooms
   );
 
-  console.log("rooms: ", rooms);
   useEffect(() => {
     if (isOpen && bookingId) {
       const bookingDetails = bookings.find(
@@ -84,34 +81,34 @@ const BookingDetailsScreen: React.FC = () => {
   };
 
   const handleCancelBooking = () => {
-    const updatedBooking ={
+    const updatedBooking: any = {
       _id: bookingId,
-      userId:currentUser?._id,
-      status:'Cancelled',
-    }
+      roomId: roomId,
+      userId: currentUser?._id,
+      status: "Cancelled",
+    };
     dispatch(closeBookingDetails());
     Swal.fire({
-          title: "Are you sure?",
-          text: `Do you want to cancel the booking?`,
-          icon: "error",
-          showCancelButton: true,
-          confirmButtonText: "Yes, Cancel",
-          cancelButtonText: "No, Go Back!",
-          customClass: {
-            container: "custom-swal-container",
-          },
-          width: 400, // Set your desired width
-          background: "#f0f0f0",
-          iconHtml: '<i class="bi bi-x-lg" style="font-size:30px"></i>',
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            dispatch(userCancelBooking({updatedBooking}));
-            startLoading();
-            stopLoading();
-
-          }
-        });
-  }
+      title: "Are you sure?",
+      text: `Do you want to cancel the booking?`,
+      icon: "error",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Cancel",
+      cancelButtonText: "No, Go Back!",
+      customClass: {
+        container: "custom-swal-container",
+      },
+      width: 400, // Set your desired width
+      background: "#f0f0f0",
+      iconHtml: '<i class="bi bi-x-lg" style="font-size:30px"></i>',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        dispatch(userCancelBooking({ updatedBooking }));
+        startLoading();
+        stopLoading();
+      }
+    });
+  };
 
   return (
     <Dialog
@@ -349,7 +346,11 @@ const BookingDetailsScreen: React.FC = () => {
                     component={"span"}
                     sx={{
                       fontSize: "14px",
-                      color: booking.status==='Cancelled' || booking.status==='Cancelled by Admin'  ? "#DC3545" : "#198754",
+                      color:
+                        booking.status === "Cancelled" ||
+                        booking.status === "Cancelled by Admin"
+                          ? "#DC3545"
+                          : "#198754",
                       fontWeight: "bold",
                     }}
                   >
@@ -447,28 +448,26 @@ const BookingDetailsScreen: React.FC = () => {
                     {`Transaction Id: ${booking.transactionId}`}
                   </Typography>
                   <br />
-                  {booking.paymentMethod === 'Online Payment' && 
-                  <>
-                  <Typography
-                    variant="h6"
-                    component={"span"}
-                    sx={{ fontSize: "14px" }}
-                  >
-                   
-                    Invoice:{" "}
-                    
-                    <a
-                      href={booking.receiptUrl}
-                      style={{ textDecoration: "underline", color: "blue" }}
-                      target="_blank"
-                    >
-                      Click here
-                    </a>
-                  </Typography>
-                  
-                  <br />
-                  </>
-                  }
+                  {booking.paymentMethod === "Online Payment" && (
+                    <>
+                      <Typography
+                        variant="h6"
+                        component={"span"}
+                        sx={{ fontSize: "14px" }}
+                      >
+                        Invoice:{" "}
+                        <a
+                          href={booking.receiptUrl}
+                          style={{ textDecoration: "underline", color: "blue" }}
+                          target="_blank"
+                        >
+                          Click here
+                        </a>
+                      </Typography>
+
+                      <br />
+                    </>
+                  )}
                   <Divider
                     sx={{
                       width: "100%",
@@ -529,7 +528,7 @@ const BookingDetailsScreen: React.FC = () => {
                       border: "none",
                     },
                   }}
-                  disabled={booking.status !='Confirmed'}
+                  disabled={booking.status != "Confirmed"}
                   onClick={handleCancelBooking}
                 >
                   <span>Cancel Booking</span>

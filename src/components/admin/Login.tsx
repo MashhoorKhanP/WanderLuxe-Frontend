@@ -1,5 +1,5 @@
+import { Send } from "@mui/icons-material";
 import {
-  Backdrop,
   Button,
   Dialog,
   DialogActions,
@@ -10,13 +10,12 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/types";
-import { Send } from "@mui/icons-material";
-import { loginAdmin } from "../../actions/admin";
-import PasswordField from "../user/PasswordField";
-import { AppDispatch } from "../../store/store";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { loginAdmin } from "../../actions/admin";
+import { AppDispatch } from "../../store/store";
+import { RootState } from "../../store/types";
+import PasswordField from "../user/PasswordField";
 
 const AdminLogin: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,15 +27,13 @@ const AdminLogin: React.FC = () => {
 
   useEffect(() => {
     if (currentAdmin) {
-      navigate("/admin/dashboard");
+      navigate("/admin/dashboard/home");
     }
   }, [navigate, currentAdmin]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event?.preventDefault();
-    console.log("Entered inside admin login handle submit");
     const showErrorAlert = (message: string) => {
-      console.log("dispatched alert");
       toast.error(message);
     };
 

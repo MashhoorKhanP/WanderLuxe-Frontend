@@ -1,12 +1,10 @@
-import React, { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/types";
 import { jwtDecode } from "jwt-decode";
-import { logoutUser } from "../../store/slices/userSlices/userSlice";
-import { logoutAdmin } from "../../store/slices/adminSlices/adminSlice";
+import { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getUsers } from "../../actions/admin";
+import { logoutAdmin } from "../../store/slices/adminSlices/adminSlice";
+import { logoutUser } from "../../store/slices/userSlices/userSlice";
 import { AppDispatch } from "../../store/store";
 
 const useCheckToken = () => {

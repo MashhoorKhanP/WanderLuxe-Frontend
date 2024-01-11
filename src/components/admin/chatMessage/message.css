@@ -1,14 +1,14 @@
-.message{
+.message {
   display: flex;
   flex-direction: column;
   margin-top: 20px;
 }
 
-.messageTop{
+.messageTop {
   display: flex;
 }
 
-.messageImg{
+.messageImg {
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -16,7 +16,7 @@
   margin-right: 10px;
 }
 
-.messageText{
+.messageText {
   padding: 10px;
   border-radius: 10px;
   background-color: rgb(243, 243, 243);
@@ -24,19 +24,17 @@
   max-width: 300px;
 }
 
-.messageBottom{
+.messageBottom {
   font-size: 12px;
   margin-top: 10px;
   color: #ffffff;
 }
 
-.message.own{
+.message.own {
   align-items: flex-end;
-
 }
 
 .message.message.own .messageText {
   background-color: rgb(105, 105, 105);
-  color:#ffffff;
-
+  color: #ffffff;
 }

@@ -24,7 +24,7 @@ interface UpdateRoomPayload {
     maxPeople: number;
     description: string;
     images?: string[];
-    parkingPrice:number;
+    parkingPrice: number;
   };
 }
 

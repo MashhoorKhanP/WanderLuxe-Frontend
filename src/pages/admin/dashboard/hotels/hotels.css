@@ -1,7 +1,7 @@
 .container {
   width: 95%;
   max-width: 1200px; /* Adjust the maximum width as needed */
-  margin: 0 auto;   /* Center the container */
+  margin: 0 auto; /* Center the container */
   overflow-x: hidden;
 }
 

@@ -1,14 +1,14 @@
-.conversation{
+.conversation {
   display: flex;
   align-items: center;
   padding: 10px;
   cursor: pointer;
   border-bottom: 0.5px solid #ccc;
 }
-.conversation:hover{
-  background-color:rgb(58, 58, 58) ;
+.conversation:hover {
+  background-color: rgb(58, 58, 58);
 }
-.conversationImg{
+.conversationImg {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -16,7 +16,7 @@
   margin-right: 20px;
 }
 
-.conversationImgNoImage{
+.conversationImgNoImage {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -31,7 +31,7 @@
   font-weight: 500;
 }
 
-.conversationName{
+.conversationName {
   font-weight: 500;
   color: #ffffff;
 }

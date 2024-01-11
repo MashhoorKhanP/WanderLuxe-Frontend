@@ -33,12 +33,12 @@ const UsersActions: React.FC<UsersActionsProps> = ({
   const { currentAdmin } = useSelector((state: RootState) => state.admin);
   const socket = useRef<Socket | null>();
 
-  useEffect(()=>{
-    if(!socket.current && currentAdmin){
-      socket.current = io(import.meta.env.VITE_SERVER_URL)
-      socket.current.emit('addUser',(currentAdmin?._id))
+  useEffect(() => {
+    if (!socket.current && currentAdmin) {
+      socket.current = io(import.meta.env.VITE_SERVER_URL);
+      socket.current.emit("addUser", currentAdmin?._id);
     }
-  },[socket, currentAdmin])
+  }, [socket, currentAdmin]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -48,9 +48,9 @@ const UsersActions: React.FC<UsersActionsProps> = ({
         // Assuming updateUser is an asynchronous action (thunk)
         const result = await adminUpdateUser(isVerified, isBlocked, _id);
         if (result) {
-          if(socket.current){
-            socket.current.emit('join-room',_id);
-            socket.current.emit('isBlocked',{userId:_id});
+          if (socket.current) {
+            socket.current.emit("join-room", _id);
+            socket.current.emit("isBlocked", { userId: _id });
           }
           setSuccess(true);
           setRowId("");

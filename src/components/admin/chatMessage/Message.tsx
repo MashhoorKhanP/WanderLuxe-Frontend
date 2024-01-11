@@ -1,57 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import './message.css';
-import { format } from 'timeago.js';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../store/types';
-import { current } from '@reduxjs/toolkit';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { format } from "timeago.js";
+import { RootState } from "../../../store/types";
+import "./message.css";
 
-interface MessageProps{
-  message:{
-    text:string,
-    createdAt:any,
-    sender:string
+interface MessageProps {
+  message: {
+    text: string;
+    createdAt: any;
+    sender: string;
   };
-  own:boolean|any
+  own: boolean | any;
 }
 
-const Message: React.FC<MessageProps> = ({message,own}) => {
+const Message: React.FC<MessageProps> = ({ message, own }) => {
   const location = useLocation();
-  const [user,setUser] = useState<any>([])
+  const [user, setUser] = useState<any>([]);
   const allUsers = useSelector((state: RootState) => state.admin.users);
   const { currentAdmin } = useSelector((state: RootState) => state.admin);
   const { currentUser } = useSelector((state: RootState) => state.user);
-  
+
   useEffect(() => {
-    if(location.pathname ==='/admin/dashboard/chat-screen'){
-      const usersData = allUsers.find((user:any) => user._id === message.sender);
-      if(usersData){
+    if (location.pathname === "/admin/dashboard/chat-screen") {
+      const usersData = allUsers.find(
+        (user: any) => user._id === message.sender
+      );
+      if (usersData) {
         setUser(usersData);
-      }else{
+      } else {
         setUser(currentAdmin);
       }
-    }else{
+    } else {
       const currentAdmin = {
-        profileImage:import.meta.env.VITE_WANDERLUXE_LOGO_BG
-      }
-      const usersData = currentUser?._id === message.sender ? currentUser : currentAdmin;
+        profileImage: import.meta.env.VITE_WANDERLUXE_LOGO_BG,
+      };
+      const usersData =
+        currentUser?._id === message.sender ? currentUser : currentAdmin;
       setUser(usersData);
     }
-      
+  }, [location.pathname]);
 
-  },[location.pathname])
-  
   return (
     <div className={own ? "message own" : "message"}>
       <div className="messageTop">
-        <img
-        className='messageImg'
-        src={ user?.profileImage} alt=''/>
-        <p className='messageText'>{message?.text}</p>
+        <img className="messageImg" src={user?.profileImage} alt="" />
+        <p className="messageText">{message?.text}</p>
       </div>
-      <div className="messageBottom">
-        {format(message?.createdAt)}
-      </div>
+      <div className="messageBottom">{format(message?.createdAt)}</div>
     </div>
   );
 };

@@ -1,29 +1,28 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../store/types";
-import { getHotels } from "../../../actions/hotel";
-import { AppDispatch } from "../../../store/store";
+import { Avatar, Box, Paper, Tooltip } from "@mui/material";
+import "mapbox-gl/dist/mapbox-gl.css";
+import React, { useEffect, useState } from "react";
 import ReactMapGL, {
   FullscreenControl,
   GeolocateControl,
+  Layer,
   Marker,
   NavigationControl,
-  Source,
-  Layer,
   Popup,
+  Source,
 } from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { AppBar, Avatar, Box, Paper, Tooltip, Typography } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 import SuperCluster from "supercluster";
-import "./cluster.css";
+import { getHotels } from "../../../actions/hotel";
 import { useValue } from "../../../context/ContextProvider";
-
-import PopupHotel from "./PopupHotel";
-import PriceSlider from "../../../components/user/searchbar/PriceSlider";
-import GeocoderInput from "../../../components/user/searchbar/GeocoderInput";
+import { AppDispatch } from "../../../store/store";
+import { RootState } from "../../../store/types";
 import "./cluster.css";
-import RouteInstructions from "./RouteInstructions";
+import GeocoderInput from "../../../components/user/searchbar/GeocoderInput";
+import PriceSlider from "../../../components/user/searchbar/PriceSlider";
 import { updateLocation } from "../../../store/slices/adminSlices/adminHotelSlice";
+import PopupHotel from "./PopupHotel";
+import RouteInstructions from "./RouteInstructions";
+import "./cluster.css";
 
 interface Hotel {
   _id: string;
@@ -65,7 +64,9 @@ const MapScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const hotels = useSelector((state: RootState) => state.user.filteredHotels);
   const { mapRef } = useValue();
-  const location = useSelector((state: RootState) => state.adminHotel.hotelLocation);
+  const location = useSelector(
+    (state: RootState) => state.adminHotel.hotelLocation
+  );
   const [popupInfo, setPopupInfo] = useState<PointFeature | null>(null);
   const [points, setPoints] = useState<PointFeature[]>([]);
   const [clusters, setClusters] = useState<PointFeature[]>([]);

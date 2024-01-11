@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Check, Delete, Edit, Preview, Save } from "@mui/icons-material";
+import { Check, Delete, Edit, Save } from "@mui/icons-material";
 import { Box, CircularProgress, Fab, IconButton, Tooltip } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { green } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
-import { AppDispatch } from "../../../../store/store";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import { deleteCoupon, updateCoupon } from "../../../../actions/coupon";
 import {
   updateCouponDetails,
   updateUpdatedCoupon,
 } from "../../../../store/slices/adminSlices/adminCouponSlice";
-import { deleteCoupon, updateCoupon } from "../../../../actions/coupon";
-import { green } from "@mui/material/colors";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
+import { AppDispatch } from "../../../../store/store";
 
 interface CouponsActionsProps {
   params: any;
@@ -189,11 +188,11 @@ const CouponsActions: React.FC<CouponsActionsProps> = ({
             <Edit />
           </IconButton>
         </Tooltip>
-        <Tooltip title='Delete this coupon'>
+        <Tooltip title="Delete this coupon">
           <IconButton onClick={() => handleDelete(params.row)}>
-            <Delete/>
+            <Delete />
           </IconButton>
-      </Tooltip>
+        </Tooltip>
       </Box>
     </>
   );

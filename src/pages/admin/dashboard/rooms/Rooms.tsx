@@ -50,7 +50,7 @@ const Rooms: React.FC<RoomsProps> = ({ setSelectedLink, link }) => {
         amenities: [],
         price: 0,
         discountPrice: 0,
-        roomsCount: 0,
+        roomsCount: 1,
         maxPeople: 0,
         description: "",
       })
@@ -63,9 +63,9 @@ const Rooms: React.FC<RoomsProps> = ({ setSelectedLink, link }) => {
     const roomStatus = params.row.status;
 
     let textColor;
-    if (roomStatus==='Available') {
+    if (roomStatus === "Available") {
       textColor = "green";
-    } else if (roomStatus==='Occupied') {
+    } else if (roomStatus === "Occupied") {
       textColor = "orange";
     } else {
       textColor = "green";
@@ -186,7 +186,7 @@ const Rooms: React.FC<RoomsProps> = ({ setSelectedLink, link }) => {
             <Typography
               variant="h4"
               component="h4"
-              sx={{ textAlign: "center", mt: 3, mb: 3 }}
+              sx={{ textAlign: "center", mt: 0, mb: 3 }}
             >
               Manage Rooms
             </Typography>

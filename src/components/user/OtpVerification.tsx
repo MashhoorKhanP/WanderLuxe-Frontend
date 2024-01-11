@@ -26,8 +26,8 @@ const OtpVerification: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const forgotPassword:any = searchParams.get("forgotPassword");
-  
+  const forgotPassword: any = searchParams.get("forgotPassword");
+
   const openOtpVerification = useSelector(
     (state: RootState) => state.user.openOTPVerification
   );
@@ -62,10 +62,6 @@ const OtpVerification: React.FC = () => {
     try {
       // Dispatch the resendOTP action and wait for the result
       const result = await dispatch(resendOTP(currentUserEmail || ""));
-
-      // Handle the result as needed (perhaps show a success message)
-      console.log("Resend OTP Result:", result);
-
       // Reset the timer to its initial value
       setTimer(60);
     } catch (error) {
@@ -108,11 +104,11 @@ const OtpVerification: React.FC = () => {
     }
 
     try {
-      const otp={
+      const otp = {
         otp: parseInt(otpValue),
-        forgotPassword:forgotPassword === 'true'? forgotPassword : 'false'
-      }
-      dispatch(verifyUser({otp}));
+        forgotPassword: forgotPassword === "true" ? forgotPassword : "false",
+      };
+      dispatch(verifyUser({ otp }));
     } catch (error) {
       console.error("Error verifying OTP:", error);
     }

@@ -25,9 +25,15 @@ const AdultChildrenPicker: React.FC = () => {
     children: adultChildOptions.children ? adultChildOptions.children : 0,
   });
 
-    if(adultChildOptions.adult + adultChildOptions.children === 4){
-      dispatch(setAlert({open:true, severity:'warning', message:'Max People capacity reached'}))
-    }
+  if (adultChildOptions.adult + adultChildOptions.children === 4) {
+    dispatch(
+      setAlert({
+        open: true,
+        severity: "warning",
+        message: "Max People capacity reached",
+      })
+    );
+  }
   const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -81,7 +87,7 @@ const AdultChildrenPicker: React.FC = () => {
                 <span className="optionText">Adult</span>
                 <div className="optionCounter">
                   <button
-                    disabled={options.adult <= 1 }
+                    disabled={options.adult <= 1}
                     className="optionCounterButton"
                     onClick={() => handleOption("adult", "d")}
                   >

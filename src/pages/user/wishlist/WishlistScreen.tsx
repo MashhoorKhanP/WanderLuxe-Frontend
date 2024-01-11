@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../store/types";
-import { getHotels } from "../../../actions/hotel";
-import { AppDispatch } from "../../../store/store";
 import {
-  setHotels,
-  setOpenLogin,
-} from "../../../store/slices/userSlices/userSlice";
+  ArrowBack,
+  BedOutlined,
+  Favorite,
+  FavoriteBorder,
+  StarBorder,
+} from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -23,18 +21,16 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import {
-  ArrowBack,
-  BedOutlined,
-  Favorite,
-  FavoriteBorder,
-  Padding,
-  StarBorder,
-} from "@mui/icons-material";
-import { addRemoveFromWishlist } from "../../../actions/user";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import { getHotels } from "../../../actions/hotel";
+import { addRemoveFromWishlist } from "../../../actions/user";
+import { setHotels } from "../../../store/slices/userSlices/userSlice";
+import { AppDispatch } from "../../../store/store";
+import { RootState } from "../../../store/types";
 
 const WishListScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -101,68 +97,80 @@ const WishListScreen: React.FC = () => {
 
   return (
     <Container>
-      <Box display="flex" alignItems="center" paddingTop={4} flexDirection="row">
+      <Box
+        display="flex"
+        alignItems="center"
+        paddingTop={4}
+        flexDirection="row"
+      >
         <IconButton onClick={() => navigate(-1)}>
-            <ArrowBack/>
+          <ArrowBack />
         </IconButton>
         <Typography variant="h5" fontWeight="bold">
           Wishlist
         </Typography>
       </Box>
       <ImageList
-      
         gap={12}
         sx={{
           paddingTop: 2,
-          display:currentHotels.length>0?'':'flex',
+          display: currentHotels.length > 0 ? "" : "flex",
           mb: 8,
           gridTemplateColumns:
             "repeat(auto-fill,minmax(280px, 1fr)) !important",
         }}
       >
         {currentHotels.length <= 0 ? (
-          
           <Box
-          sx={{
-            width: '100%',
-            display:'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-              <Typography variant="h5" fontWeight='bold' display="flex" padding={2}>
-                Your wishlist is empty!
-              </Typography>
-              <img src={import.meta.env.VITE_WISHLISTEMPTY_IMAGE}  style={{ borderRadius: '15px', width: '100%', maxWidth: '360px' }}  alt="Empty wishlist..." />
-              <Stack
-      direction="row"
-      width="100%"
-      spacing={2}
-      justifyContent="center"
-      paddingTop={4}
-      paddingBottom={2}
-    >
-      <Button
-        variant="outlined"
-        className="book_room_btn"
-        sx={{ width: '20%', p: 1, borderRadius: 0 }}
-        color="inherit"
-        onClick={() => navigate(`/view-hotels`)}
-      >
-        <span>Wishtlist Now</span>
-      </Button>
-      <Button
-        variant="outlined"
-        className="book_room_btn"
-        sx={{ width: '20%', p: 1, borderRadius: 0 }}
-        color="inherit"
-        onClick={() => navigate(`/home`)}
-      >
-        <span>Back to home</span>
-      </Button>
-    </Stack>
-            </Box>
+            sx={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              display="flex"
+              padding={2}
+            >
+              Your wishlist is empty!
+            </Typography>
+            <img
+              src={import.meta.env.VITE_WISHLISTEMPTY_IMAGE}
+              style={{ borderRadius: "15px", width: "100%", maxWidth: "360px" }}
+              alt="Empty wishlist..."
+            />
+            <Stack
+              direction="row"
+              width="100%"
+              spacing={2}
+              justifyContent="center"
+              paddingTop={4}
+              paddingBottom={2}
+            >
+              <Button
+                variant="outlined"
+                className="book_room_btn"
+                sx={{ width: "20%", p: 1, borderRadius: 0 }}
+                color="inherit"
+                onClick={() => navigate(`/view-hotels`)}
+              >
+                <span>Wishtlist Now</span>
+              </Button>
+              <Button
+                variant="outlined"
+                className="book_room_btn"
+                sx={{ width: "20%", p: 1, borderRadius: 0 }}
+                color="inherit"
+                onClick={() => navigate(`/home`)}
+              >
+                <span>Back to home</span>
+              </Button>
+            </Stack>
+          </Box>
         ) : currentHotels.length > 0 ? (
           currentHotels.map((hotel) => (
             <Tooltip title="" key={hotel._id}>

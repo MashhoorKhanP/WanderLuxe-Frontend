@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-// import AddDetails from './addDetails/AddDetails';
 import AddDetails from "./addDetails/AddDetails";
 import {
   Box,
@@ -73,7 +72,6 @@ const AddRoom: React.FC = () => {
       roomDetails.roomType.length > 4 &&
       roomDetails.price &&
       roomDetails.discountPrice &&
-      roomDetails.roomsCount &&
       roomDetails.description.length > 14
     ) {
       if (!steps[0]?.completed) setComplete(0, true);
@@ -108,7 +106,6 @@ const AddRoom: React.FC = () => {
   const hotel = hotelDetails.find(
     (hotel: any) => hotel.hotelName === roomDetails.hotelName
   );
-
   const validateForm = (): boolean => {
     // Validation logic for each field
     if (roomDetails.roomType.length < 5) {
@@ -122,8 +119,7 @@ const AddRoom: React.FC = () => {
     //   toast.error('Select hotel is required')
     //   return false;
     // }
-    
-    
+
     if (
       roomDetails.price > 3500 ||
       roomDetails.price < 1500 ||
@@ -142,11 +138,11 @@ const AddRoom: React.FC = () => {
       return false;
     }
 
-    const roomsCountRegex = /^(?!0\d)\d{1,2}$/;
-    if (!roomsCountRegex.test(roomDetails.roomsCount.toString())) {
-      toast.error("Rooms count must be a value between 1 and 50");
-      return false;
-    }
+    // const roomsCountRegex = /^(?!0\d)\d{1,2}$/;
+    // if (!roomsCountRegex.test(roomDetails.roomsCount.toString())) {
+    //   toast.error("Rooms count must be a value between 1 and 50");
+    //   return false;
+    // }
 
     if (!roomDetails.maxPeople || roomDetails.maxPeople > 4) {
       toast.error("Max people count must be below 5");
@@ -157,7 +153,6 @@ const AddRoom: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    console.log("handleSubmit", roomDetails);
     if (validateForm()) {
       const result = await addRoom({
         roomType: roomDetails.roomType,
@@ -167,11 +162,11 @@ const AddRoom: React.FC = () => {
         parkingPrice: hotel.parkingPrice,
         price: roomDetails.price,
         discountPrice: roomDetails.discountPrice,
-        roomsCount: roomDetails.roomsCount,
+        roomsCount: 10,
         maxPeople: roomDetails.maxPeople,
         description: roomDetails.description,
         images: roomImages,
-        status:'Available'
+        status: "Available",
       });
 
       if (result.success) {
@@ -195,7 +190,7 @@ const AddRoom: React.FC = () => {
           hotelId: roomDetails.hotelId,
           hotelName: roomDetails.hotelName,
           amenities: roomDetails.amenities,
-          parkingPrice: hotel.parkingPrice,
+          parkingPrice: hotel.parkingPrice || 0,
           price: roomDetails.price,
           discountPrice: roomDetails.discountPrice,
           roomsCount: roomDetails.roomsCount,
@@ -224,8 +219,8 @@ const AddRoom: React.FC = () => {
   return (
     <Container>
       <Box display="flex" alignItems="center" padding={2} flexDirection="row">
-      <IconButton onClick={() => navigate(-1)}>
-          <ArrowBack/>
+        <IconButton onClick={() => navigate(-1)}>
+          <ArrowBack />
         </IconButton>
         <Typography variant="h5" fontWeight="bold">
           {location.pathname === "/admin/dashboard/rooms/add-room"

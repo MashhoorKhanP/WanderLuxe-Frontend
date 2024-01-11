@@ -1,15 +1,11 @@
-import React, { useState } from "react";
 import { Button } from "@mui/material";
-import GoogleIcon from "../../assets/googleIcon.png";
-import { useDispatch } from "react-redux";
-import {
-  setAlert,
-  setCloseLogin,
-  updateUser,
-} from "../../store/slices/userSlices/userSlice";
 import { jwtDecode } from "jwt-decode";
-import { googleregister } from "../../actions/user";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { googleregister } from "../../actions/user";
+import GoogleIcon from "../../assets/googleIcon.png";
+import { setAlert } from "../../store/slices/userSlices/userSlice";
 
 declare global {
   interface Window {
@@ -79,7 +75,7 @@ const GoogleOneTapLogin: React.FC = () => {
       dispatch(
         setAlert({ open: true, severity: "error", message: typedError.message })
       );
-      console.log(error);
+      console.error(error);
     }
   };
   return (

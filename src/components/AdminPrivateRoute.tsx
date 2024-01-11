@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { useDispatch } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AdminPrivateRoute: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const currentAdmin  = localStorage.getItem('currentAdmin');
-  console.log("current Admin", currentAdmin);
+  const currentAdmin = localStorage.getItem("currentAdmin");
   useEffect(() => {
     if (!currentAdmin) {
       navigate("/admin/login");

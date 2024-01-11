@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useEffect } from "react";
+import { Close, StarBorder } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -15,35 +15,35 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import React, { forwardRef, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../store/types";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Close, StarBorder } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import {
   Autoplay,
-  Pagination,
+  EffectCreative,
   Lazy,
   Navigation,
+  Pagination,
   Zoom,
-  EffectCreative,
 } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import "swiper/css/lazy";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "swiper/css/lazy";
 import "swiper/css/zoom";
-import "./swiper.css";
-import "./bookRoom.css";
-import { BookingDetails, HotelDetails } from "../../../store/slices/adminSlices/adminSlice";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { HotelDetails } from "../../../store/slices/adminSlices/adminSlice";
 import {
   closeRoomOverview,
   setAdditionalRoomsNeeded,
   setRoomBookings,
   setRoomId,
 } from "../../../store/slices/userSlices/roomSlice";
-import Swal from "sweetalert2";
 import { AppDispatch } from "../../../store/store";
+import { RootState } from "../../../store/types";
+import "./bookRoom.css";
+import "./swiper.css";
 
 interface Place {
   text: string;
@@ -84,25 +84,30 @@ const RoomOverviewScreen: React.FC = () => {
   const additionalRoomsNeeded = useSelector(
     (state: RootState) => state.room.additionalRoomsNeeded
   );
-  const fullHotelBookings: any = useSelector((state: RootState) => state.user.hotelBookings);
-  const roomBookings = useSelector((state:RootState) => state.room.roomBookings);
-  
-  console.log('roomBookings',roomBookings)
+  const fullHotelBookings: any = useSelector(
+    (state: RootState) => state.user.hotelBookings
+  );
+  const roomBookings = useSelector(
+    (state: RootState) => state.room.roomBookings
+  );
 
-  console.log("checkInCheckout from Global State", checkInCheckoutRange);
   const [room, setRoom] = useState<any>([]);
   const [hotel, setHotel] = useState<any>([]);
   const [place, setPlace] = useState<Place | null>(null);
   const [roomsNeeded, setRoomsNeeded] = useState<number>(
     additionalRoomsNeeded ? additionalRoomsNeeded : 1
   );
- 
+
   useEffect(() => {
     if (isOpen && roomId) {
       // Use useEffect to update room only after the component has mounted
       const roomDetails = rooms.find((room: any) => room._id === roomId);
       setRoom(roomDetails);
-      dispatch(setRoomBookings(fullHotelBookings.filter((booking:any) => booking.roomId === roomId )));
+      dispatch(
+        setRoomBookings(
+          fullHotelBookings.filter((booking: any) => booking.roomId === roomId)
+        )
+      );
       // Ensure hotel is defined before attempting to access its properties
       const selectedHotel = hotels.find(
         (selectedHotel: HotelDetails) =>
@@ -138,14 +143,13 @@ const RoomOverviewScreen: React.FC = () => {
 
   const handleClose = () => {
     dispatch(closeRoomOverview());
-    
+
     dispatch(setRoomId(""));
     // setHotel([]);
     // Dispatch an action to close the RoomOverviewScreen
     // navigate('/view-rooms');
   };
-  console.log("adultChildrencount", adultChildCount);
-  console.log("roomsNeeded", roomsNeeded);
+
   const handleBooking = () => {
     dispatch(closeRoomOverview());
     Swal.fire({
@@ -173,10 +177,8 @@ const RoomOverviewScreen: React.FC = () => {
         );
       }
     });
- };
+  };
 
-  console.log("Room from overview", room);
-  console.log("Hotel from overview", hotel);
   return (
     <Dialog
       className="dialog_container"
@@ -422,34 +424,34 @@ const RoomOverviewScreen: React.FC = () => {
               </Typography>
             </Box>
           </Stack>
-          {room.parkingPrice>0 && (
+          {room.parkingPrice > 0 && (
             <Stack direction="row">
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "100%",
-              }}
-            >
-              <Typography
-                variant="h6"
-                component={"span"}
-                sx={{ fontSize: "16px", pr: 0.5, color: "#666" }}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
               >
-                Parking fee:
-              </Typography>
-              <Typography
-                variant="h6"
-                component={"span"}
-                sx={{ fontSize: "14px" }}
-              >
-                {`₹${room.parkingPrice}`}
-              </Typography>
-            </Box>
-          </Stack>
+                <Typography
+                  variant="h6"
+                  component={"span"}
+                  sx={{ fontSize: "16px", pr: 0.5, color: "#666" }}
+                >
+                  Parking fee:
+                </Typography>
+                <Typography
+                  variant="h6"
+                  component={"span"}
+                  sx={{ fontSize: "14px" }}
+                >
+                  {`₹${room.parkingPrice}`}
+                </Typography>
+              </Box>
+            </Stack>
           )}
-          
+
           <Stack>
             <Box
               sx={{
@@ -542,14 +544,9 @@ const RoomOverviewScreen: React.FC = () => {
                   variant="outlined"
                   sx={{ width: "100%", p: 1, borderRadius: 0 }}
                   color="inherit"
-                  disabled={room.roomsCount <= roomsNeeded+1} // Disable button if rooms are not available
                   onClick={handleBooking}
                 >
-                  {room.roomsCount > roomsNeeded+1 ? (
-                    <span>Book room</span>
-                    ) : ( 
-                     <span>Room availability exceeded</span>
-                   )} 
+                  <span>Book room</span>
                 </Button>
               ))}
           </Stack>

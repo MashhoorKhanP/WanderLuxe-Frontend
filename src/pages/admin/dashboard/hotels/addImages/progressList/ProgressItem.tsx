@@ -47,7 +47,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ file }) => {
         } catch (error) {
           const typedError = error as Error;
           toast.error(typedError.message);
-          console.log(typedError);
+          console.error(typedError);
         }
       };
 
@@ -73,15 +73,13 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ file }) => {
         } catch (error) {
           const typedError = error as Error;
           toast.error(typedError.message);
-          console.log(typedError);
+          console.error(typedError);
         }
       };
 
       setImageURL(URL.createObjectURL(file));
       uploadImage();
-    }else if (
-      location.pathname === "/admin/dashboard/banners"
-    ) {
+    } else if (location.pathname === "/admin/dashboard/banners") {
       const uploadImage = async () => {
         const imageName = uuidv4() + "." + file.name.split(".").pop();
         try {
@@ -98,7 +96,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({ file }) => {
         } catch (error) {
           const typedError = error as Error;
           toast.error(typedError.message);
-          console.log(typedError);
+          console.error(typedError);
         }
       };
 

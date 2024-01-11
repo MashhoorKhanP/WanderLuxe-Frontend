@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { useDispatch } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
-import { setOpenLogin } from "../store/slices/userSlices/userSlice";
 import { toast } from "react-toastify";
+import { setOpenLogin } from "../store/slices/userSlices/userSlice";
 
 const UserPrivateRoute: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const currentUser = localStorage.getItem('currentUser');
+  const currentUser = localStorage.getItem("currentUser");
 
   useEffect(() => {
     if (!currentUser) {

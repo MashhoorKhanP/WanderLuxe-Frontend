@@ -15,7 +15,9 @@ import { updateLocation } from "../../../../../store/slices/adminSlices/adminHot
 
 const AddLocation: React.FC = () => {
   const dispatch = useDispatch();
-  const location = useSelector((state: RootState) => state.adminHotel.hotelLocation);
+  const location = useSelector(
+    (state: RootState) => state.adminHotel.hotelLocation
+  );
   const mapRef = useRef<MapRef>(null);
 
   useEffect(() => {

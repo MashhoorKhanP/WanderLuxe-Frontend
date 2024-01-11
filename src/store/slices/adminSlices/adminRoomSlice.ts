@@ -37,7 +37,7 @@ const initialState: AdminRoomState = {
     amenities: [],
     price: 0,
     discountPrice: 0,
-    roomsCount: 0,
+    roomsCount: 10,
     maxPeople: 0,
     description: "",
   },
@@ -83,7 +83,7 @@ const adminRoomSlice = createSlice({
         amenities: [],
         price: 0,
         discountPrice: 0,
-        roomsCount: 0,
+        roomsCount: 10,
         maxPeople: 0,
         description: "",
       };

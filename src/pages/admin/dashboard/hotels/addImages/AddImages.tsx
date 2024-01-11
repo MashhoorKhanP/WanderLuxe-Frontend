@@ -8,7 +8,6 @@ const AddImages: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const onDrop = useCallback((acceptedFile: File[]) => {
     setFiles(acceptedFile);
-    console.log(acceptedFile);
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -20,7 +19,9 @@ const AddImages: React.FC = () => {
         sx={{
           cursor: "pointer",
           color: "#bdbdbd",
-          background: `rgba(0, 0, 0, 0.5) url(${import.meta.env.VITE_DRAGNDROP_IMAGE}) center / 350px`,
+          background: `rgba(0, 0, 0, 0.5) url(${
+            import.meta.env.VITE_DRAGNDROP_IMAGE
+          }) center / 350px`,
           backgroundRepeat: "no-repeat",
           border: "1px dashed #ccc",
           height: "200px",

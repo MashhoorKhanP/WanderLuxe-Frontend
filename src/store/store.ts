@@ -7,7 +7,6 @@ import {
 import userReducer from "./slices/userSlices/userSlice";
 import roomReducer from "./slices/userSlices/roomSlice";
 import couponReducer from "./slices/userSlices/couponSlice";
-
 import adminReducer from "./slices/adminSlices/adminSlice";
 import adminRoomReducer from "./slices/adminSlices/adminRoomSlice";
 import adminHotelReducer from "./slices/adminSlices/adminHotelSlice";

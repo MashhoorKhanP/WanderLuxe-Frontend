@@ -18,7 +18,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store/types";
 import { setCheckInCheckOutRange } from "../../../store/slices/userSlices/roomSlice";
 
-
 const MyDatePicker: React.FC<{ isOpen: boolean; onToggle: () => void }> = ({
   isOpen,
   onToggle,
@@ -44,8 +43,7 @@ const MyDatePicker: React.FC<{ isOpen: boolean; onToggle: () => void }> = ({
       : new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
   };
 
-  const today = getTodayOrTomorrowDate()
-  console.log('today', today);
+  const today = getTodayOrTomorrowDate();
 
   const [dateRange, setDateRange] = useState([
     {
@@ -61,22 +59,28 @@ const MyDatePicker: React.FC<{ isOpen: boolean; onToggle: () => void }> = ({
       endTime: checkInCheckoutRange.endTime
         ? checkInCheckoutRange.endTime
         : checkOutTime.format("LT"),
-      numberOfNights: checkInCheckoutRange.numberOfNights? checkInCheckoutRange.numberOfNights : 1,
+      numberOfNights: checkInCheckoutRange.numberOfNights
+        ? checkInCheckoutRange.numberOfNights
+        : 1,
       key: "selection",
     },
   ]);
-  console.log("dateRange", dateRange);
-  console.log('CheckInCheckoutRange GlobalState',checkInCheckoutRange)
 
   const handleSelect = (ranges: any) => {
     const { startDate, endDate } = ranges.selection;
     let numberOfNights = dayjs(endDate).diff(dayjs(startDate), "day");
-    numberOfNights===0 ? numberOfNights=1:numberOfNights = numberOfNights;
+    numberOfNights === 0
+      ? (numberOfNights = 1)
+      : (numberOfNights = numberOfNights);
     setDateRange([
       {
         ...ranges.selection,
-        startTime: checkInCheckoutRange.startTime? checkInCheckoutRange.startTime:checkInTime.format("LT"),
-        endTime: checkInCheckoutRange.endTime? checkInCheckoutRange.endTime:checkOutTime.format("LT"),
+        startTime: checkInCheckoutRange.startTime
+          ? checkInCheckoutRange.startTime
+          : checkInTime.format("LT"),
+        endTime: checkInCheckoutRange.endTime
+          ? checkInCheckoutRange.endTime
+          : checkOutTime.format("LT"),
         numberOfNights,
         key: "selection",
       },
@@ -86,8 +90,12 @@ const MyDatePicker: React.FC<{ isOpen: boolean; onToggle: () => void }> = ({
       setCheckInCheckOutRange({
         startDate,
         endDate,
-        startTime: checkInCheckoutRange.startTime? checkInCheckoutRange.startTime:checkInTime.format('LT'),
-        endTime: checkInCheckoutRange.endTime? checkInCheckoutRange.endTime:checkOutTime.format("LT"),
+        startTime: checkInCheckoutRange.startTime
+          ? checkInCheckoutRange.startTime
+          : checkInTime.format("LT"),
+        endTime: checkInCheckoutRange.endTime
+          ? checkInCheckoutRange.endTime
+          : checkOutTime.format("LT"),
         numberOfNights,
       })
     );
@@ -107,11 +115,9 @@ const MyDatePicker: React.FC<{ isOpen: boolean; onToggle: () => void }> = ({
         setCheckInCheckOutRange({
           ...dateRange[0],
           startTime: time.format("LT"),
-          
         })
       );
     }
-
   };
 
   const handleCheckOutTimeChange = (time: dayjs.Dayjs | null) => {
@@ -128,7 +134,6 @@ const MyDatePicker: React.FC<{ isOpen: boolean; onToggle: () => void }> = ({
         setCheckInCheckOutRange({
           ...dateRange[0],
           endTime: time.format("LT"),
-        
         })
       );
     }

@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Check, Delete, Edit, InfoOutlined, Preview, Save, TocOutlined } from "@mui/icons-material";
+import { Check, Save, TocOutlined } from "@mui/icons-material";
 import { Box, CircularProgress, Fab, IconButton, Tooltip } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
-import { useNavigate } from "react-router-dom";
-import { AppDispatch } from "../../../../store/store";
-import {
-  updateCouponDetails,
-  updateUpdatedCoupon,
-} from "../../../../store/slices/adminSlices/adminCouponSlice";
-import { deleteCoupon, updateCoupon } from "../../../../actions/coupon";
 import { green } from "@mui/material/colors";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 import { updateBooking } from "../../../../actions/booking";
+import { AppDispatch } from "../../../../store/store";
 
 interface BookingActionsProps {
   params: any;
@@ -34,22 +27,19 @@ const BookingActions: React.FC<BookingActionsProps> = ({
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    _id,
-  status,
-  } = params.row;
-  console.log('params',params);
+  const { _id, status } = params.row;
   const handleSubmit = async () => {
     setLoading(true);
     setTimeout(async () => {
-      const { userId,status } = params.row;
+      const { userId, status,roomId } = params.row;
       try {
         // Assuming updateUser is an asynchronous action (thunk)
         const result = await updateBooking({
           updatedBooking: {
             _id: _id,
-            userId:userId,
-            status:status,
+            userId: userId,
+            roomId:roomId,
+            status: status,
           },
         });
         if (result) {
@@ -179,7 +169,7 @@ const BookingActions: React.FC<BookingActionsProps> = ({
       <Box>
         <Tooltip title="View more details">
           <IconButton onClick={() => handleViewMoreDetails()}>
-            <TocOutlined sx={{fontSize:'35px'}}/>
+            <TocOutlined sx={{ fontSize: "35px" }} />
           </IconButton>
         </Tooltip>
         {/* <Tooltip title='Delete this coupon'>

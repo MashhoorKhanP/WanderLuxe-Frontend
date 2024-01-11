@@ -1,32 +1,31 @@
-.messenger{
+.messenger {
   height: calc(100vh - 100px);
-  display:flex;
+  display: flex;
   background-color: #303030;
 }
 
-.chatMenu{
-  flex:3.5;
+.chatMenu {
+  flex: 3.5;
 }
 
-.chatMenuInput{
+.chatMenuInput {
   width: 90%;
   padding: 10px 0;
-  
 }
 
-.chatBox{
-  flex:5.5;
+.chatBox {
+  flex: 5.5;
   background-color: #414141;
 }
 
-.chatBoxWrapper{
+.chatBoxWrapper {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
 }
 
-.chatBoxTop{
+.chatBoxTop {
   height: auto;
   overflow-y: scroll;
   padding-right: 10px;
@@ -46,9 +45,9 @@
   color: #333333;
   -webkit-appearance: none; /* Remove default button styling for Chrome, Safari, and Opera */
   appearance: none; /* Remove default button styling for Firefox, Edge, and IE */
- }
+}
 
- .goDownButtonUser {
+.goDownButtonUser {
   width: 28px;
   height: 28px;
   border: none;
@@ -62,48 +61,48 @@
   color: #333333;
   -webkit-appearance: none; /* Remove default button styling for Chrome, Safari, and Opera */
   appearance: none; /* Remove default button styling for Firefox, Edge, and IE */
- }
- 
+}
 
-.chatBoxBottom{
+.chatBoxBottom {
   margin-top: 5px;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-
 }
 
-.chatMessageInput{
+.chatMessageInput {
   width: 80%;
   height: 50px;
   padding: 14px;
-  color:black;
+  color: black;
   overflow-y: hidden;
   border-radius: 10px;
   outline: none;
-  resize: none;;
+  resize: none;
 }
 
-.chatSubmitButton{
+.chatSubmitButton {
   width: 49px;
   height: 49px;
-  border:none;
-  border-radius:50%;
+  border: none;
+  border-radius: 50%;
   cursor: pointer;
   background-color: teal;
   color: #ffffff;
 }
 
-.chatOnline{
-  flex:3;
+.chatOnline {
+  flex: 3;
 }
 
-.chatMenuWrapper,.chatBoxWrapper,.chatOnlineWrapper {
+.chatMenuWrapper,
+.chatBoxWrapper,
+.chatOnlineWrapper {
   padding: 10px;
   height: 100%;
 }
 
-.noConversationText{
+.noConversationText {
   position: absolute;
   top: 5%;
   font-size: 30px;
@@ -111,7 +110,7 @@
   cursor: pointer;
 }
 
-.spinnerGif{
+.spinnerGif {
   width: 50px;
   height: 50px;
   object-fit: cover;
@@ -135,4 +134,8 @@
 .noMessagesText {
   color: #ffffff;
   padding: 10px;
+}
+
+.activeConversation {
+  background-color: rgb(69 69 69);
 }

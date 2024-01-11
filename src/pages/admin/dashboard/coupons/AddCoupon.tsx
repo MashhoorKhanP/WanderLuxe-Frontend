@@ -1,5 +1,12 @@
 import { Add, ArrowBack, Cancel, Sync } from "@mui/icons-material";
-import { Box, Button, Container, IconButton, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AddDetails from "./addDetails/AddDetails";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -31,10 +38,10 @@ const AddCoupon: React.FC = () => {
   );
   const [showSubmit, setShowSubmit] = useState(false);
   let isMaxDiscountValid: any;
-  const [isEditCoupon, setIsEditCoupon]= useState(false);
+  const [isEditCoupon, setIsEditCoupon] = useState(false);
 
   useEffect(() => {
-    if(location.pathname ==='/admin/dashboard/coupons/edit-coupon'){
+    if (location.pathname === "/admin/dashboard/coupons/edit-coupon") {
       setIsEditCoupon(true);
     }
     const isPercentageDiscount = couponDetails.discountType === "percentage";
@@ -66,7 +73,7 @@ const AddCoupon: React.FC = () => {
       return false;
     }
 
-    if(isEditCoupon===false){
+    if (isEditCoupon === false) {
       const isDuplicateCouponCode = coupons.some(
         (coupon: Coupon) => coupon.couponCode === couponDetails.couponCode
       );
@@ -74,7 +81,6 @@ const AddCoupon: React.FC = () => {
         toast.error("Coupon code must be unique");
         return false;
       }
-      
     }
 
     // if (!roomDetails.amenities.length) {
@@ -186,8 +192,8 @@ const AddCoupon: React.FC = () => {
   return (
     <Container>
       <Box display="flex" alignItems="center" padding={2} flexDirection="row">
-      <IconButton onClick={() => navigate(-1)}>
-          <ArrowBack/>
+        <IconButton onClick={() => navigate(-1)}>
+          <ArrowBack />
         </IconButton>
         <Typography variant="h5" fontWeight="bold">
           {location.pathname === "/admin/dashboard/coupons/add-coupon"

@@ -1,10 +1,4 @@
-import React, { forwardRef, useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { RootState } from "../../../store/types";
-import {
-  closeWalletHistory,
-} from "../../../store/slices/userSlices/userSlice";
+import { Close } from "@mui/icons-material";
 import {
   Box,
   Container,
@@ -16,17 +10,18 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { getRooms } from "../../../actions/room";
-import { updateRooms } from "../../../store/slices/adminSlices/adminRoomSlice";
-import { RoomDetails } from "../../../store/slices/adminSlices/adminSlice";
-import { Close } from "@mui/icons-material";
-import { setRoomId } from "../../../store/slices/userSlices/roomSlice";
-import { AppDispatch } from "../../../store/store";
-import dayjs from "dayjs";
-import { DataGrid, GridColDef, gridClasses } from "@mui/x-data-grid";
 import { grey } from "@mui/material/colors";
-import { current } from "@reduxjs/toolkit";
+import { DataGrid, GridColDef, gridClasses } from "@mui/x-data-grid";
 import moment from "moment";
+import React, { forwardRef, useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { RoomDetails } from "../../../store/slices/adminSlices/adminSlice";
+import {
+  closeWalletHistory,
+} from "../../../store/slices/userSlices/userSlice";
+import { AppDispatch } from "../../../store/store";
+import { RootState } from "../../../store/types";
 
 const Transition = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
   const transitionSpeed = 500;
@@ -61,7 +56,6 @@ const WalletHistoryScreen: React.FC = () => {
     (state: RootState) => state.user.filteredRooms
   );
 
-  console.log("rooms: ", rooms);
   useEffect(() => {
     if (isOpen && bookingId) {
       const bookingDetails = bookings.find(

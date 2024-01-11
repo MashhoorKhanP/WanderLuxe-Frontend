@@ -96,7 +96,6 @@ const roomSlice = createSlice({
     builder.addCase(getRooms.fulfilled, (state, action) => {
       // state.loading = false;
       const rooms = action.payload;
-      console.log("rooms", rooms);
       if (rooms && rooms.message) {
         // Don't directly modify state.currentUser, create a new object
         state.rooms = rooms.message;

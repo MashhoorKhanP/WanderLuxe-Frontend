@@ -30,7 +30,7 @@ const Coupons: React.FC<CouponsProps> = ({ setSelectedLink, link }) => {
   const coupons = useSelector((state: RootState) => state.adminCoupon.coupons);
 
   const [data, setData] = useState<boolean>(true);
-  
+
   useEffect(() => {
     setSelectedLink(link);
   }, [setSelectedLink, link]);
@@ -175,7 +175,7 @@ const Coupons: React.FC<CouponsProps> = ({ setSelectedLink, link }) => {
             <Typography
               variant="h4"
               component="h4"
-              sx={{ textAlign: "center", mt: 3, mb: 3 }}
+              sx={{ textAlign: "center", mt: 0, mb: 3 }}
             >
               Manage Coupons
             </Typography>

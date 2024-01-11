@@ -1,15 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { Delete, Edit, Preview } from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
 import { Box, IconButton, Tooltip } from "@mui/material";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../store/types";
-import { deleteHotel, getHotels } from "../../../../actions/hotel";
-import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import { deleteHotel } from "../../../../actions/hotel";
+import { RootState } from "../../../../store/types";
 
 import { useNavigate } from "react-router-dom";
+import {
+  updateHotelDetails,
+  updateHotelImages,
+  updateLocation,
+  updateUpdatedHotel,
+} from "../../../../store/slices/adminSlices/adminHotelSlice";
 import { AppDispatch } from "../../../../store/store";
-import { updateHotelDetails, updateHotelImages, updateLocation, updateUpdatedHotel } from "../../../../store/slices/adminSlices/adminHotelSlice";
 
 interface HotelsActionsProps {
   params: any;
@@ -17,7 +22,6 @@ interface HotelsActionsProps {
 }
 
 const HotelsActions: React.FC<HotelsActionsProps> = ({ params, setData }) => {
-  console.log("HotelsActionsParams.row", params.row);
   const {
     _id,
     longitude,

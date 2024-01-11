@@ -36,7 +36,6 @@ const Home: React.FC = () => {
       socket.current = io(import.meta.env.VITE_SERVER_URL);
       socket.current.emit('addUser',(currentUser?._id))
       socket.current.on('responseIsBlocked',(data:{isBlocked:boolean})=>{
-        console.log('dataSocket',data);
         if(data.isBlocked){
          dispatch(logoutUser());
         }

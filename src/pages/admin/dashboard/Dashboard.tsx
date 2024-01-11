@@ -25,11 +25,9 @@ import { Socket, io } from "socket.io-client";
 import { getUsers } from "../../../actions/admin";
 
 const drawerWidth = 240;
-
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
-
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -57,19 +55,19 @@ const Dashboard: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(true);
   const [title, setTitle] = useState("Dashboard");
-  
+
   const socket = useRef<Socket | any>();
-  useEffect(()=>{
-    if(!socket.current && currentAdmin){
-      console.log('Socket from Dashboard',socket.current);
-      socket.current = io(import.meta.env.VITE_SERVER_URL)
-      socket.current.emit('addUser',(currentAdmin?._id))
-      socket.current.on('welcome', (message:any) => {
-        console.log('SocketIOmessage', message)
-      })
+  useEffect(() => {
+    if (!socket.current && currentAdmin) {
+        console.log("Socket from Dashboard", socket.current);
+        socket.current = io(import.meta.env.VITE_SERVER_URL);
+        socket.current.emit("addUser", currentAdmin?._id);
+        socket.current.on("welcome", (message: any) => {
+        console.log("SocketIOmessage", message);
+      });
     }
-  },[socket, currentAdmin])
-  
+  }, [socket, currentAdmin]);
+
   const darkTheme = useMemo(
     () =>
       createTheme({
@@ -96,51 +94,67 @@ const Dashboard: React.FC = () => {
     const rooms = dispatch(getRooms() as any);
     dispatch(updateRooms({ rooms }));
     const coupons = dispatch(getCoupons() as any);
-    dispatch(updateCoupons({coupons}))
-    dispatch(getUsers() as any)
+    dispatch(updateCoupons({ coupons }));
+    dispatch(getUsers() as any);
   }, [dispatch]);
 
   return (
-    <ThemeProvider theme={darkTheme}>
-      <Box sx={{ display: "flex" }}>
-        <CssBaseline />
-        <AppBar position="fixed" open={open}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{
-                marginRight: 5,
-                ...(open && { display: "none" }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            {/* <Tooltip title='Home'>
+    <>
+      <ThemeProvider theme={darkTheme}>
+        <Box
+          sx={{
+            display: "flex",
+            backgroundColor: !dark ? "#ffffff" : "#000000",
+          }}
+        >
+          <CssBaseline />
+          <AppBar
+            position="fixed"
+            open={open}
+            sx={{ backgroundColor: !dark ? "#9f9f9f" : "#000000", padding: 1 }}
+          >
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                sx={{
+                  marginRight: 5,
+                  ...(open && { display: "none" }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              {/* <Tooltip title='Home'>
             <IconButton sx={{mr:1}} onClick={()=>navigate('/admin/dashboard')}>    
               <Home/>
             </IconButton>
           </Tooltip> */}
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{ flexGrow: 1 }}
-            >
-              {title}
-            </Typography>
-            <Tooltip title={dark ? "Light Mode" : "Dark Mode"}>
-              <IconButton onClick={() => setDark(!dark)}>
-                {dark ? <Brightness7 /> : <Brightness4Sharp />}
-              </IconButton>
-            </Tooltip>
-          </Toolbar>
-        </AppBar>
-        <SideList socket={socket.current} open={open}  setOpen={setOpen}  updateTitle={setTitle} />
-      </Box>
-    </ThemeProvider>
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ flexGrow: 1 }}
+              >
+                {title}
+              </Typography>
+              <Tooltip title={dark ? "Light Mode" : "Dark Mode"}>
+                <IconButton onClick={() => setDark(!dark)}>
+                  {dark ? <Brightness7 /> : <Brightness4Sharp />}
+                </IconButton>
+              </Tooltip>
+            </Toolbar>
+          </AppBar>
+          <SideList
+            socket={socket.current}
+            open={open}
+            setOpen={setOpen}
+            updateTitle={setTitle}
+          />
+        </Box>
+      </ThemeProvider>
+    </>
   );
 };
 

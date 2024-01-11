@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import fetchData from "./utils/fetchData";
 import { AxiosError } from "axios";
 import errorHandle from "../components/hooks/errorHandler";
+import fetchData from "./utils/fetchData";
 
 interface LoginRequestBody {
   email: string;

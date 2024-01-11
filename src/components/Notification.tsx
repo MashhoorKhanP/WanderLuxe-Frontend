@@ -7,7 +7,6 @@ import { RootState } from "../store/types";
 const Notification: React.FC = () => {
   const dispatch = useDispatch();
   const alert = useSelector((state: RootState) => state.user.alert);
-  console.log("alert", alert);
   const handleClose = (
     event: React.SyntheticEvent | MouseEvent,
     reason?: string

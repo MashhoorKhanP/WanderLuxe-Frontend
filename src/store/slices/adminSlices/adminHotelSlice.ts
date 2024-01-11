@@ -1,10 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import errorHandle from "../../../components/hooks/errorHandler";
 import { AxiosError } from "axios";
-import { getUsers, loginAdmin } from "../../../actions/admin";
 import { toast } from "react-toastify";
-import { addHotel, getHotels, updateHotel } from "../../../actions/hotel";
-import { getRooms } from "../../../actions/room";
+import { getHotels } from "../../../actions/hotel";
+import errorHandle from "../../../components/hooks/errorHandler";
 
 interface AdminHotelState {
   adminLoading: boolean;

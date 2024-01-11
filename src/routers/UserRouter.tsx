@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import Home from "../pages/User";
 import { useDispatch } from "react-redux";
-import { logoutUser, updateUser } from "../store/slices/userSlices/userSlice";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import UserPrivateRoute from "../components/UserPrivateRoute";
 import PageNotFound from "../components/common/NotFound";
+import Home from "../pages/User";
+import { updateUser } from "../store/slices/userSlices/userSlice";
 
 interface User {
   _id: string;

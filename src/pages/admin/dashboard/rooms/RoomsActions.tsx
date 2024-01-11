@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Delete, Edit, Preview } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import { Box, IconButton, Tooltip } from "@mui/material";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../../store/types";
-import { getHotels } from "../../../../actions/hotel";
-import Swal from "sweetalert2";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { AppDispatch } from "../../../../store/store";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import { deleteRoom } from "../../../../actions/room";
 import {
   updateRoomDetails,
   updateRoomImages,
   updateUpdatedRoom,
 } from "../../../../store/slices/adminSlices/adminRoomSlice";
+import { AppDispatch } from "../../../../store/store";
+import { RootState } from "../../../../store/types";
 
 interface RoomsActionsProps {
   params: any;
@@ -21,7 +20,6 @@ interface RoomsActionsProps {
 }
 
 const RoomsActions: React.FC<RoomsActionsProps> = ({ params, setData }) => {
-  
   const {
     _id,
     roomType,
@@ -69,7 +67,6 @@ const RoomsActions: React.FC<RoomsActionsProps> = ({ params, setData }) => {
         description,
       })
     );
-    console.log("reached to navigate");
     navigate("/admin/dashboard/rooms/edit-room");
   };
 

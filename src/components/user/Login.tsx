@@ -46,7 +46,7 @@ const Login: React.FC = () => {
   const handleForgotPassword = () => {
     dispatch(setCloseLogin());
     dispatch(openForgotPasswordScreen());
-  }
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event?.preventDefault();
@@ -132,8 +132,6 @@ const Login: React.FC = () => {
       );
       const resultUnwrapped = result.unwrap();
       resultUnwrapped.then((thenResult) => {
-        console.log("success", thenResult);
-
         // Check if thenResult is not null or undefined
         if (thenResult != null) {
           setIsRegister(!isRegister);
@@ -341,14 +339,19 @@ const Login: React.FC = () => {
           >
             {isRegister ? "Login" : "Register"}
           </Button>
-          
-          {!isRegister &&
-          <Button
-            onClick={handleForgotPassword}
-            sx={{ marginTop: "5px",textTransform:'capitalize' }}
-          >
-            <i className="bi bi-shield-lock" style={{paddingRight:'2px',color:'black'}}></i>Forgot Password?
-          </Button>}
+
+          {!isRegister && (
+            <Button
+              onClick={handleForgotPassword}
+              sx={{ marginTop: "5px", textTransform: "capitalize" }}
+            >
+              <i
+                className="bi bi-shield-lock"
+                style={{ paddingRight: "2px", color: "black" }}
+              ></i>
+              Forgot Password?
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </>

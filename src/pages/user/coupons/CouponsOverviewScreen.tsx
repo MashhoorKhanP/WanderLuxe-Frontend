@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useEffect } from "react";
+import { Close, ContentPasteOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -8,22 +8,20 @@ import {
   IconButton,
   Slide,
   SlideProps,
-  Stack,
   Toolbar,
   Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
+import React, { forwardRef, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../store/types";
-import { useNavigate } from "react-router-dom";
-import { Close, ContentPasteOutlined } from "@mui/icons-material";
 import { getCoupons } from "../../../actions/coupon";
-import { AppDispatch } from "../../../store/store";
 import {
   closeCouponOverview,
   setCoupons,
 } from "../../../store/slices/userSlices/couponSlice";
 import { setAlert } from "../../../store/slices/userSlices/userSlice";
+import { AppDispatch } from "../../../store/store";
+import { RootState } from "../../../store/types";
 
 export interface Coupon {
   _id: string;
@@ -50,7 +48,6 @@ const Transition = forwardRef<HTMLDivElement, SlideProps>((props, ref) => {
 });
 
 const CouponsOverviewScreen: React.FC = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
   const isOpen = useSelector(

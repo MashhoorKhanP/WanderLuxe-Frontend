@@ -1,11 +1,4 @@
-import React, { useRef, useState, ChangeEvent, FormEvent } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/types";
-import {
-  setAlert,
-  updateUserProfile,
-} from "../../store/slices/userSlices/userSlice";
-import { updateProfile } from "../../actions/user";
+import { ArrowBack, Close, Edit, PasswordOutlined } from "@mui/icons-material";
 import {
   Avatar,
   Backdrop,
@@ -20,17 +13,16 @@ import {
   TextField,
   Tooltip,
 } from "@mui/material";
-import {
-  ArrowBack,
-  Close,
-  Edit,
-  FavoriteBorder,
-  Grading,
-  Key,
-  PasswordOutlined,
-} from "@mui/icons-material";
+import React, { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { updateProfile } from "../../actions/user";
+import {
+  setAlert,
+  updateUserProfile,
+} from "../../store/slices/userSlices/userSlice";
+import { RootState } from "../../store/types";
 
 interface Profile {
   open?: boolean;
@@ -151,7 +143,6 @@ const Profile: React.FC = () => {
       if (result) {
         navigate("/profile");
         dispatch(updateUserProfile({ ...result, open: false }));
-        console.log("updated profile", result);
         setIsEditMode(false);
         toast.success("Profile updated successfully");
       }

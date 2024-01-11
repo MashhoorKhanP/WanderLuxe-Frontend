@@ -34,11 +34,10 @@ interface GoogleRequestBody {
 }
 
 interface OTP {
-  otp:{
+  otp: {
     otp: number;
     forgotPassword: any;
-  }
-  
+  };
 }
 
 interface LoginRequestBody {
@@ -79,12 +78,11 @@ interface ForgotPasswordData {
   };
 }
 
-interface AddMoneyToWalletDetails{
-  addMoneyToWalletDetails : {
-    userId:string,
-    amount:number
-  }
-
+interface AddMoneyToWalletDetails {
+  addMoneyToWalletDetails: {
+    userId: string;
+    amount: number;
+  };
 }
 
 //Async thunk for user register instead fetchData.ts
@@ -124,12 +122,14 @@ export const googleregister = createAsyncThunk(
 
 export const verifyUser = createAsyncThunk(
   "user/verifyUser",
-  async (otp:OTP,thunkAPI) => {
+  async (otp: OTP, thunkAPI) => {
     try {
       const state = thunkAPI.getState() as RootState;
-      console.log('isforgotPasswordquery',otp.otp.forgotPassword)
+      console.log("isforgotPasswordquery", otp.otp.forgotPassword);
       const result = await fetchData({
-        url: import.meta.env.VITE_SERVER_URL + `/api/user/verify-otp?forgotPassword=${otp.otp.forgotPassword}`,
+        url:
+          import.meta.env.VITE_SERVER_URL +
+          `/api/user/verify-otp?forgotPassword=${otp.otp.forgotPassword}`,
         method: "POST",
         body: { otp: otp.otp },
       });
@@ -154,7 +154,7 @@ export const loginUser = createAsyncThunk(
       // If no error message, return the result
       return result;
     } catch (error) {
-      const typedError = error as Error | AxiosError;
+      const typedError = error as Error | AxiosError | any;
 
       console.error("Error logging in:", typedError);
       errorHandle(typedError.response.data.result);
@@ -317,31 +317,30 @@ export const postAddMoneyToWalletRequest = createAsyncThunk(
       method: "POST",
       body: addMoneyToWalletDetails,
     });
-    console.log('result of postPaymentRequest', result);
+    console.log("result of postPaymentRequest", result);
     // Check for errors in the result and throw if necessary
     if (result?.data && result.data.message) {
       throw new Error(result.data.message);
     }
-    if(result.message.url){
+    if (result.message.url) {
       window.location.href = result.message.url;
     }
-    
   }
 );
 
-export const getUpdatedUser  = createAsyncThunk(
+export const getUpdatedUser = createAsyncThunk(
   "user/updatedUser",
-  async (userId:string) => {
+  async (userId: string) => {
     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + `/api/user/updated-user/${userId}`,
       method: "GET",
-      body:{},
+      body: {},
     });
-    console.log('result of updatedUser', result);
+    console.log("result of updatedUser", result);
     // Check for errors in the result and throw if necessary
     if (result?.data && result.data.message) {
       throw new Error(result.data.message);
     }
     return result;
-  } 
-  );
+  }
+);

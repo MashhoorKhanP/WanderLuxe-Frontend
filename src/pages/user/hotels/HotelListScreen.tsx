@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from "react";
+import {
+  ArrowBack,
+  BedOutlined,
+  Favorite,
+  FavoriteBorder,
+  StarBorder,
+} from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -15,32 +21,25 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  ArrowBack,
-  BedOutlined,
-  Favorite,
-  FavoriteBorder,
-  StarBorder,
-} from "@mui/icons-material";
-import { RootState } from "../../../store/types";
-import PriceSlider from "../../../components/user/searchbar/PriceSlider";
-import SearchBar from "../../../components/common/SearchBar";
-import { getHotels } from "../../../actions/hotel";
-import { AppDispatch } from "../../../store/store";
-import {
-  filterHotels,
-  setHotels,
-  setOpenLogin,
-  updateUser,
-} from "../../../store/slices/userSlices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { getHotels } from "../../../actions/hotel";
 import { addRemoveFromWishlist } from "../../../actions/user";
+import SearchBar from "../../../components/common/SearchBar";
+import PriceSlider from "../../../components/user/searchbar/PriceSlider";
 import {
   setAdultChildrenOptions,
   setCheckInCheckOutRange,
 } from "../../../store/slices/userSlices/roomSlice";
+import {
+  filterHotels,
+  setHotels,
+  setOpenLogin,
+} from "../../../store/slices/userSlices/userSlice";
+import { AppDispatch } from "../../../store/store";
+import { RootState } from "../../../store/types";
 
 const HotelListScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -148,9 +147,14 @@ const HotelListScreen: React.FC = () => {
 
   return (
     <Container>
-      <Box display="flex" alignItems="center" paddingTop={4} flexDirection="row">
-      <IconButton onClick={() => navigate('/home')}>
-            <ArrowBack/>
+      <Box
+        display="flex"
+        alignItems="center"
+        paddingTop={4}
+        flexDirection="row"
+      >
+        <IconButton onClick={() => navigate("/home")}>
+          <ArrowBack />
         </IconButton>
         <Typography variant="h5" fontWeight="bold">
           Hotels
@@ -207,7 +211,7 @@ const HotelListScreen: React.FC = () => {
                     subtitle={`𖡡 ${hotel.location}`}
                     actionIcon={
                       <>
-                        <Avatar src={hotel.dropImage} sx={{ m: "10px" }} />
+                        <Avatar src={hotel.dropImage} sx={{ m: "14px",width:'35px',height:'35px' }} />
                         <Tooltip
                           title={
                             currentUser?.wishlist?.includes(hotel._id)
