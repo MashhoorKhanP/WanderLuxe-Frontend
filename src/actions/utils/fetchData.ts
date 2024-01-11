@@ -1,9 +1,3 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  PayloadAction,
-  ThunkAction,
-} from "@reduxjs/toolkit";
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import errorHandle from "../../components/hooks/errorHandler";
 
@@ -57,7 +51,7 @@ export const fetchData = async ({
     if (data.result === null || data.result === undefined) {
       return data;
     }
-    return data.result;
+    return data.result as any;
   } catch (error) {
     // Use the errorHandle function to handle the error
     const typedError = error as AxiosError | any;
