@@ -97,7 +97,7 @@ export const registerUser = createAsyncThunk(
       body: userData,
     });
     // Handle the result as needed
-    return result;
+    return result as any;
   }
 );
 
@@ -116,7 +116,7 @@ export const googleregister = createAsyncThunk(
       body: userData,
     });
     // Handle the result as needed
-    return result;
+    return result as any;
   }
 );
 
@@ -134,7 +134,7 @@ export const verifyUser = createAsyncThunk(
         body: { otp: otp.otp },
       });
 
-      return result;
+      return result as any;
     } catch (error) {
       console.error("Error verifying OTP:", error);
       throw error;
@@ -152,7 +152,7 @@ export const loginUser = createAsyncThunk(
         throw new Error(result.data.message);
       }
       // If no error message, return the result
-      return result;
+      return result as any;
     } catch (error) {
       const typedError = error as Error | AxiosError | any;
 
@@ -190,7 +190,7 @@ export const resendOTP =
         })
       );
 
-      return result;
+      return result as any;
     } catch (error) {
       dispatch(resendOTPRejected());
       dispatch(
@@ -229,9 +229,9 @@ export const updateProfile = async ({
         body: { ...body, profileImage },
       });
 
-      if (result?.data && result.data.message) {
+      if (result?.data as any && result.data.message as any) {
         // If there is an error message, throw an error to trigger the rejected action
-        throw new Error(result.data.message);
+        throw new Error(result.data.message as any);
       }
       // If no error message, return the result
       return result;
@@ -244,7 +244,7 @@ export const updateProfile = async ({
         method: "PATCH",
         body: { ...body },
       });
-      return result;
+      return result as any;
     }
   } catch (error) {
     const typedError = error as Error | AxiosError | any;
