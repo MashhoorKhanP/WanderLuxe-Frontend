@@ -225,7 +225,7 @@ const HomeScreen: React.FC = () => {
                   // Add this to ensure the line break is displayed correctly
               }}
               >
-              {addLineBreakBeforeLastWord(String(banner?.text))}
+              {addLineBreakBeforeLastWord(banner?.text ? String(banner?.text) : 'Welcome to WanderLuxe Hotels!')}
             </Typography>
           
         </Box>
