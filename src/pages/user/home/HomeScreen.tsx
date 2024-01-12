@@ -35,17 +35,19 @@ const HomeScreen: React.FC = () => {
   useEffect(() => {
     if (!bannerImages.length) {
       dispatch(getBanners());
+      dispatch(getHotels());
+
     }
   }, [dispatch]);
 
   const handleFindHotels = () => {
-    navigate("/find-hotels");
-    dispatch(getHotels());
+    dispatch(getHotels()).then(() => navigate("/find-hotels"));
+    
   };
 
   const handleViewHotels = () => {
-    navigate("/view-hotels");
-    dispatch(getRooms());
+    dispatch(getRooms()).then(() => navigate("/view-hotels"));
+    
   };
 
   const CarouselSection = ({ images }: any) => {
@@ -90,18 +92,11 @@ const HomeScreen: React.FC = () => {
         } as React.CSSProperties}
         {...({ lazy: true } as CustomSwiperOptions)}
       >
-        {images ?
-        images.map((image: string, index: number) => (
+        {images.map((image: string, index: number) => (
           <SwiperSlide key={index}>
             <img src={image} alt={`Carousel Image ${index + 1}`} style={{ width: '100%', objectFit: "cover", overflow: 'hidden', height: '100vh' }} />
           </SwiperSlide>
-        ))
-        :
-        <SwiperSlide>
-            <img src={"https://images.unsplash.com/photo-1561501900-3701fa6a0864?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bHV4dXJ5JTIwaG90ZWx8ZW58MHx8MHx8fDA%3D"} alt={`Carousel Image`} style={{ width: '100%', objectFit: "cover", overflow: 'hidden', height: '100vh' }} />
-        </SwiperSlide>
-      }
-
+        ))}
       </Swiper>
     );
   };

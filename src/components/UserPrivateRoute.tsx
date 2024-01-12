@@ -11,8 +11,8 @@ const UserPrivateRoute: React.FC = () => {
 
   useEffect(() => {
     if (!currentUser) {
-      navigate("/");
       dispatch(setOpenLogin(true));
+      navigate("/");
       toast.warning("Please log in to your account to perform this action!");
     }
   }, [currentUser, dispatch, navigate]);

@@ -20,8 +20,8 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const handleOpenLogin = () => {
-    navigate("/login-register");
     dispatch(setOpenLogin(true));
+    navigate("/login-register");
   };
 
   return (

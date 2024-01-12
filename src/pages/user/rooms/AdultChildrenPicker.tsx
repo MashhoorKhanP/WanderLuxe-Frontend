@@ -25,22 +25,10 @@ const AdultChildrenPicker: React.FC = () => {
     children: adultChildOptions.children ? adultChildOptions.children : 0,
   });
 
-  if (adultChildOptions.adult + adultChildOptions.children === 4) {
-    dispatch(
-      setAlert({
-        open: true,
-        severity: "warning",
-        message: "Max People capacity reached",
-      })
-    );
-  }
   const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Dispatch the action with the updated count
-    dispatch(setAdultChildren(options.adult + options.children));
-    dispatch(setAdultChildrenOptions(options));
-
+    
     // Event listener for clicking outside the component
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -58,13 +46,20 @@ const AdultChildrenPicker: React.FC = () => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [options.adult, options.children, dispatch]);
+  }, []);
+
+  useEffect(() => {
+    // Dispatch the action with the updated count
+    dispatch(setAdultChildren(options.adult + options.children));
+    dispatch(setAdultChildrenOptions(options));
+  }, [options.adult, options.children]);
 
   const handleOption = (name: keyof Options, operation: "i" | "d") => {
     setOptions((prev) => ({
       ...prev,
       [name]: operation === "i" ? options[name] + 1 : options[name] - 1,
     }));
+    
   };
 
   return (

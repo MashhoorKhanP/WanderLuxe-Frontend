@@ -27,6 +27,7 @@ import {
 } from "../../../store/slices/userSlices/roomSlice";
 import {
   filterRooms,
+  setAlert,
   setRooms,
 } from "../../../store/slices/userSlices/userSlice";
 import { AppDispatch, RootState } from "../../../store/store";
@@ -69,7 +70,7 @@ const RoomListScreen: React.FC = () => {
       const fetchRooms = async () => {
         const response = await dispatch(getRooms());
         setAllRooms(response.payload.message);
-        dispatch(setRooms(response.payload.message)); // assuming getHotels returns { payload: hotels }
+        dispatch(setRooms(response.payload.message));
       };
       fetchRooms();
     }
@@ -87,14 +88,9 @@ const RoomListScreen: React.FC = () => {
     }
     setCurrentPage(1);
     setHotelBookings(fullHotelBookings);
-  }, [
-    dispatch,
-    allRooms,
-    hotelBookings,
-    rooms,
-    adultChildOptions,
-    checkInCheckoutRange,
-  ]); //check this video:https://www.youtube.com/fwatch?v=puP_cXa_Cuo&t=783s ,Check chatGpt last prompt
+    
+
+}, [dispatch, allRooms, hotelBookings, rooms, adultChildOptions, checkInCheckoutRange]);
 
   const indexOfLastRooms = currentPage * roomsPerPage;
   const indexOfFirstRooms = indexOfLastRooms - roomsPerPage;
