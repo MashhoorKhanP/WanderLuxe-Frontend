@@ -37,7 +37,7 @@ export const getBanners = createAsyncThunk(
   async () => {
     try {
       const result = await fetchData({
-        url: import.meta.env.VITE_SERVER_URL + "/api/user/find-banners",
+        url: `${import.meta.env.VITE_SERVER_URL}/api/user/find-banners`,
         method: "GET",
       });
       if (result?.data && result.data.message) {
