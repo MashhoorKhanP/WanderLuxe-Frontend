@@ -92,7 +92,7 @@ const HomeScreen: React.FC = () => {
       >
         {images.map((image: string, index: number) => (
           <SwiperSlide key={index}>
-            <img src={image} alt={`Carousel Image ${index + 1}`} style={{ width: '100%', objectFit: "cover", overflow: 'hidden', height: '100vh' }} />
+            <img src={image !== undefined ? image : import.meta.env.VITE_LOADING_IMAGE} alt={`Carousel Image ${index + 1}`} style={{ width: '100%', objectFit: "cover", overflow: 'hidden', height: '100vh' }} />
           </SwiperSlide>
         ))}
       </Swiper>
