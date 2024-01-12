@@ -90,11 +90,16 @@ const HomeScreen: React.FC = () => {
         } as React.CSSProperties}
         {...({ lazy: true } as CustomSwiperOptions)}
       >
-        {images.map((image: string, index: number) => (
+        {images ?
+        images.map((image: string, index: number) => (
           <SwiperSlide key={index}>
-            <img src={image ? image : 'https://images.unsplash.com/photo-1561501900-3701fa6a0864?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bHV4dXJ5JTIwaG90ZWx8ZW58MHx8MHx8fDA%3D'} alt={`Carousel Image ${index + 1}`} style={{ width: '100%', objectFit: "cover", overflow: 'hidden', height: '100vh' }} />
+            <img src={image} alt={`Carousel Image ${index + 1}`} style={{ width: '100%', objectFit: "cover", overflow: 'hidden', height: '100vh' }} />
           </SwiperSlide>
-        ))}
+        ))
+        :
+        <img src={"https://images.unsplash.com/photo-1561501900-3701fa6a0864?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bHV4dXJ5JTIwaG90ZWx8ZW58MHx8MHx8fDA%3D"} alt={`Carousel Image`} style={{ width: '100%', objectFit: "cover", overflow: 'hidden', height: '100vh' }} />
+      }
+
       </Swiper>
     );
   };
