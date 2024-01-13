@@ -105,17 +105,17 @@ const MapScreen: React.FC = () => {
   }, [hotels, GeocoderInput]);
 
   // ... (Previous code remains unchanged)
-  useEffect(() => {
-    const currentTime = new Date().getHours();
+  // useEffect(() => {
+  //   const currentTime = new Date().getHours();
 
-    // Set the map style based on the current time
-    if (currentTime >= 19) {
-      // 7pm in 24-hour format
-      setMapStyle("mapbox://styles/mapbox/navigation-night-v1");
-    } else {
-      setMapStyle("mapbox://styles/mapbox/streets-v12");
-    }
-  }, []);
+  //   // Set the map style based on the current time
+  //   if (currentTime >= 19) {
+  //     // 7pm in 24-hour format
+  //     setMapStyle("mapbox://styles/mapbox/navigation-night-v1");
+  //   } else {
+  //     setMapStyle("mapbox://styles/mapbox/streets-v12");
+  //   }
+  // }, []);
 
   useEffect(() => {
     superCluster.load(points);

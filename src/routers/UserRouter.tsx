@@ -32,8 +32,6 @@ const UserRouter: React.FC = () => {
       }
     } else if (storedUser === null || storedUser === undefined) {
       navigate("/home");
-      // dispatch(logoutUser());
-      // Handle the case where storedUser is null (no user data in local storage)
     }
   }, [dispatch]);
   return (
