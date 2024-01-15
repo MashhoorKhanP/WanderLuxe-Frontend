@@ -19,7 +19,7 @@ export const fetchData = async ({
   body = null,
 }: FetchDataOptions) => {
   console.log(`Entered FetchData`);
-  const headers = token
+  const headers = token 
     ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
     : { "Content-Type": "application/json" };
 
