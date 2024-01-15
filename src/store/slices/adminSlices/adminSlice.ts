@@ -138,7 +138,6 @@ const adminSlice = createSlice({
       state.adminLoading = false;
     },
     updateBannerImages: (state, action: PayloadAction<string[] | []>) => {
-      console.log("action.payload", action.payload);
       const resultImage = action.payload;
       if (resultImage.length <= 0) {
         state.bannerImages = [...action.payload];
@@ -163,9 +162,7 @@ const adminSlice = createSlice({
       state.adminLoading = false;
       const currentAdmin = action.payload;
       if (currentAdmin && currentAdmin.message) {
-       
-        console.log(currentAdmin, "for token check");
-        localStorage.setItem("AdminToken", currentAdmin.token);
+       localStorage.setItem("AdminToken", currentAdmin.token);
         localStorage.setItem(
           "currentAdmin",
           JSON.stringify(currentAdmin.message)
@@ -175,7 +172,6 @@ const adminSlice = createSlice({
         state.currentAdmin = currentAdmin.message;
 
         toast.success("Login Successfull");
-        console.log("reached here adminSlice , next is to openLogin = false");
         state.openLogin = false;
       } else {
         // Handle the case where currentUser or message is null or undefined
@@ -205,11 +201,6 @@ const adminSlice = createSlice({
       state.adminLoading = false;
       const users = action.payload;
       if (users && users.message) {
-        console.log(
-          "JSON.Stingify of  users List",
-          JSON.stringify(users.message)
-        );
-        console.log("user.message", users.message);
         // Don't directly modify state.currentUser, create a new object
         state.users = users.message;
         state.openLogin = false;
@@ -241,11 +232,6 @@ const adminSlice = createSlice({
       state.adminLoading = false;
       const bookings = action.payload;
       if (bookings && bookings.message) {
-        console.log(
-          "JSON.Stingify of  users List",
-          JSON.stringify(bookings.message)
-        );
-        console.log("user.message", bookings.message);
         // Don't directly modify state.currentUser, create a new object
         state.bookings = bookings.message;
       } else {
@@ -274,7 +260,6 @@ const adminSlice = createSlice({
     builder.addCase(getBanners.fulfilled, (state, action) => {
       state.adminLoading = false;
       const banners = action.payload;
-      console.log("banners from AdminSlice",banners.message[0]);
       if (banners && banners.message) {
         // Don't directly modify state.currentUser, create a new object
         state.banners =  banners.message[0];

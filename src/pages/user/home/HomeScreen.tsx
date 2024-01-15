@@ -31,7 +31,6 @@ const HomeScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const bannerImages = useSelector((state: RootState) => state.admin.bannerImages);
   const banner:any = useSelector((state: RootState) => state.admin.banners);
-  console.log(banner,'bannerfrom home')
   useEffect(() => {
     if (!bannerImages.length) {
       dispatch(getBanners());

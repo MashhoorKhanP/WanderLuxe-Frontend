@@ -64,7 +64,6 @@ const adminHotelSlice = createSlice({
       state.hotelDetails = { ...state.hotelDetails, ...action.payload };
     },
     updateHotelImages: (state, action: PayloadAction<string[] | []>) => {
-      console.log("action.payload", action.payload);
       const resultImage = action.payload;
       if (resultImage.length <= 0) {
         state.hotelImages = [...action.payload];
@@ -107,7 +106,6 @@ const adminHotelSlice = createSlice({
       state.updatedHotel = { ...state.updatedHotel, ...action.payload };
     },
     updateDeletedHotelImages: (state, action: PayloadAction<string[]>) => {
-      console.log("action.payload", action.payload);
       state.deletedHotelImages = [
         ...state.deletedHotelImages,
         ...action.payload,

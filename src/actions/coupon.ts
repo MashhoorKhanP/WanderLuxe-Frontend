@@ -41,8 +41,6 @@ export const addCoupon = async (couponData: CouponDetails) => {
 export const deleteCoupon = createAsyncThunk(
   "hotel/deleteCoupon",
   async ({ couponData }: DeleteCouponPayload) => {
-    console.log("couponData from deleteCoupon coupon.ts", couponData);
-
     const result = await fetchData({
       url:
         import.meta.env.VITE_SERVER_URL +
@@ -61,7 +59,6 @@ export const deleteCoupon = createAsyncThunk(
 );
 
 export const updateCoupon = async ({ updatedCoupon }: UpdateCouponPayload) => {
-  console.log("udatedcoupon from coupon.ts", updatedCoupon);
   const result = await fetchData({
     url:
       import.meta.env.VITE_SERVER_URL +

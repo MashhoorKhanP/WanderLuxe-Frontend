@@ -89,8 +89,7 @@ interface AddMoneyToWalletDetails {
 export const registerUser = createAsyncThunk(
   "user/register",
   async (userData: RequestBody) => {
-    console.log(`Entered registerUser`, userData);
-
+    
     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + "/api/user/signup",
       method: "POST",
@@ -107,15 +106,13 @@ export const googleregister = createAsyncThunk(
     const state = getState() as RootState;
     const token = state.user.currentUser?.token || "";
 
-    console.log(`Entered registerUser`, userData);
-
     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + "/api/user/google-signup",
       method: "POST",
       token,
       body: userData,
     });
-    console.log('googleRegister', result);
+    
     // Handle the result as needed
     return result as any;
   }
@@ -126,8 +123,7 @@ export const verifyUser = createAsyncThunk(
   async (otp: OTP, thunkAPI) => {
     try {
       const state = thunkAPI.getState() as RootState;
-      console.log("isforgotPasswordquery", otp.otp.forgotPassword);
-      const result = await fetchData({
+     const result = await fetchData({
         url:
           import.meta.env.VITE_SERVER_URL +
           `/api/user/verify-otp?forgotPassword=${otp.otp.forgotPassword}`,
@@ -210,8 +206,7 @@ export const updateProfile = async ({
   currentUser,
   updatedFields,
 }: UpdateProfilePayload) => {
-  console.log("Entered inside updateProfile");
-
+  
   const { firstName, lastName, email, mobile, file } = updatedFields || {}; // Destructure with default empty object
   let body = { firstName, lastName, email, mobile };
   try {
@@ -237,8 +232,7 @@ export const updateProfile = async ({
       // If no error message, return the result
       return result;
     } else {
-      console.log("else case ", `/api/user/profile/${currentUser?._id}`);
-      const result = await fetchData({
+    const result = await fetchData({
         url:
           import.meta.env.VITE_SERVER_URL +
           `/api/user/profile/${currentUser?._id}`,
@@ -260,8 +254,7 @@ export const updateProfile = async ({
 export const changePassword = createAsyncThunk(
   "user/changePassword",
   async ({ changePasswordData }: ChangePasswordData) => {
-    console.log("Change password date:", changePasswordData);
-    const result = await fetchData({
+     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + `/api/user/change-password`,
       method: "PATCH",
       body: { ...changePasswordData },
@@ -277,7 +270,6 @@ export const changePassword = createAsyncThunk(
 export const forgotPassword = createAsyncThunk(
   "user/forgotPassword",
   async ({ forgotPasswordData }: ForgotPasswordData) => {
-    console.log("Change password date:", forgotPasswordData);
     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + `/api/user/forgot-password`,
       method: "POST",
@@ -294,7 +286,6 @@ export const forgotPassword = createAsyncThunk(
 export const addRemoveFromWishlist = createAsyncThunk(
   "user/addRemoveFromWishlist",
   async ({ wishlistData }: WishlistData) => {
-    console.log("HotelId from user.ts", wishlistData.hotelId);
     // const result = await fetchData({
     //   url: import.meta.env.VITE_SERVER_URL + `/api/user/add-remove/wishlist`,
     //   method: "PATCH",
@@ -313,13 +304,11 @@ export const addRemoveFromWishlist = createAsyncThunk(
 export const postAddMoneyToWalletRequest = createAsyncThunk(
   "user/postAddMoneyToWalletRequest",
   async ({ addMoneyToWalletDetails }: AddMoneyToWalletDetails) => {
-    console.log("addMoneyToWallet from user.ts", addMoneyToWalletDetails);
     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + `/api/user/add-money-to-wallet`,
       method: "POST",
       body: addMoneyToWalletDetails,
     });
-    console.log("result of postPaymentRequest", result);
     // Check for errors in the result and throw if necessary
     if (result?.data && result.data.message) {
       throw new Error(result.data.message);
@@ -338,7 +327,6 @@ export const getUpdatedUser = createAsyncThunk(
       method: "GET",
       body: {},
     });
-    console.log("result of updatedUser", result);
     // Check for errors in the result and throw if necessary
     if (result?.data && result.data.message) {
       throw new Error(result.data.message);

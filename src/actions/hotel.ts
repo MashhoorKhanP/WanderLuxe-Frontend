@@ -83,7 +83,6 @@ export const deleteHotel = createAsyncThunk(
 );
 
 export const updateHotel = async ({ updatedHotel }: UpdateHotelPayload) => {
-  console.log("udatedHotel from hotel.ts", updatedHotel);
   const result = await fetchData({
     url:
       import.meta.env.VITE_SERVER_URL +

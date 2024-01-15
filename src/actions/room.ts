@@ -77,7 +77,6 @@ export const deleteRoom = createAsyncThunk(
 );
 
 export const updateRoom = async ({ updatedRoom }: UpdateRoomPayload) => {
-  console.log("updatedRoom from room.ts", updatedRoom);
   const result = await fetchData({
     url:
       import.meta.env.VITE_SERVER_URL +
@@ -96,7 +95,6 @@ export const updateRoom = async ({ updatedRoom }: UpdateRoomPayload) => {
 
 //User Side / Admin Actions
 export const getRooms = createAsyncThunk("user/getRooms", async () => {
-  console.log("Entered inside the getRooms in room.ts");
   try {
     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + "/api/user/find-rooms",

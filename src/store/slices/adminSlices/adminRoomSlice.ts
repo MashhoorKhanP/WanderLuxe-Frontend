@@ -54,11 +54,9 @@ const adminRoomSlice = createSlice({
       state.rooms = action.payload;
     },
     updateRoomDetails: (state, action: PayloadAction<Partial<RoomDetails>>) => {
-      console.log("updateRoomDetails", action.payload);
       state.roomDetails = { ...state.roomDetails, ...action.payload };
     },
     updateRoomImages: (state, action: PayloadAction<string[] | []>) => {
-      console.log("action.payload", action.payload);
       const resultImage = action.payload;
       if (resultImage.length <= 0) {
         state.roomImages = [...action.payload];

@@ -12,7 +12,6 @@ export const getConversations = createAsyncThunk(
   "adminORUser/getConversations",
   async (userId: string) => {
     try {
-      console.log("userId chat.ts", userId);
       const result = await fetchData({
         url:
           import.meta.env.VITE_SERVER_URL +
@@ -40,7 +39,6 @@ export const getMessages = createAsyncThunk(
   "adminORUser/getAdminMessages",
   async (conversationId: string) => {
     try {
-      console.log("conversationID chat.ts", conversationId);
       const result = await fetchData({
         url:
           import.meta.env.VITE_SERVER_URL +
@@ -68,7 +66,6 @@ export const addNewMessage = createAsyncThunk(
   "adminORuser/postAddMessage",
   async (messageData: AddMessageData) => {
     try {
-      console.log("messageData chat.ts", messageData);
       const result = await fetchData({
         url: import.meta.env.VITE_SERVER_URL + `/api/user/add-message`,
         method: "POST",

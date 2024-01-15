@@ -14,8 +14,7 @@ export interface UpdateBannersPayload {
 export const updateBanners = async ({
   updatedBanners,
 }: UpdateBannersPayload) => {
-  console.log("updatedBanners from banner.ts", updatedBanners);
-
+ 
   const result = await fetchData({
     url:
       import.meta.env.VITE_SERVER_URL +

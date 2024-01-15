@@ -55,7 +55,7 @@ interface GetHotelBookingData {
 export const postPaymentRequest = createAsyncThunk(
   "user/postPaymentRequest",
   async ({ bookingDetails }: BookingDetailsData) => {
-    console.log("BookingDetail from booking.ts", bookingDetails.checkOutDate);
+    
     const result = await fetchData({
       url:
         import.meta.env.VITE_SERVER_URL +
@@ -63,7 +63,7 @@ export const postPaymentRequest = createAsyncThunk(
       method: "POST",
       body: bookingDetails,
     });
-    console.log("result of postPaymentRequest", result);
+   
     // Check for errors in the result and throw if necessary
     if (result?.data && result.data.message) {
       throw new Error(result.data.message);
@@ -77,13 +77,11 @@ export const postPaymentRequest = createAsyncThunk(
 export const postWalletPaymentRequest = createAsyncThunk(
   "user/postWalletPaymentRequest",
   async ({ bookingDetails }: BookingDetailsData) => {
-    console.log("BookingDetails from booking.ts", bookingDetails.checkOutDate);
     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + `/api/user/wallet-payment`,
       method: "POST",
       body: bookingDetails,
     });
-    console.log("result of postPaymentRequest", result);
     // Check for errors in the result and throw if necessary
     if (result?.data && result.data.message) {
       throw new Error(result.data.message);
@@ -98,7 +96,6 @@ export const postWalletPaymentRequest = createAsyncThunk(
 export const updateBooking = async ({
   updatedBooking,
 }: UpdateBookingPayload) => {
-  console.log("updatedBooking from coupon.ts", updatedBooking);
   const result = await fetchData({
     url:
       import.meta.env.VITE_SERVER_URL +
@@ -119,7 +116,6 @@ export const getUserBookings = createAsyncThunk(
   "user/getUserbookings",
   async ({ userDetails }: GetUserBookingData) => {
     try {
-      console.log("userDetails", userDetails);
       const result = await fetchData({
         url:
           import.meta.env.VITE_SERVER_URL +
@@ -148,7 +144,6 @@ export const userCancelBooking = createAsyncThunk(
   "user/userCancelBooking",
   async ({ updatedBooking }: UpdateBookingPayload) => {
     try {
-      console.log("cancelBookingId", updatedBooking._id);
       const result = await fetchData({
         url:
           import.meta.env.VITE_SERVER_URL +
@@ -178,7 +173,6 @@ export const getHotelBookings = createAsyncThunk(
   "user/getHotelBookings",
   async ({ hotelDetails }: GetHotelBookingData) => {
     try {
-      console.log("hotelDetails", hotelDetails);
       const result = await fetchData({
         url:
           import.meta.env.VITE_SERVER_URL +

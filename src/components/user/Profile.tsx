@@ -42,8 +42,6 @@ const Profile: React.FC = () => {
     (state: RootState) => state.user
   );
   const [isEditMode, setIsEditMode] = useState(false);
-
-  // if(currentUser?.message) currentUser = currentUser.message;
   const handleClose = () => {
     dispatch(updateUserProfile({ ...profile, open: false }));
     // navigate('/home')
@@ -297,7 +295,6 @@ const Profile: React.FC = () => {
             ""
           )}
         </form>
-
         <DialogActions
           sx={{ justifyContent: "center", px: "19px", pb: "25px" }}
         >
@@ -306,6 +303,7 @@ const Profile: React.FC = () => {
               handleClose && handleClose();
               navigate("/change-password");
             }}
+            disabled={currentUser?.isGoogle}
             variant="contained"
             sx={{
               bgcolor: "black",

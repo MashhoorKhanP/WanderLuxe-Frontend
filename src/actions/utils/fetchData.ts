@@ -18,7 +18,6 @@ export const fetchData = async ({
   token = "",
   body = null,
 }: FetchDataOptions) => {
-  console.log(`Entered FetchData`);
   const headers = token
     ? { "Content-Type": "application/json", Authorization: `Bearer ${token}` }
     : { "Content-Type": "application/json" };
@@ -33,11 +32,8 @@ export const fetchData = async ({
 
   try {
     const response = await axios(axiosConfig);
-    console.log("API Response:", response);
 
     const data = await response.data;
-
-    console.log("API Response Data:", data);
 
     //  if (!response || response.status !== 200) {
     //   throw new Error('Request failed with status ' + response?.status);
@@ -47,16 +43,15 @@ export const fetchData = async ({
     //   errorHandle(new Error(data?.message || 'Request failed with an unspecified error.'));
     //   throw new Error(data?.message || 'Request failed with an unspecified error.');
     // }
-    console.log(data, "and", data.result);
-    if (data.result === null || data.result === undefined) {
+  if (data.result === null || data.result === undefined) {
       return data;
     }
     return data.result as any;
   } catch (error) {
     // Use the errorHandle function to handle the error
     const typedError = error as AxiosError | any;
-    console.log(typedError.response?.data?.result.success);
-    console.log(typedError.response.data?.result);
+    // console.log(typedError.response?.data?.result.success);
+    // console.log(typedError.response.data?.result);
     if (!typedError.response?.data?.result.success) {
       errorHandle(typedError.response?.data?.result);
     }

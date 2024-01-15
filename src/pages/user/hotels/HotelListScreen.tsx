@@ -101,7 +101,6 @@ const HotelListScreen: React.FC = () => {
     setCurrentPage(1); // Reset to the first page when searching
     // Simulating a delay (remove this in the actual implementation)
     if (query.trim().length <= 0) {
-      console.log("allHotels", allHotels);
       setTimeout(() => {
         dispatch(filterHotels(allHotels));
         setLoading(false);
