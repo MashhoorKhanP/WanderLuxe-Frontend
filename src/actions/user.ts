@@ -295,12 +295,12 @@ export const addRemoveFromWishlist = createAsyncThunk(
   "user/addRemoveFromWishlist",
   async ({ wishlistData }: WishlistData) => {
     console.log("HotelId from user.ts", wishlistData.hotelId);
-    // const result = await fetchData({
-    //   url: import.meta.env.VITE_SERVER_URL + `/api/user/add-remove/wishlist`,
-    //   method: "PATCH",
-    //   body: { ...wishlistData },
-    // });
-    const result = await instance.patch('/add-remove/wishlist',wishlistData)
+    const result = await fetchData({
+      url: import.meta.env.VITE_SERVER_URL + `/api/user/add-remove/wishlist`,
+      method: "PATCH",
+      body: { ...wishlistData },
+    });
+    // const result = await instance.patch('/add-remove/wishlist',wishlistData)
     // Check for errors in the result and throw if necessary
     if (result?.data && result.data.message) {
       throw new Error(result.data.message);
