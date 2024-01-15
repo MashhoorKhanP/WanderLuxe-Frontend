@@ -3,7 +3,14 @@ import { Box, Button, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Autoplay, EffectCreative, Lazy, Navigation, Pagination, Zoom } from "swiper";
+import {
+  Autoplay,
+  EffectCreative,
+  Lazy,
+  Navigation,
+  Pagination,
+  Zoom,
+} from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { getBanners } from "../../../actions/banner";
 import { getHotels } from "../../../actions/hotel";
@@ -29,24 +36,23 @@ const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
-  const bannerImages = useSelector((state: RootState) => state.admin.bannerImages);
-  const banner:any = useSelector((state: RootState) => state.admin.banners);
+  const bannerImages = useSelector(
+    (state: RootState) => state.admin.bannerImages
+  );
+  const banner: any = useSelector((state: RootState) => state.admin.banners);
   useEffect(() => {
     if (!bannerImages.length) {
       dispatch(getBanners());
       dispatch(getHotels());
-
     }
   }, [dispatch]);
 
   const handleFindHotels = () => {
     dispatch(getHotels()).then(() => navigate("/find-hotels"));
-    
   };
 
   const handleViewHotels = () => {
     dispatch(getRooms()).then(() => navigate("/view-hotels"));
-    
   };
 
   const CarouselSection = ({ images }: any) => {
@@ -79,21 +85,30 @@ const HomeScreen: React.FC = () => {
             slidesPerView: 1,
           },
         }}
-        
-        style={{
-          "--swiper-pagination-color": "rgba(255,255,255,0.5)",
-          "--swiper-pagination-bullet-active-color": "#ffffff",
-          "--swiper-pagination-bullet-inactive-opacity": 0.5,
-          "--swiper-navigation-color": "#fff",
-          "--swiper-navigation-size": "25px",
-          background: "rgba(0, 0, 0, 0.2)", 
-          
-        } as React.CSSProperties}
+        style={
+          {
+            "--swiper-pagination-color": "rgba(255,255,255,0.5)",
+            "--swiper-pagination-bullet-active-color": "#ffffff",
+            "--swiper-pagination-bullet-inactive-opacity": 0.5,
+            "--swiper-navigation-color": "#fff",
+            "--swiper-navigation-size": "25px",
+            background: "rgba(0, 0, 0, 0.2)",
+          } as React.CSSProperties
+        }
         {...({ lazy: true } as CustomSwiperOptions)}
       >
         {images.map((image: string, index: number) => (
           <SwiperSlide key={index}>
-            <img src={image} alt={`Carousel Image ${index + 1}`} style={{ width: '100%', objectFit: "cover", overflow: 'hidden', height: '100vh' }} />
+            <img
+              src={image}
+              alt={`Carousel Image ${index + 1}`}
+              style={{
+                width: "100%",
+                objectFit: "cover",
+                overflow: "hidden",
+                height: "100vh",
+              }}
+            />
           </SwiperSlide>
         ))}
       </Swiper>
@@ -104,19 +119,17 @@ const HomeScreen: React.FC = () => {
   const addLineBreakBeforeLastWord = (text: string) => {
     // Match words (including words with apostrophes) and non-word characters
     const wordMatches = text.match(/[\w'-]+|[^\w'-]+/g);
-  
+
     if (wordMatches) {
       // Find the index of the last word
       const lastWordIndex = wordMatches.length - 1;
-  
+
       // Add \n before the last word
       return wordMatches
-        .map((word, index) =>
-          index === lastWordIndex ? `\n${word}` : word
-        )
-        .join('');
+        .map((word, index) => (index === lastWordIndex ? `\n${word}` : word))
+        .join("");
     }
-  
+
     // Return the original text if there are no word matches
     return text;
   };
@@ -201,34 +214,37 @@ const HomeScreen: React.FC = () => {
             sx={{
               display: "flex",
               justifyContent: "space-between",
-              
+
               zIndex: -10,
             }}
           >
             <CarouselSection images={carouselImages1} />
           </Box>
-          
-            <Typography
-              variant="h3"
-              color="white"
-              fontWeight={400}
-              sx={{
-                  position: "absolute",
-                  left: "50px", // Adjust the left positioning as needed
-                  top: "50%", // Center vertically
-                  transform: "translateY(-50%)",
-                  zIndex: 10,
-                  bgcolor:'#00000091',
-                  padding:'10px',
-                  color:'#ffffff',
-                  whiteSpace: "pre-wrap",
-                  fontFamily:'Courier New, Courier, monospace',
-                  // Add this to ensure the line break is displayed correctly
-              }}
-              >
-              {addLineBreakBeforeLastWord(banner?.text ? String(banner?.text) : 'Welcome to WanderLuxe Hotels!')}
-            </Typography>
-          
+
+          <Typography
+            variant="h3"
+            color="white"
+            fontWeight={400}
+            sx={{
+              position: "absolute",
+              left: "50px", // Adjust the left positioning as needed
+              top: "50%", // Center vertically
+              transform: "translateY(-50%)",
+              zIndex: 10,
+              bgcolor: "#00000091",
+              padding: "10px",
+              color: "#ffffff",
+              whiteSpace: "pre-wrap",
+              fontFamily: "Courier New, Courier, monospace",
+              // Add this to ensure the line break is displayed correctly
+            }}
+          >
+            {addLineBreakBeforeLastWord(
+              banner?.text
+                ? String(banner?.text)
+                : "Welcome to WanderLuxe Hotels!"
+            )}
+          </Typography>
         </Box>
       )}
     </>

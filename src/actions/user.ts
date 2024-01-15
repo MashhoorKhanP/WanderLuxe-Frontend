@@ -89,7 +89,6 @@ interface AddMoneyToWalletDetails {
 export const registerUser = createAsyncThunk(
   "user/register",
   async (userData: RequestBody) => {
-    
     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + "/api/user/signup",
       method: "POST",
@@ -112,7 +111,7 @@ export const googleregister = createAsyncThunk(
       token,
       body: userData,
     });
-    
+
     // Handle the result as needed
     return result as any;
   }
@@ -123,7 +122,7 @@ export const verifyUser = createAsyncThunk(
   async (otp: OTP, thunkAPI) => {
     try {
       const state = thunkAPI.getState() as RootState;
-     const result = await fetchData({
+      const result = await fetchData({
         url:
           import.meta.env.VITE_SERVER_URL +
           `/api/user/verify-otp?forgotPassword=${otp.otp.forgotPassword}`,
@@ -206,7 +205,6 @@ export const updateProfile = async ({
   currentUser,
   updatedFields,
 }: UpdateProfilePayload) => {
-  
   const { firstName, lastName, email, mobile, file } = updatedFields || {}; // Destructure with default empty object
   let body = { firstName, lastName, email, mobile };
   try {
@@ -225,14 +223,14 @@ export const updateProfile = async ({
         body: { ...body, profileImage },
       });
 
-      if (result?.data as any && result.data.message as any) {
+      if ((result?.data as any) && (result.data.message as any)) {
         // If there is an error message, throw an error to trigger the rejected action
         throw new Error(result.data.message as any);
       }
       // If no error message, return the result
       return result;
     } else {
-    const result = await fetchData({
+      const result = await fetchData({
         url:
           import.meta.env.VITE_SERVER_URL +
           `/api/user/profile/${currentUser?._id}`,
@@ -254,7 +252,7 @@ export const updateProfile = async ({
 export const changePassword = createAsyncThunk(
   "user/changePassword",
   async ({ changePasswordData }: ChangePasswordData) => {
-     const result = await fetchData({
+    const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + `/api/user/change-password`,
       method: "PATCH",
       body: { ...changePasswordData },
@@ -291,7 +289,7 @@ export const addRemoveFromWishlist = createAsyncThunk(
     //   method: "PATCH",
     //   body: { ...wishlistData },
     // });
-    const result = await instance.patch('/add-remove/wishlist',wishlistData)
+    const result = await instance.patch("/add-remove/wishlist", wishlistData);
     // Check for errors in the result and throw if necessary
     if (result?.data && result.data.message) {
       throw new Error(result.data.message);

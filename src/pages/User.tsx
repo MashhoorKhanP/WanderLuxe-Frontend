@@ -26,23 +26,22 @@ const Home: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const socket = useRef<Socket | null>();
   const { currentUser } = useSelector((state: RootState) => state.user);
-  
+
   useEffect(() => {
     dispatch(getBanners());
-  },[dispatch]);
+  }, [dispatch]);
 
-  useEffect(()=>{
-    if(!socket.current && currentUser){
+  useEffect(() => {
+    if (!socket.current && currentUser) {
       socket.current = io(import.meta.env.VITE_SERVER_URL);
-      socket.current.emit('addUser',(currentUser?._id))
-      socket.current.on('responseIsBlocked',(data:{isBlocked:boolean})=>{
-        if(data.isBlocked){
-         dispatch(logoutUser());
+      socket.current.emit("addUser", currentUser?._id);
+      socket.current.on("responseIsBlocked", (data: { isBlocked: boolean }) => {
+        if (data.isBlocked) {
+          dispatch(logoutUser());
         }
-      })
-      
+      });
     }
-  },[socket,currentUser])
+  }, [socket, currentUser]);
   return (
     <>
       {location.pathname === "/otp-verification" && <OtpVerification />}
@@ -51,12 +50,12 @@ const Home: React.FC = () => {
       <Login />
       <Navbar />
       <HomeScreen />
-      <RoomOverviewScreen/>
-      <CouponsOverviewScreen/>
-      <BookingDetailsScreen/>
-      <WalletHistoryScreen/>
-      <ForgotPassword/>
-      <ChatScreenUser socket={socket.current}/>
+      <RoomOverviewScreen />
+      <CouponsOverviewScreen />
+      <BookingDetailsScreen />
+      <WalletHistoryScreen />
+      <ForgotPassword />
+      <ChatScreenUser socket={socket.current} />
       <Footer />
     </>
   );

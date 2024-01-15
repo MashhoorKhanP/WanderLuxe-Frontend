@@ -11,7 +11,6 @@ const AppRouter: React.FC = () => {
       <Route path="/*" element={<UserRouter />} />
       <Route path="/admin/*" element={<AdminRouter />} />
       {/* <Route path="*" element={<Navigate to="/404" />} /> */}
-      
     </Routes>
   );
 };

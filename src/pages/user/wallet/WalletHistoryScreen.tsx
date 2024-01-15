@@ -17,9 +17,7 @@ import React, { forwardRef, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RoomDetails } from "../../../store/slices/adminSlices/adminSlice";
-import {
-  closeWalletHistory,
-} from "../../../store/slices/userSlices/userSlice";
+import { closeWalletHistory } from "../../../store/slices/userSlices/userSlice";
 import { AppDispatch } from "../../../store/store";
 import { RootState } from "../../../store/types";
 
@@ -78,7 +76,7 @@ const WalletHistoryScreen: React.FC = () => {
     const transactionType = params.row.transactionType;
 
     let textColor;
-    if (transactionType === 'Credit') {
+    if (transactionType === "Credit") {
       textColor = "#198754";
     } else {
       textColor = "#DC3545";
@@ -89,11 +87,10 @@ const WalletHistoryScreen: React.FC = () => {
 
   const columns: GridColDef[] = useMemo(
     () => [
-      
       {
         field: "transactionDate",
         headerName: "Transaction Date",
-        
+
         renderCell: (params) =>
           moment(params.row.transactionDate).format("DD-MM-YYYY HH:MM:SS"),
         width: 180,
@@ -102,48 +99,45 @@ const WalletHistoryScreen: React.FC = () => {
         field: "transactionDetails",
         headerName: "Details",
         width: 180,
-        
       },
       {
         field: "transactionType",
         headerName: "Type",
         renderCell: (params) => rendertransactionTypeCell(params),
-        width:100,
-        
+        width: 100,
       },
       {
         field: "transactionAmount",
         headerName: "Amount",
-        width:100,
+        width: 100,
         renderCell: (params) => `₹${params.row.transactionAmount}`,
       },
       {
         field: "currentBalance",
         headerName: "Current Balance",
         width: 150,
-        
+
         renderCell: (params) => `₹${params.row.currentBalance}`,
       },
       {
         field: "transactionId",
         headerName: "Transaction ID",
         width: 250,
-        
       },
     ],
     []
   );
-  
+
   const sortModel = useMemo(
     () => [
       {
-        field: 'transactionDate',
-        sort: 'desc',
+        field: "transactionDate",
+        sort: "desc",
       },
     ],
     []
   );
-  
+
   return (
     <Dialog
       fullScreen
@@ -160,7 +154,9 @@ const WalletHistoryScreen: React.FC = () => {
       <Container>
         <Toolbar sx={{ paddingTop: 2, paddingBottom: 2 }}>
           <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-            <Typography variant="h6" fontSize={'25px'} fontWeight={'bold'}>Wallet History</Typography>
+            <Typography variant="h6" fontSize={"25px"} fontWeight={"bold"}>
+              Wallet History
+            </Typography>
             {/* <Typography variant="subtitle2">{booking.hotelName}</Typography> */}
           </div>
           <IconButton color="inherit" onClick={handleClose}>
@@ -180,8 +176,7 @@ const WalletHistoryScreen: React.FC = () => {
           style={{ display: "flex", flexDirection: "column" }}
         >
           <Box sx={{ height: 400, width: "95%" }}>
-        <DataGrid
-              
+            <DataGrid
               columns={columns}
               rows={currentUser?.walletHistory || []}
               getRowId={(row) => row._id}
@@ -191,7 +186,7 @@ const WalletHistoryScreen: React.FC = () => {
                 bottom: params.isLastVisible ? 0 : 5,
               })}
               sx={{
-                border:'1px solid black',
+                border: "1px solid black",
                 [`& .${gridClasses.row}`]: {
                   bgcolor: (theme) =>
                     theme.palette.mode === "light" ? grey[300] : grey[900],
@@ -200,8 +195,8 @@ const WalletHistoryScreen: React.FC = () => {
               // onCellEditStop={(params) => setSelectedRowId(params.id.toString())} //give on onCellEditStart
               // onCellEditStart={(params) => setRowId(params.id.toString())}
             />
-            </Box>
-            </div>
+          </Box>
+        </div>
       </Container>
     </Dialog>
   );

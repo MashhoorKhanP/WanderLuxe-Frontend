@@ -46,17 +46,17 @@ const UserRouter: React.FC = () => {
       <Route path="find-hotels" element={<Home />} />
       <Route path="view-hotels" element={<Home />} />
       <Route path="view-rooms" element={<Home />} />
-      <Route path="*" element={<PageNotFound/>}/>
-      
+      <Route path="*" element={<PageNotFound />} />
+
       <Route path="" element={<UserPrivateRoute />}>
         <Route path="edit-profile" element={<Home />} />
         <Route path="change-password" element={<Home />} />
         <Route path="wishlist" element={<Home />} />
         <Route path="book-room" element={<Home />} />
-        <Route path='payment-success' element={<Home/>}/>
-        <Route path='payment-failed' element={<Home/>}/>
-        <Route path='my-bookings' element={<Home/>}/>
-        <Route path='my-wallet' element={<Home/>}/>
+        <Route path="payment-success" element={<Home />} />
+        <Route path="payment-failed" element={<Home />} />
+        <Route path="my-bookings" element={<Home />} />
+        <Route path="my-wallet" element={<Home />} />
       </Route>
     </Routes>
   );

@@ -36,7 +36,6 @@ export const loginAdmin = createAsyncThunk(
 );
 
 export const getUsers = createAsyncThunk("admin/Users", async () => {
- 
   try {
     const result = await fetchData({
       url: import.meta.env.VITE_SERVER_URL + "/api/admin/users",
@@ -64,7 +63,6 @@ export const adminUpdateUser = async (
   isBlocked: boolean,
   userId: string
 ) => {
-  
   try {
     const result = await fetchData({
       url:

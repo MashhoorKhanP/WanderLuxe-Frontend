@@ -14,7 +14,7 @@ interface AdminState {
   bookings: BookingDetails[];
   newMessages: number;
   bannerImages: string[];
-  banners : any;
+  banners: any;
 }
 
 interface Admin {
@@ -103,8 +103,7 @@ const initialState: AdminState = {
   adminLoading: false,
   newMessages: 0,
   bannerImages: [],
-  banners:{}
-
+  banners: {},
 };
 
 const adminSlice = createSlice({
@@ -162,12 +161,12 @@ const adminSlice = createSlice({
       state.adminLoading = false;
       const currentAdmin = action.payload;
       if (currentAdmin && currentAdmin.message) {
-       localStorage.setItem("AdminToken", currentAdmin.token);
+        localStorage.setItem("AdminToken", currentAdmin.token);
         localStorage.setItem(
           "currentAdmin",
           JSON.stringify(currentAdmin.message)
         );
-        
+
         // Don't directly modify state.currentUser, create a new object
         state.currentAdmin = currentAdmin.message;
 
@@ -262,8 +261,8 @@ const adminSlice = createSlice({
       const banners = action.payload;
       if (banners && banners.message) {
         // Don't directly modify state.currentUser, create a new object
-        state.banners =  banners.message[0];
-        state.bannerImages =  banners.message[0].images;
+        state.banners = banners.message[0];
+        state.bannerImages = banners.message[0].images;
       } else {
         // Handle the case where currentUser or message is null or undefined
         console.error("Something went wrong while wishlisting");
@@ -293,7 +292,7 @@ export const {
   stopAdminLoading,
   updateBannerImages,
   deleteBannerImages,
-  setNewMessages
+  setNewMessages,
 } = adminSlice.actions;
 
 export default adminSlice.reducer;

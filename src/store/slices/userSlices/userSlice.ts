@@ -15,7 +15,11 @@ import { toast } from "react-toastify";
 import { getHotels } from "../../../actions/hotel";
 import { MapRef } from "react-map-gl";
 import { getCoupons } from "../../../actions/coupon";
-import { getBookings, getHotelBookings, getUserBookings } from "../../../actions/booking";
+import {
+  getBookings,
+  getHotelBookings,
+  getUserBookings,
+} from "../../../actions/booking";
 import { BookingDetails } from "../adminSlices/adminSlice";
 import { getBanners } from "../../../actions/banner";
 
@@ -30,16 +34,16 @@ interface UserState {
   rooms: [];
   mapRef: React.RefObject<MapRef> | null;
   priceFilter: number;
-  isBookingDetailsOpen:boolean;
-  selectedBookingId:string;
+  isBookingDetailsOpen: boolean;
+  selectedBookingId: string;
   addressFilter: {};
   filteredHotels: any[];
   filteredRooms: any[];
-  bookings:[]
-  hotelBookings:BookingDetails[]
-  isWalletHistoryOpen:boolean;
-  isChatScreenOpen:boolean;
-  isForgotPasswordOpen:boolean;
+  bookings: [];
+  hotelBookings: BookingDetails[];
+  isWalletHistoryOpen: boolean;
+  isChatScreenOpen: boolean;
+  isForgotPasswordOpen: boolean;
 }
 
 const initialState: UserState = {
@@ -56,14 +60,13 @@ const initialState: UserState = {
   addressFilter: {},
   filteredHotels: [],
   filteredRooms: [],
-  isBookingDetailsOpen:false,
-  selectedBookingId:'',
-  bookings:[],
-  hotelBookings:[],
-  isWalletHistoryOpen:false,
-  isChatScreenOpen:false,
-  isForgotPasswordOpen:false
-
+  isBookingDetailsOpen: false,
+  selectedBookingId: "",
+  bookings: [],
+  hotelBookings: [],
+  isWalletHistoryOpen: false,
+  isChatScreenOpen: false,
+  isForgotPasswordOpen: false,
 };
 
 export interface User {
@@ -75,30 +78,30 @@ export interface User {
   mobile?: string;
   token?: string;
   message?: {
-    _id:string;
+    _id: string;
     firstName: string;
     profileImage: string;
-    wallet:number;
-    walletHistory?:[
+    wallet: number;
+    walletHistory?: [
       {
-        transactionDate:Date,
-        transactionDetails: string
-        transactionType: string
-        transactionAmount: number
-        currentBalance: number
+        transactionDate: Date;
+        transactionDetails: string;
+        transactionType: string;
+        transactionAmount: number;
+        currentBalance: number;
       }
     ];
   };
   isGoogle?: boolean;
   wishlist?: [string];
-  wallet?:number;
-  walletHistory?:[
+  wallet?: number;
+  walletHistory?: [
     {
-      transactionDate:Date,
-      transactionDetails: string
-      transactionType: string
-      transactionAmount: number
-      currentBalance: number
+      transactionDate: Date;
+      transactionDetails: string;
+      transactionType: string;
+      transactionAmount: number;
+      currentBalance: number;
     }
   ];
 }
@@ -265,31 +268,31 @@ const userSlice = createSlice({
     setBookings: (state, action: PayloadAction<any>) => {
       state.bookings = action.payload;
     },
-    openBookingDetails:(state) => {
+    openBookingDetails: (state) => {
       state.isBookingDetailsOpen = true;
     },
-    closeBookingDetails:(state) => {
+    closeBookingDetails: (state) => {
       state.isBookingDetailsOpen = false;
     },
-    openWalletHistory:(state) => {
+    openWalletHistory: (state) => {
       state.isWalletHistoryOpen = true;
     },
-    closeWalletHistory:(state) => {
+    closeWalletHistory: (state) => {
       state.isWalletHistoryOpen = false;
     },
-    openChatScreen:(state) => {
+    openChatScreen: (state) => {
       state.isChatScreenOpen = true;
     },
-    closeChatScreen:(state) => {
+    closeChatScreen: (state) => {
       state.isChatScreenOpen = false;
     },
-    openForgotPasswordScreen:(state) => {
+    openForgotPasswordScreen: (state) => {
       state.isForgotPasswordOpen = true;
     },
-    closeForgotPasswordScreen:(state) => {
+    closeForgotPasswordScreen: (state) => {
       state.isForgotPasswordOpen = false;
     },
-    setBookingId:(state, action: PayloadAction<string>) => {
+    setBookingId: (state, action: PayloadAction<string>) => {
       state.selectedBookingId = action.payload;
     },
     logoutUser: (state) => {
@@ -347,7 +350,6 @@ const userSlice = createSlice({
         }
       }
       state.loading = false;
-      
     });
     builder.addCase(registerUser.rejected, (state, action) => {
       const error = action.error as Error | AxiosError;
@@ -380,11 +382,13 @@ const userSlice = createSlice({
           message: "Google Registration Successfull!",
         };
         const currentUser = action.payload;
-        
+
         if (currentUser) {
-          
           // Store currentUser in localStorage
-          localStorage.setItem("currentUser", JSON.stringify(currentUser.message));
+          localStorage.setItem(
+            "currentUser",
+            JSON.stringify(currentUser.message)
+          );
           localStorage.setItem("UserToken", currentUser.token);
           // Don't directly modify state.currentUser, create a new object
           state.currentUser = currentUser.message;
@@ -394,7 +398,7 @@ const userSlice = createSlice({
             severity: "success",
             message: "Login successful!",
           };
-          
+
           state.openLogin = false;
         }
       }
@@ -417,8 +421,8 @@ const userSlice = createSlice({
       state.loading = false;
     });
 
-     //Verify User
-     builder.addCase(verifyUser.pending, (state) => {
+    //Verify User
+    builder.addCase(verifyUser.pending, (state) => {
       state.loading = true;
     });
 
@@ -440,9 +444,11 @@ const userSlice = createSlice({
 
     builder.addCase(verifyUser.rejected, (state, action) => {
       state.loading = false;
-      state.alert={open: true,
+      state.alert = {
+        open: true,
         severity: "error",
-        message: 'Invalid OTP, Please confirm your OTP'}
+        message: "Invalid OTP, Please confirm your OTP",
+      };
       if (action.error instanceof Error) {
         state.alert = {
           open: true,
@@ -457,7 +463,6 @@ const userSlice = createSlice({
       }
     });
 
-
     //Login User
     builder.addCase(loginUser.pending, (state) => {
       state.loading = true;
@@ -466,9 +471,9 @@ const userSlice = createSlice({
     builder.addCase(loginUser.fulfilled, (state, action) => {
       state.loading = false;
       const currentUser = action.payload;
-      if (currentUser && currentUser.message as any) {
+      if (currentUser && (currentUser.message as any)) {
         localStorage.setItem("UserToken", currentUser.token);
-        
+
         // Store currentUser in localStorage
         localStorage.setItem(
           "currentUser",
@@ -636,7 +641,6 @@ const userSlice = createSlice({
       state.loading = false;
       const bookings = action.payload;
       if (bookings && bookings.message) {
-        
         state.hotelBookings = bookings.message;
       } else {
         // Handle the case where currentUser or message is null or undefined

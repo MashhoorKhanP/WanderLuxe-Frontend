@@ -209,7 +209,10 @@ const HotelListScreen: React.FC = () => {
                     subtitle={`𖡡 ${hotel.location}`}
                     actionIcon={
                       <>
-                        <Avatar src={hotel.dropImage} sx={{ m: "14px",width:'35px',height:'35px' }} />
+                        <Avatar
+                          src={hotel.dropImage}
+                          sx={{ m: "14px", width: "35px", height: "35px" }}
+                        />
                         <Tooltip
                           title={
                             currentUser?.wishlist?.includes(hotel._id)
@@ -269,7 +272,7 @@ const HotelListScreen: React.FC = () => {
                   {/* Want to give room starts from with  */}
                   <ImageListItemBar
                     onClick={() => handleViewRoom(hotel._id)}
-                    sx={{cursor:'pointer'}}
+                    sx={{ cursor: "pointer" }}
                     title={`₹${hotel.minimumRent}`}
                     subtitle={"Rooms start from"}
                     actionIcon={

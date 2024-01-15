@@ -43,7 +43,7 @@ export const fetchData = async ({
     //   errorHandle(new Error(data?.message || 'Request failed with an unspecified error.'));
     //   throw new Error(data?.message || 'Request failed with an unspecified error.');
     // }
-  if (data.result === null || data.result === undefined) {
+    if (data.result === null || data.result === undefined) {
       return data;
     }
     return data.result as any;

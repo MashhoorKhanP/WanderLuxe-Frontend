@@ -16,8 +16,8 @@ interface PopupHotelProps {
       hotelName: string;
       minimumRent: number;
       hotelImages: string[];
-      hotelId:string;
-    };  // ... other props
+      hotelId: string;
+    }; // ... other props
   };
   distance: string | number | null;
 }
@@ -25,9 +25,9 @@ interface CustomSwiperOptions {
   lazy?: boolean;
 }
 
-const PopupHotel: React.FC<PopupHotelProps> = ({ popupInfo,distance }) => {
+const PopupHotel: React.FC<PopupHotelProps> = ({ popupInfo, distance }) => {
   const navigate = useNavigate();
-  const { hotelName, minimumRent, hotelImages,hotelId} = popupInfo.properties;
+  const { hotelName, minimumRent, hotelImages, hotelId } = popupInfo.properties;
 
   return (
     <div className="popup-hotel-container" style={{ paddingBottom: "0px" }}>
@@ -80,16 +80,23 @@ const PopupHotel: React.FC<PopupHotelProps> = ({ popupInfo,distance }) => {
         }}
       >
         <div>
-          <p style={{ fontWeight: "bold", fontSize: "13px"}}>{hotelName}</p>
-          {distance && ( <p
-    style={{
-      fontWeight: 500,
-      fontSize: '11px',
-      color: Number(distance) < 20 ? 'green': Number(distance) < 30 ?'blue': 'red',
-    }}
-  >
-    {`${distance}km from current location.`}
-  </p>)}
+          <p style={{ fontWeight: "bold", fontSize: "13px" }}>{hotelName}</p>
+          {distance && (
+            <p
+              style={{
+                fontWeight: 500,
+                fontSize: "11px",
+                color:
+                  Number(distance) < 20
+                    ? "green"
+                    : Number(distance) < 30
+                    ? "blue"
+                    : "red",
+              }}
+            >
+              {`${distance}km from current location.`}
+            </p>
+          )}
           <p style={{ fontSize: "11px" }}>Rooms start from</p>
           <h2 style={{ fontWeight: "bolder", fontSize: "18px", marginTop: 0 }}>
             {minimumRent === 0 ? "Free Stay" : `₹${minimumRent}`}

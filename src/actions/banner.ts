@@ -14,7 +14,6 @@ export interface UpdateBannersPayload {
 export const updateBanners = async ({
   updatedBanners,
 }: UpdateBannersPayload) => {
- 
   const result = await fetchData({
     url:
       import.meta.env.VITE_SERVER_URL +

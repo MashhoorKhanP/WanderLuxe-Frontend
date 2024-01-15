@@ -28,7 +28,6 @@ const AdultChildrenPicker: React.FC = () => {
   const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    
     // Event listener for clicking outside the component
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -59,7 +58,6 @@ const AdultChildrenPicker: React.FC = () => {
       ...prev,
       [name]: operation === "i" ? options[name] + 1 : options[name] - 1,
     }));
-    
   };
 
   return (

@@ -1,25 +1,44 @@
-import { ArrowBack, UnfoldMoreOutlined } from '@mui/icons-material';
-import { Box, Button, Card, Container, Hidden, IconButton, ImageList, ImageListItem, ImageListItemBar, Stack, Tooltip, Typography } from '@mui/material';
-import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { getUserBookings } from '../../../actions/booking';
-import { getRooms } from '../../../actions/room';
-import useCheckToken from '../../../components/hooks/useCheckToken';
-import { setRoomId } from '../../../store/slices/userSlices/roomSlice';
-import { openBookingDetails, setBookingId, setBookings, setRooms } from '../../../store/slices/userSlices/userSlice';
-import { AppDispatch } from '../../../store/store';
-import { RootState } from '../../../store/types';
-
+import { ArrowBack, UnfoldMoreOutlined } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Card,
+  Container,
+  Hidden,
+  IconButton,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getUserBookings } from "../../../actions/booking";
+import { getRooms } from "../../../actions/room";
+import useCheckToken from "../../../components/hooks/useCheckToken";
+import { setRoomId } from "../../../store/slices/userSlices/roomSlice";
+import {
+  openBookingDetails,
+  setBookingId,
+  setBookings,
+  setRooms,
+} from "../../../store/slices/userSlices/userSlice";
+import { AppDispatch } from "../../../store/store";
+import { RootState } from "../../../store/types";
 
 const MyBookingsScreen: React.FC = () => {
   const checkToken = useCheckToken();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.user);
-  const rooms: any = useSelector((state: RootState) => state.user.filteredRooms);
-  const bookings:any = useSelector((state: RootState) => state.user.bookings);
+  const rooms: any = useSelector(
+    (state: RootState) => state.user.filteredRooms
+  );
+  const bookings: any = useSelector((state: RootState) => state.user.bookings);
   const [currentPage, setCurrentPage] = useState(1);
   const bookingsPerPage = 6;
   const indexOfLastHotel = currentPage * bookingsPerPage;
@@ -34,52 +53,64 @@ const MyBookingsScreen: React.FC = () => {
       };
       fetchRooms();
     }
-    
-      const fetchBookings = async () => {
-        const userId = currentUser?.message?._id !== undefined ? currentUser?.message?._id : currentUser?._id;
-        const userDetails={
-          userId:userId as string
-        }
-        const response = await dispatch(getUserBookings({userDetails}));
-        dispatch(setBookings(response.payload.message)); // assuming getHotels returns { payload: hotels }
-      };
 
-      fetchBookings();
-    
-  }, [dispatch,currentUser]);
+    const fetchBookings = async () => {
+      const userId =
+        currentUser?.message?._id !== undefined
+          ? currentUser?.message?._id
+          : currentUser?._id;
+      const userDetails = {
+        userId: userId as string,
+      };
+      const response = await dispatch(getUserBookings({ userDetails }));
+      dispatch(setBookings(response.payload.message)); // assuming getHotels returns { payload: hotels }
+    };
+
+    fetchBookings();
+  }, [dispatch, currentUser]);
 
   checkToken;
-  const handleViewMoreDetails  = (bookingId:string,roomId:string) => {
+  const handleViewMoreDetails = (bookingId: string, roomId: string) => {
     dispatch(openBookingDetails());
     dispatch(setBookingId(bookingId));
     dispatch(setRoomId(roomId));
-  }
+  };
 
-  const upcomingBookings = currentBookings.filter((booking:any) => booking.status === 'Confirmed');
-  const completedBookings = currentBookings.filter((booking: any) => booking.status !== 'Confirmed');
+  const upcomingBookings = currentBookings.filter(
+    (booking: any) => booking.status === "Confirmed"
+  );
+  const completedBookings = currentBookings.filter(
+    (booking: any) => booking.status !== "Confirmed"
+  );
 
   return (
     <Container>
-      <Box display="flex" alignItems="center" paddingTop={4} flexDirection="row">
+      <Box
+        display="flex"
+        alignItems="center"
+        paddingTop={4}
+        flexDirection="row"
+      >
         <IconButton onClick={() => navigate(-1)}>
-          <ArrowBack/>
+          <ArrowBack />
         </IconButton>
         <Typography variant="h5" fontWeight="bold" marginLeft={1}>
           My Bookings
         </Typography>
       </Box>
- {/* Upcoming Bookings Section */}
- {upcomingBookings.length > 0 && (
+      {/* Upcoming Bookings Section */}
+      {upcomingBookings.length > 0 && (
         <Box p={2}>
-          <Typography variant="h6" sx={{color:'##505050'}} fontWeight="bold">
-            Upcoming Bookings <i className="bi bi-clock" style={{color:'#007bff'}}></i>
+          <Typography variant="h6" sx={{ color: "##505050" }} fontWeight="bold">
+            Upcoming Bookings{" "}
+            <i className="bi bi-clock" style={{ color: "#007bff" }}></i>
           </Typography>
           <ImageList
             gap={12}
             sx={{
               paddingTop: 2,
               mb: 4,
-              display:currentBookings.length>0?'':'flex',
+              display: currentBookings.length > 0 ? "" : "flex",
               gridTemplateColumns:
                 "repeat(auto-fill,minmax(280px, 1fr)) !important",
             }}
@@ -87,76 +118,140 @@ const MyBookingsScreen: React.FC = () => {
             {upcomingBookings.map((booking: any) => (
               <Tooltip title="" key={booking._id}>
                 <Card sx={{ width: "100%", height: "270px" }}>
-                <ImageListItem sx={{ height: "100% !important"}}>
-                  <ImageListItemBar
-                    sx={{
-                      background: "1",
-                    }}
-                    title={booking.roomType}
-                    subtitle={`𖡡 ${booking.hotelName}`}
-                    
-                    position="top"
-                  />
-                  <img
-                    src={booking.roomImage}
-                    alt={booking.RoomType}
-                    // style={{ cursor: "pointer" }}
-                    loading="lazy"
-                  />
-                  {/* Want to give room starts from with  */}
-                  <ImageListItemBar
-                  sx={{
-                    height:'211px',
-                    pt:5
-                    
-                  }}
-                    title={
-                      <>
-                       <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px' ,color:'#ececec'}}>
-                         Amount Paid
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight: 'bold',fontSize:'12px' ,color:'#ececec' }}>
-                         {`₹${booking.totalAmount}`}
-                        </Typography>
-                        <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px',color:'#ececec' }}>
-                         Check-In
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight: 'bold',fontSize:'12px' ,color:'#ececec' }}>
-                         {`${dayjs(booking.checkInDate).format('ddd, MMM D, YYYY')} - ${booking.checkInTime}`}
-                        </Typography>
-                        <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px',color:'#ececec' }}>
-                         Check-Out
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight: 'bold',fontSize:'12px' ,color:'#ececec' }}>
-                        {`${dayjs(booking.checkOutDate).format('ddd, MMM D, YYYY')} - ${booking.checkOutTime}`}
-                        </Typography>
-                        <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px',color:'#ececec' }}>
-                         Status
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight:'bold',fontSize:'12px' ,color:booking.status==='Cancelled' || booking.status==='Cancelled by Admin' ? '#DC3545': '#15ca76' }}>
-                         {booking.status}
-                        </Typography>
-                      </>
-                    }
-                    // subtitle={"Amount Paid"}
-                    actionIcon={
-                      <Tooltip title="More Details">
-                      <UnfoldMoreOutlined
+                  <ImageListItem sx={{ height: "100% !important" }}>
+                    <ImageListItemBar
                       sx={{
-                        color: "rgba(255,255,255, 0.8)",
-                        mr: "20px",
-                        cursor: "pointer",
-                        transition: 'transform 0.3s ease', // Add transition for smooth effect
-                        '&:hover': {
-                          transform: 'scale(1.2)', // Increase the scale on hover
-                        },
+                        background: "1",
                       }}
-                      onClick={() => handleViewMoreDetails(booking._id,booking.roomId)} // Replace with your logic
+                      title={booking.roomType}
+                      subtitle={`𖡡 ${booking.hotelName}`}
+                      position="top"
                     />
-                    </Tooltip>
-                    }
-                  />
-                </ImageListItem>
+                    <img
+                      src={booking.roomImage}
+                      alt={booking.RoomType}
+                      // style={{ cursor: "pointer" }}
+                      loading="lazy"
+                    />
+                    {/* Want to give room starts from with  */}
+                    <ImageListItemBar
+                      sx={{
+                        height: "211px",
+                        pt: 5,
+                      }}
+                      title={
+                        <>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              textDecoration: "underline",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            Amount Paid
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            {`₹${booking.totalAmount}`}
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              textDecoration: "underline",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            Check-In
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            {`${dayjs(booking.checkInDate).format(
+                              "ddd, MMM D, YYYY"
+                            )} - ${booking.checkInTime}`}
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              textDecoration: "underline",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            Check-Out
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            {`${dayjs(booking.checkOutDate).format(
+                              "ddd, MMM D, YYYY"
+                            )} - ${booking.checkOutTime}`}
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              textDecoration: "underline",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            Status
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: "12px",
+                              color:
+                                booking.status === "Cancelled" ||
+                                booking.status === "Cancelled by Admin"
+                                  ? "#DC3545"
+                                  : "#15ca76",
+                            }}
+                          >
+                            {booking.status}
+                          </Typography>
+                        </>
+                      }
+                      // subtitle={"Amount Paid"}
+                      actionIcon={
+                        <Tooltip title="More Details">
+                          <UnfoldMoreOutlined
+                            sx={{
+                              color: "rgba(255,255,255, 0.8)",
+                              mr: "20px",
+                              cursor: "pointer",
+                              transition: "transform 0.3s ease", // Add transition for smooth effect
+                              "&:hover": {
+                                transform: "scale(1.2)", // Increase the scale on hover
+                              },
+                            }}
+                            onClick={() =>
+                              handleViewMoreDetails(booking._id, booking.roomId)
+                            } // Replace with your logic
+                          />
+                        </Tooltip>
+                      }
+                    />
+                  </ImageListItem>
                 </Card>
               </Tooltip>
             ))}
@@ -167,15 +262,16 @@ const MyBookingsScreen: React.FC = () => {
       {/* Completed Bookings Section */}
       {completedBookings.length > 0 && (
         <Box p={2}>
-          <Typography variant="h6" sx={{color:'##505050'}} fontWeight="bold">
-            Completed Bookings <i className="bi bi-check-circle" style={{color:'#28a745'}}></i>
+          <Typography variant="h6" sx={{ color: "##505050" }} fontWeight="bold">
+            Completed Bookings{" "}
+            <i className="bi bi-check-circle" style={{ color: "#28a745" }}></i>
           </Typography>
           <ImageList
             gap={12}
             sx={{
               paddingTop: 2,
               mb: 8,
-              display:currentBookings.length>0?'':'flex',
+              display: currentBookings.length > 0 ? "" : "flex",
               gridTemplateColumns:
                 "repeat(auto-fill,minmax(280px, 1fr)) !important",
             }}
@@ -183,76 +279,140 @@ const MyBookingsScreen: React.FC = () => {
             {completedBookings.map((booking: any) => (
               <Tooltip title="" key={booking._id}>
                 <Card sx={{ width: "100%", height: "270px" }}>
-                <ImageListItem sx={{ height: "100% !important"}}>
-                  <ImageListItemBar
-                    sx={{
-                      background: "1",
-                    }}
-                    title={booking.roomType}
-                    subtitle={`𖡡 ${booking.hotelName}`}
-                    
-                    position="top"
-                  />
-                  <img
-                    src={booking.roomImage}
-                    alt={booking.RoomType}
-                    // style={{ cursor: "pointer" }}
-                    loading="lazy"
-                  />
-                  {/* Want to give room starts from with  */}
-                  <ImageListItemBar
-                  sx={{
-                    height:'211px',
-                    pt:5
-                    
-                  }}
-                    title={
-                      <>
-                       <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px' ,color:'#ececec'}}>
-                         Amount Paid
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight: 'bold',fontSize:'12px' ,color:'#ececec' }}>
-                         {`₹${booking.totalAmount}`}
-                        </Typography>
-                        <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px',color:'#ececec' }}>
-                         Check-In
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight: 'bold',fontSize:'12px' ,color:'#ececec' }}>
-                         {`${dayjs(booking.checkInDate).format('ddd, MMM D, YYYY')} - ${booking.checkInTime}`}
-                        </Typography>
-                        <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px',color:'#ececec' }}>
-                         Check-Out
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight: 'bold',fontSize:'12px' ,color:'#ececec' }}>
-                        {`${dayjs(booking.checkOutDate).format('ddd, MMM D, YYYY')} - ${booking.checkOutTime}`}
-                        </Typography>
-                        <Typography variant="body1" sx={{ textDecoration:'underline',fontSize:'12px',color:'#ececec' }}>
-                         Status
-                        </Typography>
-                        <Typography variant="body1" sx={{ fontWeight:'bold',fontSize:'12px' ,color:booking.status==='Cancelled' || booking.status==='Cancelled by Admin' ? '#DC3545': '#15ca76' }}>
-                         {booking.status}
-                        </Typography>
-                      </>
-                    }
-                    // subtitle={"Amount Paid"}
-                    actionIcon={
-                      <Tooltip title="More Details">
-                      <UnfoldMoreOutlined
+                  <ImageListItem sx={{ height: "100% !important" }}>
+                    <ImageListItemBar
                       sx={{
-                        color: "rgba(255,255,255, 0.8)",
-                        mr: "20px",
-                        cursor: "pointer",
-                        transition: 'transform 0.3s ease', // Add transition for smooth effect
-                        '&:hover': {
-                          transform: 'scale(1.2)', // Increase the scale on hover
-                        },
+                        background: "1",
                       }}
-                      onClick={() => handleViewMoreDetails(booking._id,booking.roomId)} // Replace with your logic
+                      title={booking.roomType}
+                      subtitle={`𖡡 ${booking.hotelName}`}
+                      position="top"
                     />
-                    </Tooltip>
-                    }
-                  />
-                </ImageListItem>
+                    <img
+                      src={booking.roomImage}
+                      alt={booking.RoomType}
+                      // style={{ cursor: "pointer" }}
+                      loading="lazy"
+                    />
+                    {/* Want to give room starts from with  */}
+                    <ImageListItemBar
+                      sx={{
+                        height: "211px",
+                        pt: 5,
+                      }}
+                      title={
+                        <>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              textDecoration: "underline",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            Amount Paid
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            {`₹${booking.totalAmount}`}
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              textDecoration: "underline",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            Check-In
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            {`${dayjs(booking.checkInDate).format(
+                              "ddd, MMM D, YYYY"
+                            )} - ${booking.checkInTime}`}
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              textDecoration: "underline",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            Check-Out
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            {`${dayjs(booking.checkOutDate).format(
+                              "ddd, MMM D, YYYY"
+                            )} - ${booking.checkOutTime}`}
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              textDecoration: "underline",
+                              fontSize: "12px",
+                              color: "#ececec",
+                            }}
+                          >
+                            Status
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              fontWeight: "bold",
+                              fontSize: "12px",
+                              color:
+                                booking.status === "Cancelled" ||
+                                booking.status === "Cancelled by Admin"
+                                  ? "#DC3545"
+                                  : "#15ca76",
+                            }}
+                          >
+                            {booking.status}
+                          </Typography>
+                        </>
+                      }
+                      // subtitle={"Amount Paid"}
+                      actionIcon={
+                        <Tooltip title="More Details">
+                          <UnfoldMoreOutlined
+                            sx={{
+                              color: "rgba(255,255,255, 0.8)",
+                              mr: "20px",
+                              cursor: "pointer",
+                              transition: "transform 0.3s ease", // Add transition for smooth effect
+                              "&:hover": {
+                                transform: "scale(1.2)", // Increase the scale on hover
+                              },
+                            }}
+                            onClick={() =>
+                              handleViewMoreDetails(booking._id, booking.roomId)
+                            } // Replace with your logic
+                          />
+                        </Tooltip>
+                      }
+                    />
+                  </ImageListItem>
                 </Card>
               </Tooltip>
             ))}
@@ -264,19 +424,26 @@ const MyBookingsScreen: React.FC = () => {
       {currentBookings.length <= 0 && (
         <Box
           sx={{
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <Typography variant="h5" fontWeight='bold' display="flex" padding={2}>
+          <Typography variant="h5" fontWeight="bold" display="flex" padding={2}>
             Not booked yet? Book now...
           </Typography>
-          <img src={import.meta.env.VITE_NOBOOKINGFOUND_GIF}
-            style={{ borderRadius: '15px', width: '100%', maxWidth: '280px', height: 'auto' }}
-            alt="No Booking found..." />
+          <img
+            src={import.meta.env.VITE_NOBOOKINGFOUND_GIF}
+            style={{
+              borderRadius: "15px",
+              width: "100%",
+              maxWidth: "280px",
+              height: "auto",
+            }}
+            alt="No Booking found..."
+          />
           <Stack
             direction="row"
             width="100%"
@@ -288,7 +455,7 @@ const MyBookingsScreen: React.FC = () => {
             <Button
               variant="outlined"
               className="book_room_btn"
-              sx={{ width: '20%', p: 1, borderRadius: 0 }}
+              sx={{ width: "20%", p: 1, borderRadius: 0 }}
               color="inherit"
               onClick={() => navigate(`/view-hotels`)}
             >
@@ -297,7 +464,7 @@ const MyBookingsScreen: React.FC = () => {
             <Button
               variant="outlined"
               className="book_room_btn"
-              sx={{ width: '20%', p: 1, borderRadius: 0 }}
+              sx={{ width: "20%", p: 1, borderRadius: 0 }}
               color="inherit"
               onClick={() => navigate(`/home`)}
             >
@@ -306,9 +473,8 @@ const MyBookingsScreen: React.FC = () => {
           </Stack>
         </Box>
       )}
-      
-     
-    <Box sx={{ display: "flex", justifyContent: "center", padding: 4 }}>
+
+      <Box sx={{ display: "flex", justifyContent: "center", padding: 4 }}>
         {currentBookings.length > bookingsPerPage && (
           <Hidden mdDown>
             <Box>
@@ -330,12 +496,11 @@ const MyBookingsScreen: React.FC = () => {
                 >
                   {index + 1}
                 </Typography>
-               ))} 
+              ))}
             </Box>
           </Hidden>
-         )} 
+        )}
       </Box>
-      
     </Container>
   );
 };

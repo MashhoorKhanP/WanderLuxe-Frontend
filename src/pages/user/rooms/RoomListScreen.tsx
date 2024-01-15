@@ -64,7 +64,6 @@ const RoomListScreen: React.FC = () => {
     setIsDatePickerOpen((prev) => !prev);
   };
 
-  
   useEffect(() => {
     if (!rooms.length || !allRooms.length) {
       const fetchRooms = async () => {
@@ -88,9 +87,14 @@ const RoomListScreen: React.FC = () => {
     }
     setCurrentPage(1);
     setHotelBookings(fullHotelBookings);
-    
-
-}, [dispatch, allRooms, hotelBookings, rooms, adultChildOptions, checkInCheckoutRange]);
+  }, [
+    dispatch,
+    allRooms,
+    hotelBookings,
+    rooms,
+    adultChildOptions,
+    checkInCheckoutRange,
+  ]);
 
   const indexOfLastRooms = currentPage * roomsPerPage;
   const indexOfFirstRooms = indexOfLastRooms - roomsPerPage;
@@ -331,7 +335,7 @@ const RoomListScreen: React.FC = () => {
           <Hidden mdDown>
             <Box>
               {Array.from({
-                length: Math.ceil(rooms.length / roomsPerPage)/2,
+                length: Math.ceil(rooms.length / roomsPerPage) / 2,
               }).map((_, index) => (
                 <Typography
                   key={index + 1}

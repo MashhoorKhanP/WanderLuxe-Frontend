@@ -31,14 +31,14 @@ const BookingActions: React.FC<BookingActionsProps> = ({
   const handleSubmit = async () => {
     setLoading(true);
     setTimeout(async () => {
-      const { userId, status,roomId } = params.row;
+      const { userId, status, roomId } = params.row;
       try {
         // Assuming updateUser is an asynchronous action (thunk)
         const result = await updateBooking({
           updatedBooking: {
             _id: _id,
             userId: userId,
-            roomId:roomId,
+            roomId: roomId,
             status: status,
           },
         });

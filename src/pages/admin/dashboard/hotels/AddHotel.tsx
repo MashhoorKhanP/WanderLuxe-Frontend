@@ -41,7 +41,6 @@ const AddHotel: React.FC = () => {
   const updatedHotel: any = useSelector(
     (state: RootState) => state.adminHotel.updatedHotel
   );
-  
 
   const [activeStep, setActiveStep] = useState(0);
   const [steps, setSteps] = useState([

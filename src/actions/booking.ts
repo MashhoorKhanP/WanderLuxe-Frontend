@@ -36,7 +36,7 @@ interface UpdateBookingPayload {
     _id: string;
     userId: string;
     status: string;
-    roomId:string;
+    roomId: string;
   };
 }
 
@@ -55,7 +55,6 @@ interface GetHotelBookingData {
 export const postPaymentRequest = createAsyncThunk(
   "user/postPaymentRequest",
   async ({ bookingDetails }: BookingDetailsData) => {
-    
     const result = await fetchData({
       url:
         import.meta.env.VITE_SERVER_URL +
@@ -63,7 +62,7 @@ export const postPaymentRequest = createAsyncThunk(
       method: "POST",
       body: bookingDetails,
     });
-   
+
     // Check for errors in the result and throw if necessary
     if (result?.data && result.data.message) {
       throw new Error(result.data.message);

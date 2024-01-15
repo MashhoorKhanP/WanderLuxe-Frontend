@@ -194,7 +194,6 @@ const Bookings: React.FC<BookingsProps> = ({ setSelectedLink, link }) => {
 
       { field: "_id", headerName: "User ID", type: "string", width: 110 },
       { field: "roomId", headerName: "Room ID", type: "string", width: 110 },
-
     ],
     [rowId, selectedRowId]
   );

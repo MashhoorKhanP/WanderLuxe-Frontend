@@ -10,7 +10,7 @@ import {
   SlideProps,
   Toolbar,
   Tooltip,
-  Typography
+  Typography,
 } from "@mui/material";
 import React, { forwardRef, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -86,7 +86,13 @@ const CouponsOverviewScreen: React.FC = () => {
   const handleCopyCouponCode = (couponCode: string) => {
     dispatch(closeCouponOverview());
     navigator.clipboard.writeText(couponCode);
-    dispatch(setAlert({open:true, severity:'success', message:`Coupon Code: ${couponCode} copied`}))
+    dispatch(
+      setAlert({
+        open: true,
+        severity: "success",
+        message: `Coupon Code: ${couponCode} copied`,
+      })
+    );
   };
 
   return (
@@ -118,78 +124,85 @@ const CouponsOverviewScreen: React.FC = () => {
           }}
         />
         <br />
-          {availableCoupons.length ?(
-        <Box>
-          {/* Display available coupons */}
+        {availableCoupons.length ? (
+          <Box>
+            {/* Display available coupons */}
 
-            
-          {availableCoupons.map((coupon) => (
-            <Box
-              key={coupon.couponCode}
-              sx={{
-                marginBottom: 2,
-                p: 2,
-                border: "1.5px solid black",
-                borderRadius: 1.5,
-              }}
-            >
-              <Typography variant="subtitle1">{coupon.couponCode}</Typography>
-              <Typography variant="h6">{coupon.description}</Typography>
-              <Typography variant="subtitle2">{`A discount of ${
-                coupon.discountType === "percentage"
-                  ? `${coupon.discount}%`
-                  : `₹${coupon.discount}`
-              } on all room booking. ${
-                coupon.discountType === "percentage"
-                  ? `up to ₹${coupon.maxDiscount}`
-                  : ""
-              }`}</Typography>
+            {availableCoupons.map((coupon) => (
               <Box
+                key={coupon.couponCode}
                 sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
+                  marginBottom: 2,
+                  p: 2,
+                  border: "1.5px solid black",
+                  borderRadius: 1.5,
                 }}
               >
-                <Tooltip title={coupon.couponCode}>
-                  <Button
-                    sx={{
-                      bgcolor: "black",
-                      transition: "color border bgColor 0.3s ease",
-                      "&:hover": {
-                        bgcolor: "#ffffff",
-                        color: "#000000",
-                        border: "1px solid black",
-                      },
-                    }}
-                    variant="contained"
-                    endIcon={<ContentPasteOutlined />}
-                    onClick={() => handleCopyCouponCode(coupon.couponCode)}
-                  >
-                    Copy Code
-                  </Button>
-                </Tooltip>
+                <Typography variant="subtitle1">{coupon.couponCode}</Typography>
+                <Typography variant="h6">{coupon.description}</Typography>
+                <Typography variant="subtitle2">{`A discount of ${
+                  coupon.discountType === "percentage"
+                    ? `${coupon.discount}%`
+                    : `₹${coupon.discount}`
+                } on all room booking. ${
+                  coupon.discountType === "percentage"
+                    ? `up to ₹${coupon.maxDiscount}`
+                    : ""
+                }`}</Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                  }}
+                >
+                  <Tooltip title={coupon.couponCode}>
+                    <Button
+                      sx={{
+                        bgcolor: "black",
+                        transition: "color border bgColor 0.3s ease",
+                        "&:hover": {
+                          bgcolor: "#ffffff",
+                          color: "#000000",
+                          border: "1px solid black",
+                        },
+                      }}
+                      variant="contained"
+                      endIcon={<ContentPasteOutlined />}
+                      onClick={() => handleCopyCouponCode(coupon.couponCode)}
+                    >
+                      Copy Code
+                    </Button>
+                  </Tooltip>
+                </Box>
               </Box>
-            </Box>
-          ))}
-        </Box>
-          ):(
-            <Box
-          sx={{
-            width: '100%',
-            display:'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-              <Typography variant="h5" fontWeight='bold' display="flex" padding={2}>
-                No coupons available!
-              </Typography>
-              <img src={import.meta.env.VITE_NOCOUPONFOUND_GIF}  style={{ borderRadius: '15px', width: '100%', maxWidth: '400px' }}  alt="Empty wishlist..." />
-          
-            </Box>
-          )}
+            ))}
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              display="flex"
+              padding={2}
+            >
+              No coupons available!
+            </Typography>
+            <img
+              src={import.meta.env.VITE_NOCOUPONFOUND_GIF}
+              style={{ borderRadius: "15px", width: "100%", maxWidth: "400px" }}
+              alt="Empty wishlist..."
+            />
+          </Box>
+        )}
       </Container>
     </Dialog>
   );

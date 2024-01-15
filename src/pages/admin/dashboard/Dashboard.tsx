@@ -59,10 +59,10 @@ const Dashboard: React.FC = () => {
   const socket = useRef<Socket | any>();
   useEffect(() => {
     if (!socket.current && currentAdmin) {
-        console.log("Socket from Dashboard", socket.current);
-        socket.current = io(import.meta.env.VITE_SERVER_URL);
-        socket.current.emit("addUser", currentAdmin?._id);
-        socket.current.on("welcome", (message: any) => {
+      console.log("Socket from Dashboard", socket.current);
+      socket.current = io(import.meta.env.VITE_SERVER_URL);
+      socket.current.emit("addUser", currentAdmin?._id);
+      socket.current.on("welcome", (message: any) => {
         console.log("SocketIOmessage", message);
       });
     }
