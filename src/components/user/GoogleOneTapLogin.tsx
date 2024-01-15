@@ -58,7 +58,6 @@ const GoogleOneTapLogin: React.FC = () => {
       window.google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
         callback: handleResponse,
-        
       });
       window.google.accounts.id.prompt((notification: any) => {
         if (notification.isNotDisplayed()) {
