@@ -305,7 +305,7 @@ export const addRemoveFromWishlist = createAsyncThunk(
       throw new Error(result.data.message);
     }
 
-    return result;
+    return result as any;
   }
 );
 

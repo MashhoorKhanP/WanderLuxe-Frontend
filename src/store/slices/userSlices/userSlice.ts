@@ -544,9 +544,9 @@ const userSlice = createSlice({
     builder.addCase(addRemoveFromWishlist.fulfilled, (state, action) => {
       state.loading = false;
       const user = action.payload;
-      if (user && user.message as any) {
+      if (user && user.message) {
         // Don't directly modify state.currentUser, create a new object
-        state.currentUser = { ...user.message } as any;
+        state.currentUser = { ...user.message };
         localStorage.setItem("currentUser", JSON.stringify(state.currentUser));
       } else {
         // Handle the case where currentUser or message is null or undefined
