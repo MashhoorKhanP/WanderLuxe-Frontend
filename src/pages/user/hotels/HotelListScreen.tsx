@@ -71,7 +71,6 @@ const HotelListScreen: React.FC = () => {
         setAllHotels(response.payload.message);
         dispatch(setHotels(response.payload.message)); // assuming getHotels returns { payload: hotels }
       };
-
       fetchHotels();
     }
     dispatch(setCheckInCheckOutRange({}));
@@ -271,6 +270,7 @@ const HotelListScreen: React.FC = () => {
                   {/* Want to give room starts from with  */}
                   <ImageListItemBar
                     onClick={() => handleViewRoom(hotel._id)}
+                    sx={{cursor:'pointer'}}
                     title={`₹${hotel.minimumRent}`}
                     subtitle={"Rooms start from"}
                     actionIcon={
