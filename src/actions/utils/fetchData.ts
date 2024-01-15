@@ -15,7 +15,7 @@ interface FetchDataOptions {
 export const fetchData = async ({
   url,
   method,
-  token =localStorage.getItem('userToken') || localStorage.getItem('adminToken') || "",
+  token = "",
   body = null,
 }: FetchDataOptions) => {
   console.log(`Entered FetchData`);
