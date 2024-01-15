@@ -116,7 +116,7 @@ export const googleregister = createAsyncThunk(
       body: userData,
     });
     // Handle the result as needed
-    return result as any;
+    return result;
   }
 );
 
