@@ -184,8 +184,14 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
       senderId: userId as string,
       receiverId: import.meta.env.VITE_ADMIN_ID as string
     };
+    
     dispatch(closeChatScreen())
     dispatch(addNewConversation(conversationData)).then(() => dispatch(openChatScreen()))
+    const response = dispatch(getConversations(userId));
+    const responseUnwrapped = response.unwrap();
+    responseUnwrapped.then((thenResponse) => {
+      setConversations(thenResponse.message.conv);
+    });
   }
 
   const [showOpeningChat, setShowOpeningChat] = useState(true);
