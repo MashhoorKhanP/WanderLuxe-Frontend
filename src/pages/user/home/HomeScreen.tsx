@@ -220,7 +220,7 @@ const HomeScreen: React.FC = () => {
           >
             <CarouselSection images={carouselImages1} />
           </Box>
-
+          {banner?.text && 
           <Typography
             variant="h3"
             color="white"
@@ -245,6 +245,8 @@ const HomeScreen: React.FC = () => {
                 : "Welcome to WanderLuxe Hotels!"
             )}
           </Typography>
+          }
+          
         </Box>
       )}
     </>
