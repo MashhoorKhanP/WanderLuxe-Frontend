@@ -69,12 +69,7 @@ const ChatScreenUser: React.FC<ChatScreenProps> = ({ socket }) => {
       )}
       <Dialog
         open={isOpen}
-        // onClose={(event, reason) => {
-        //   if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
-        //     // Set 'open' to false, however you would do that with your particular code.
-        //     handleClose;
-        //   }
-        // }}
+        onClose={handleClose}
         TransitionComponent={Transition}
       >
         <DialogTitle
