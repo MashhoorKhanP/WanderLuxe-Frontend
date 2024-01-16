@@ -374,7 +374,7 @@ const userSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(googleregister.fulfilled, (state, action) => {
-      if (action.payload) {
+      if (action.payload as any) {
         state.loading = false;
         state.alert = {
           open: true,
@@ -383,15 +383,15 @@ const userSlice = createSlice({
         };
         const currentUser = action.payload;
 
-        if (currentUser) {
+        if (currentUser as any) {
           // Store currentUser in localStorage
           localStorage.setItem(
             "currentUser",
-            JSON.stringify(currentUser.message)
+            JSON.stringify(currentUser.message as any)
           );
           localStorage.setItem("UserToken", currentUser.token);
           // Don't directly modify state.currentUser, create a new object
-          state.currentUser = currentUser.message;
+          state.currentUser = currentUser.message as any;
 
           state.alert = {
             open: true,
