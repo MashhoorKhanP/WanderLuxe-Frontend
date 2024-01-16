@@ -6,6 +6,7 @@ import {
   IconButton,
   Slide,
   SlideProps,
+  Tooltip,
 } from "@mui/material";
 import React, { forwardRef, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -56,13 +57,15 @@ const ChatScreenUser: React.FC<ChatScreenProps> = ({ socket }) => {
   return (
     <>
       {isOpen && (
+        <Tooltip title='Close Chat'>
         <IconButton
           color="inherit"
-          sx={{ position: "fixed", top: "5%", right: "30px", zIndex: 2000 }}
+          sx={{ position: "fixed", top: "5%", right: "30px", zIndex: 2000,borderRadius:"50px" ,bgcolor:'#494949db'}}
           onClick={handleClose}
         >
-          <Close sx={{ color: "#DC3545" }} />
+          <Close sx={{ color: "#DC3545" ,fontWeight:'bold', fontSize:'30px' }} />
         </IconButton>
+        </Tooltip>
       )}
       <Dialog
         open={isOpen}
