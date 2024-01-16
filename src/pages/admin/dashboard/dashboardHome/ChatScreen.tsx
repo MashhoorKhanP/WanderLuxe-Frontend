@@ -176,18 +176,6 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const [showOpeningChat, setShowOpeningChat] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowOpeningChat(false);
-    }, 3000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
-
   return (
     <div className="messenger">
       {decodedToken?.role === "admin" && (
@@ -220,7 +208,7 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
       )}
       <div className="chatBox">
         <div className="chatBoxWrapper">
-          {conversations ? (
+          {currentChat ? (
             <>
               <div className="chatBoxTop" ref={chatBoxTopRef}>
                 {messages.length > 0 ? (
@@ -245,62 +233,86 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
                   </div>
                 )}
               </div>
-                <div className="chatBoxBottom">
-                  <textarea
-                    className="chatMessageInput"
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    value={newMessage}
-                    placeholder="Your message here"
-                  />
-                  <button
-                    hidden={newMessage.trim().length <= 0}
-                    className="chatSubmitButton"
-                    onClick={handleSubmit}
-                  >
-                    <Send sx={{ fontSize: "20px" }} />
-                  </button>
-                  {/* <button
-          className={
-            decodedToken?.role === "admin"
-              ? "goDownButton"
-              : "goDownButtonUser"
-          }
-          ref={goDownButtonRef}
-        >
-          <KeyboardDoubleArrowDownOutlined sx={{ fontSize: "20px" }} />
-        </button> */}
-                </div>
+              <div className="chatBoxBottom">
+                <textarea
+                  className="chatMessageInput"
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  value={newMessage}
+                  placeholder="Your message here"
+                />
+                <button
+                  hidden={newMessage.trim().length <= 0}
+                  className="chatSubmitButton"
+                  onClick={handleSubmit}
+                >
+                  <Send sx={{ fontSize: "20px" }} />
+                </button>
+                {/* <button
+                  className={
+                    decodedToken?.role === "admin"
+                      ? "goDownButton"
+                      : "goDownButtonUser"
+                  }
+                  ref={goDownButtonRef}
+                >
+                  <KeyboardDoubleArrowDownOutlined sx={{ fontSize: "20px" }} />
+                </button> */}
+              </div>
             </>
           ) : decodedToken?.role === "admin" ? (
             <span className="noConversationText">
               Open a conversation to start a chat.
             </span>
-          ) : decodedToken?.role === 'user' ?(
+          ) : (
             <>
-              {showOpeningChat && (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100vh",
-                  }}
+            <div className="chatBoxTop" ref={chatBoxTopRef}>
+                {messages.length > 0 ? (
+                  messages.map((message: any) => (
+                    <div className="" key={message.id} ref={scrollRef}>
+                      <Message
+                        message={message}
+                        own={message.sender === userId}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="noMessagesContainer">
+                    <img
+                      src={NoChatFound}
+                      alt="No messages"
+                      className="noMessagesImage"
+                    />
+                    <div className="noMessagesText">
+                      No messages yet!, Start conversation
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="chatBoxBottom">
+                <textarea
+                  className="chatMessageInput"
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  value={newMessage}
+                  placeholder="Your message here"
+                />
+                <button
+                  hidden={newMessage.trim().length <= 0}
+                  className="chatSubmitButton"
+                  onClick={handleSubmit}
                 >
-                  <span className="noConversationText">Opening chat...</span>
-                  <img
-                    className="spinnerGif"
-                    src={import.meta.env.VITE_LOADING_IMAGE}
-                    alt="Loading"
-                  />
-                </div>
-              )}
-              {/* {!showOpeningChat && !conversations && (
-                
-              )} */}
-            </>
-          ):(
-            null
+                  <Send sx={{ fontSize: "20px" }} />
+                </button>
+                {/* <button
+                  className={
+                    decodedToken?.role === "admin"
+                      ? "goDownButton"
+                      : "goDownButtonUser"
+                  }
+                  ref={goDownButtonRef}
+                >
+                  <KeyboardDoubleArrowDownOutlined sx={{ fontSize: "20px" }} />
+                </button> */}
+              </div></>
           )}
         </div>
       </div>
