@@ -57,14 +57,23 @@ const ChatScreenUser: React.FC<ChatScreenProps> = ({ socket }) => {
   return (
     <>
       {isOpen && (
-        <Tooltip title='Close Chat'>
-        <IconButton
-          color="inherit"
-          sx={{ position: "fixed", top: "5%", right: "30px", zIndex: 2000,borderRadius:"50px" ,bgcolor:'#494949db'}}
-          onClick={handleClose}
-        >
-          <Close sx={{ color: "#DC3545" ,fontWeight:'bold', fontSize:'30px' }} />
-        </IconButton>
+        <Tooltip title="Close Chat">
+          <IconButton
+            color="inherit"
+            sx={{
+              position: "fixed",
+              top: "5%",
+              right: "30px",
+              zIndex: 2000,
+              borderRadius: "50px",
+              bgcolor: "#494949db",
+            }}
+            onClick={handleClose}
+          >
+            <Close
+              sx={{ color: "#DC3545", fontWeight: "bold", fontSize: "30px" }}
+            />
+          </IconButton>
         </Tooltip>
       )}
       <Dialog

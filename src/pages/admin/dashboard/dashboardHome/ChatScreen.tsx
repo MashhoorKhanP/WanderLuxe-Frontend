@@ -19,7 +19,10 @@ import useCheckToken from "../../../../components/hooks/useCheckToken";
 import { setNewMessages } from "../../../../store/slices/adminSlices/adminSlice";
 import { AppDispatch } from "../../../../store/store";
 import "./chatScreen.css";
-import { closeChatScreen, openChatScreen } from "../../../../store/slices/userSlices/userSlice";
+import {
+  closeChatScreen,
+  openChatScreen,
+} from "../../../../store/slices/userSlices/userSlice";
 
 interface ChatProps {
   setSelectedLink?: React.Dispatch<React.SetStateAction<string>>;
@@ -180,19 +183,21 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
   }, [messages]);
 
   const handleConversation = () => {
-    const conversationData:ConversationData = {
+    const conversationData: ConversationData = {
       senderId: userId as string,
-      receiverId: import.meta.env.VITE_ADMIN_ID as string
+      receiverId: import.meta.env.VITE_ADMIN_ID as string,
     };
-    
-    dispatch(closeChatScreen())
-    dispatch(addNewConversation(conversationData)).then(() => dispatch(openChatScreen()))
+
+    dispatch(closeChatScreen());
+    dispatch(addNewConversation(conversationData)).then(() =>
+      dispatch(openChatScreen())
+    );
     const response = dispatch(getConversations(userId));
     const responseUnwrapped = response.unwrap();
     responseUnwrapped.then((thenResponse) => {
       setConversations(thenResponse.message.conv);
     });
-  }
+  };
 
   const [showOpeningChat, setShowOpeningChat] = useState(true);
 
@@ -251,9 +256,11 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
                     </div>
                   ))
                 ) : (
-                  <div className="noMessagesContainer" style={{display:showOpeningChat?'none':'block'}}>
+                  <div
+                    className="noMessagesContainer"
+                    style={{ display: showOpeningChat ? "none" : "block" }}
+                  >
                     <img
-
                       src={NoChatFound}
                       alt="No messages"
                       className="noMessagesImage"
@@ -296,7 +303,6 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
             </span>
           ) : (
             <>
-           
               {showOpeningChat && (
                 <div
                   style={{
@@ -315,9 +321,8 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
                   />
                 </div>
               )}
-              
-            
-            <div className="chatBoxTop" ref={chatBoxTopRef}>
+
+              <div className="chatBoxTop" ref={chatBoxTopRef}>
                 {messages.length > 0 ? (
                   messages.map((message: any) => (
                     <div className="" key={message.id} ref={scrollRef}>
@@ -327,8 +332,11 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
                       />
                     </div>
                   ))
-                ) : (                      
-                  <div className="noMessagesContainer" style={{display:showOpeningChat?'none':'block'}}>
+                ) : (
+                  <div
+                    className="noMessagesContainer"
+                    style={{ display: showOpeningChat ? "none" : "block" }}
+                  >
                     <img
                       src={NoChatFound}
                       alt="No messages"
@@ -340,15 +348,11 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
                   </div>
                 )}
               </div>
-              
-                <Button
-                variant="outlined"
-                  onClick={handleConversation}
-                >
-                  Start Conversation
-                </Button>
-                
-              </>
+              {!showOpeningChat &&
+              <Button variant="outlined" onClick={handleConversation}>
+                Start Conversation
+              </Button>}
+            </>
           )}
         </div>
       </div>
