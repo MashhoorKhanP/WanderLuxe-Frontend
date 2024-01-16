@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { format } from "timeago.js";
 import { RootState } from "../../../store/types";
 import "./message.css";
+import { Avatar } from "@mui/material";
 
 interface MessageProps {
   message: {
@@ -44,7 +45,17 @@ const Message: React.FC<MessageProps> = ({ message, own }) => {
   return (
     <div className={own ? "message own" : "message"}>
       <div className="messageTop">
-        <img className="messageImg" src={user?.profileImage} alt="" />
+        {/* <img className="messageImg" src={user?.profileImage} alt="" /> */}
+        <Avatar
+            style={{ backgroundColor: "#868686" }}
+            src={
+              user?.profileImage
+            }
+            alt={user?.firstName}
+            className="messageImg"
+          >
+            {user?.firstName?.charAt(0).toUpperCase()}
+          </Avatar>
         <p className="messageText">{message?.text}</p>
       </div>
       <div className="messageBottom">{format(message?.createdAt)}</div>

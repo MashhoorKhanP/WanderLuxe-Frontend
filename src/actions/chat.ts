@@ -8,6 +8,12 @@ interface AddMessageData {
   text: string;
   conversationId: string;
 }
+
+export interface ConversationData {
+  senderId:string;
+  receiverId:string;
+}
+
 export const getConversations = createAsyncThunk(
   "adminORUser/getConversations",
   async (userId: string) => {
@@ -70,6 +76,32 @@ export const addNewMessage = createAsyncThunk(
         url: import.meta.env.VITE_SERVER_URL + `/api/user/add-message`,
         method: "POST",
         body: messageData,
+      });
+      if (result?.data && result.data.message) {
+        // If there is an error message, throw an error to trigger the rejected action
+        throw new Error(result.data.message);
+      }
+      // If no error message, return the result
+      return result;
+    } catch (error) {
+      const typedError = error as Error | AxiosError;
+
+      console.error("Error getAdminConversations :", typedError);
+      errorHandle(typedError);
+      console.error("Error getAdminConversations :", error);
+      throw error;
+    }
+  }
+);
+
+export const addNewConversation = createAsyncThunk(
+  "adminORuser/postAddNewConversation",
+  async (conversationData: ConversationData) => {
+    try {
+      const result = await fetchData({
+        url: import.meta.env.VITE_SERVER_URL + `/api/user/conversation`,
+        method: "POST",
+        body: conversationData,
       });
       if (result?.data && result.data.message) {
         // If there is an error message, throw an error to trigger the rejected action

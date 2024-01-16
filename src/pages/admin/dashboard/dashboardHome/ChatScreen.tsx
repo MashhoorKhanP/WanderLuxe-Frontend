@@ -1,11 +1,13 @@
 import { KeyboardDoubleArrowDownOutlined, Send } from "@mui/icons-material";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import {
+  ConversationData,
+  addNewConversation,
   addNewMessage,
   getConversations,
   getMessages,
@@ -17,6 +19,7 @@ import useCheckToken from "../../../../components/hooks/useCheckToken";
 import { setNewMessages } from "../../../../store/slices/adminSlices/adminSlice";
 import { AppDispatch } from "../../../../store/store";
 import "./chatScreen.css";
+import { closeChatScreen, openChatScreen } from "../../../../store/slices/userSlices/userSlice";
 
 interface ChatProps {
   setSelectedLink?: React.Dispatch<React.SetStateAction<string>>;
@@ -176,6 +179,27 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const handleConversation = () => {
+    const conversationData:ConversationData = {
+      senderId: userId as string,
+      receiverId: import.meta.env.VITE_ADMIN_ID as string
+    };
+    dispatch(closeChatScreen())
+    dispatch(addNewConversation(conversationData)).then(() => dispatch(openChatScreen()))
+  }
+
+  const [showOpeningChat, setShowOpeningChat] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowOpeningChat(false);
+    }, 4000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
   return (
     <div className="messenger">
       {decodedToken?.role === "admin" && (
@@ -221,8 +245,9 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
                     </div>
                   ))
                 ) : (
-                  <div className="noMessagesContainer">
+                  <div className="noMessagesContainer" style={{display:showOpeningChat?'none':'block'}}>
                     <img
+
                       src={NoChatFound}
                       alt="No messages"
                       className="noMessagesImage"
@@ -265,6 +290,27 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
             </span>
           ) : (
             <>
+           
+              {showOpeningChat && (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100vh",
+                  }}
+                >
+                  <span className="noConversationText">Opening chat...</span>
+                  <img
+                    className="spinnerGif"
+                    src={import.meta.env.VITE_LOADING_IMAGE}
+                    alt="Loading"
+                  />
+                </div>
+              )}
+              
+            
             <div className="chatBoxTop" ref={chatBoxTopRef}>
                 {messages.length > 0 ? (
                   messages.map((message: any) => (
@@ -275,44 +321,28 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
                       />
                     </div>
                   ))
-                ) : (
-                  <div className="noMessagesContainer">
+                ) : (                      
+                  <div className="noMessagesContainer" style={{display:showOpeningChat?'none':'block'}}>
                     <img
                       src={NoChatFound}
                       alt="No messages"
                       className="noMessagesImage"
                     />
                     <div className="noMessagesText">
-                      No messages yet!, Start conversation
+                      No messages yet!, Click Start conversation
                     </div>
                   </div>
                 )}
               </div>
-              <div className="chatBoxBottom">
-                <textarea
-                  className="chatMessageInput"
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  value={newMessage}
-                  placeholder="Your message here"
-                />
-                <button
-                  hidden={newMessage.trim().length <= 0}
-                  className="chatSubmitButton"
-                  onClick={handleSubmit}
+              
+                <Button
+                variant="outlined"
+                  onClick={handleConversation}
                 >
-                  <Send sx={{ fontSize: "20px" }} />
-                </button>
-                {/* <button
-                  className={
-                    decodedToken?.role === "admin"
-                      ? "goDownButton"
-                      : "goDownButtonUser"
-                  }
-                  ref={goDownButtonRef}
-                >
-                  <KeyboardDoubleArrowDownOutlined sx={{ fontSize: "20px" }} />
-                </button> */}
-              </div></>
+                  Start Conversation
+                </Button>
+                
+              </>
           )}
         </div>
       </div>
