@@ -247,7 +247,7 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
                 >
                   <Send sx={{ fontSize: "20px" }} />
                 </button>
-                <button
+                {/* <button
                   className={
                     decodedToken?.role === "admin"
                       ? "goDownButton"
@@ -256,7 +256,7 @@ const ChatScreen: React.FC<ChatProps> = ({ setSelectedLink, link, socket }) => {
                   ref={goDownButtonRef}
                 >
                   <KeyboardDoubleArrowDownOutlined sx={{ fontSize: "20px" }} />
-                </button>
+                </button> */}
               </div>
             </>
           ) : decodedToken?.role === "admin" ? (
