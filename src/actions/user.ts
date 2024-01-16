@@ -28,6 +28,7 @@ interface GoogleRequestBody {
   lastName: string;
   email: string;
   profileImage: string;
+  mobile?:string;
   password: string;
   isGoogle: boolean;
   isVerified: boolean;

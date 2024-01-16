@@ -44,6 +44,7 @@ const GoogleOneTapLogin: React.FC = () => {
         firstName,
         lastName,
         profileImage,
+        mobile:'',
         password: token,
         isGoogle: true,
         isVerified: true,
