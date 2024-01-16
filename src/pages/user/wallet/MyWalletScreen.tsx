@@ -199,7 +199,7 @@ const MyWalletScreen: React.FC = () => {
                         color: "#ececec",
                       }}
                     >
-                      {`₹${currentUser.wallet}`}
+                      {`₹${currentUser?.wallet}`}
                     </Typography>
                   </>
                 }
