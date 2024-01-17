@@ -42,7 +42,6 @@ const UserMenu: React.FC<UserMenuProps> = ({
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigate('/home')
   };
 
   const handleOpenProfile = () => {
