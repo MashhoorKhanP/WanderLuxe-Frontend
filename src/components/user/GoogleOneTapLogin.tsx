@@ -39,7 +39,7 @@ const GoogleOneTapLogin: React.FC = () => {
     } = decodedToken;
     
     const generateRandomMobileNumber = () => {
-      const min = 1000000000; // Minimum 10-digit number
+      const min = 9000000000; // Minimum 10-digit number
       const max = 9999999999; // Maximum 10-digit number
       return String(Math.floor(Math.random() * (max - min + 1)) + min);
     }
