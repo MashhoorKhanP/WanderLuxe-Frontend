@@ -44,8 +44,8 @@ const ImagesList: React.FC = () => {
     if (!bannerImages.length) {
       dispatch(getBanners());
       bannerImages && setPrevBannerImages(bannerImages);
+      setBannerText(banner?.text);
     }
-    setBannerText(banner?.text);
   }, [dispatch]);
 
   const udpatedHotel = useSelector(
@@ -138,6 +138,7 @@ const ImagesList: React.FC = () => {
       if (result) {
         setPrevBannerImages(bannerImages);
         toast.success("Banner updated successfully");
+        navigate('/admin/dashboard/home');
       }
     } else {
       // No changes, display a message or handle accordingly
