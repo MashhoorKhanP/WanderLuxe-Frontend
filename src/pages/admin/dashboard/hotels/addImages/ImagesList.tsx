@@ -44,8 +44,8 @@ const ImagesList: React.FC = () => {
     if (!bannerImages.length) {
       dispatch(getBanners());
       bannerImages && setPrevBannerImages(bannerImages);
-      setBannerText(banner?.text);
     }
+    setBannerText(banner?.text);
   }, [dispatch]);
 
   const udpatedHotel = useSelector(
