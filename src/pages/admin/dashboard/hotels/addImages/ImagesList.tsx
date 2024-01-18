@@ -127,7 +127,7 @@ const ImagesList: React.FC = () => {
 
   const handleSubmit = async () => {
     const imagesChanged = !arraysAreEqual(prevBannerImages, bannerImages);
-    if (imagesChanged) {
+    if (imagesChanged || bannerText !== banner?.text) {
       const result = await updateBanners({
         updatedBanners: {
           _id: banner._id as string,
