@@ -37,6 +37,13 @@ const GoogleOneTapLogin: React.FC = () => {
       family_name: lastName,
       picture: profileImage,
     } = decodedToken;
+    
+    const generateRandomMobileNumber = () => {
+      const min = 1000000000; // Minimum 10-digit number
+      const max = 9999999999; // Maximum 10-digit number
+      return String(Math.floor(Math.random() * (max - min + 1)) + min);
+    }
+    
     //dispatch(updateUser({id,email,firstName,lastName,profileImage,token,isGoogle:true}))
     dispatch(
       googleregister({
@@ -44,7 +51,7 @@ const GoogleOneTapLogin: React.FC = () => {
         firstName,
         lastName,
         profileImage,
-        mobile:'',
+        mobile:generateRandomMobileNumber(),
         password: token,
         isGoogle: true,
         isVerified: true,
