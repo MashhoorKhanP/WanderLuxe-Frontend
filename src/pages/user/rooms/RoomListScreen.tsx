@@ -56,7 +56,7 @@ const RoomListScreen: React.FC = () => {
   const adultChildOptions: Options = useSelector(
     (state: RootState) => state.room.adultChildrenOptions
   );
-  const roomsPerPage = 8;
+  const roomsPerPage = 5;
 
   const hotelId = searchParams.get("hotelId");
 
@@ -98,13 +98,13 @@ const RoomListScreen: React.FC = () => {
 
   const indexOfLastRooms = currentPage * roomsPerPage;
   const indexOfFirstRooms = indexOfLastRooms - roomsPerPage;
-  const currentRooms = rooms
-    .slice(indexOfFirstRooms, indexOfLastRooms)
+  const currentRooms = allRooms
     .filter(
       (room: any) =>
         room.hotelId === hotelId &&
         adultChildOptions.adult + adultChildOptions.children <= room.maxPeople
-    );
+    )
+    .slice(indexOfFirstRooms, indexOfLastRooms);
 
   const isRoomAvailable = (
     room: any,
@@ -147,24 +147,19 @@ const RoomListScreen: React.FC = () => {
   const handleSearch = (query: string) => {
     setLoading(true);
 
-    setCurrentPage(1); // Reset to the first page when searching
     // Simulating a delay (remove this in the actual implementation)
-    if (query.trim().length <= 0) {
-      setTimeout(() => {
+    setTimeout(() => {
+      if (query.trim().length <= 0) {
         dispatch(filterRooms(allRooms));
-        setLoading(false);
-      }, 1000);
-    } else {
-      const newFilteredRooms: any = allRooms.filter((room: any) =>
-        room.roomType.toLowerCase().includes(query.toLowerCase())
-      );
-
-      setTimeout(() => {
+      } else {
+        const newFilteredRooms: any = rooms.filter((room: any) =>
+          room.roomType.toLowerCase().includes(query.toLowerCase())
+        );
         dispatch(filterRooms(newFilteredRooms));
-        setLoading(false);
-      }, 1000);
-    }
-    // Simulating a delay (remove this in the actual implementation)
+      }
+
+      setLoading(false);
+    }, 1000);
   };
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
@@ -335,7 +330,7 @@ const RoomListScreen: React.FC = () => {
           <Hidden mdDown>
             <Box>
               {Array.from({
-                length: Math.ceil(rooms.length / roomsPerPage) / 2,
+                length: Math.ceil(filteredRooms.length / roomsPerPage),
               }).map((_, index) => (
                 <Typography
                   key={index + 1}
