@@ -191,6 +191,14 @@ const HomeScreen: React.FC = () => {
               gap: 1,
               transform: "translateY(-50%)",
               zIndex: 10,
+              "@media (min-width: 200px)": {
+                justifyContent: "center",
+                right: "0px",
+              },
+              "@media (min-width: 300px)": {
+                justifyContent: "center",
+                right: "0px",
+              },
             }}
           >
             <Button
@@ -220,41 +228,52 @@ const HomeScreen: React.FC = () => {
           >
             <CarouselSection images={carouselImages1} />
           </Box>
-          {banner?.text && 
-          <Typography
-            variant="h3"
-            color="white"
-            fontWeight={400}
-            sx={{
-              position: "absolute",
-              left: "50px", // Adjust the left positioning as needed
-              top: "50%", // Center vertically
-              transform: "translateY(-50%)",
-              zIndex: 10,
-              bgcolor: "#00000091",
-              padding: "10px",
-              color: "#ffffff",
-              whiteSpace: "pre-wrap",
-              fontFamily: "Courier New, Courier, monospace",
-              // Add this to ensure the line break is displayed correctly
-              width: "100%", // Take up the full width
-              // Add this to ensure the line break is displayed correctly
-              '@media (min-width: 600px)': {
-                width: "50%", // Adjust the width for medium screens (md)
-              },
-              '@media (min-width: 960px)': {
-                width: "50%", // Adjust the width for large screens (lg)
-              },
-            }}
-          >
-            {addLineBreakBeforeLastWord(
-              banner?.text
-                ? String(banner?.text)
-                : "Welcome to WanderLuxe Hotels!"
-            )}
-          </Typography>
-          }
-          
+          {banner?.text && (
+            <Typography
+              variant="h3"
+              color="white"
+              fontWeight={400}
+              sx={{
+                position: "absolute",
+                left: "50px", // Adjust the left positioning as needed
+                top: "50%", // Center vertically
+                transform: "translateY(-50%)",
+                zIndex: 10,
+                bgcolor: "#00000091",
+                padding: "10px",
+                color: "#ffffff",
+                whiteSpace: "pre-wrap",
+                fontFamily: "Courier New, Courier, monospace",
+                // Add this to ensure the line break is displayed correctly
+                width: "100%", // Take up the full width
+                // Add this to ensure the line break is displayed correctly
+                "@media (min-width: 200px)": {
+                  width: "85%", // Adjust the width for medium screens (sm)
+                  whiteSpace: "normal",
+                  left: "30px",
+                },
+                "@media (min-width: 300px)": {
+                  width: "85%", // Adjust the width for medium screens (sm)
+                  whiteSpace: "normal",
+                  left: "30px",
+                },
+                "@media (min-width: 600px)": {
+                  width: "50%", // Adjust the width for medium screens (md)
+                  whiteSpace: "normal",
+                },
+                "@media (min-width: 960px)": {
+                  width: "50%", // Adjust the width for large screens (lg)
+                  whiteSpace: "normal",
+                },
+              }}
+            >
+              {addLineBreakBeforeLastWord(
+                banner?.text
+                  ? String(banner?.text)
+                  : "Welcome to WanderLuxe Hotels!"
+              )}
+            </Typography>
+          )}
         </Box>
       )}
     </>

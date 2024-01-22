@@ -42,8 +42,19 @@ const PriceSlider: React.FC = () => {
         justifyContent: "center",
       }}
     >
-      <Box sx={{ width: 200, mt: 3 }} ref={containerRef}></Box>
-      <Box sx={{ display: "flex", alignItems: "center", ml: 3 }}>
+      <Box sx={{ width: "100%", mt: 3 }} ref={containerRef}></Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          ml: 3,
+          mr: 3,
+          "@media (max-width: 600px)": {
+            marginTop: "0px",
+            mr: "25%",
+          },
+        }}
+      >
         <IconButton
           color="inherit"
           size="small"

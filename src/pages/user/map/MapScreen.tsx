@@ -364,8 +364,20 @@ const MapScreen: React.FC = () => {
               </Marker>
             );
           })}
-          <PriceSlider />
-          <GeocoderInput />
+          <Box
+            sx={{
+              width: "100%",
+              display: "column",
+              paddingLeft: "50px",
+              paddingRight: "50px",
+              flexDirection: "row",
+            }}
+            pb={2}
+            gap={2}
+          >
+            <PriceSlider />
+            <GeocoderInput />
+          </Box>
           {popupInfo && (
             <Popup
               longitude={popupInfo.geometry.coordinates[0]}

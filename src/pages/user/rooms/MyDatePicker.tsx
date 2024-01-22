@@ -170,7 +170,18 @@ const MyDatePicker: React.FC<{ isOpen: boolean; onToggle: () => void }> = ({
   };
 
   return (
-    <Box display="flex" alignItems="center">
+    <Box
+      display="flex"
+      alignItems="center"
+      sx={{
+        ml: 25,
+        "@media (max-width: 976px)": {
+          marginTop: "0px",
+          marginLeft: "0px",
+          mr: "0%",
+        },
+      }}
+    >
       <TextField
         variant="outlined"
         size="small"

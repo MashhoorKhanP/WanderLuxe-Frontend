@@ -192,6 +192,16 @@ const RoomListScreen: React.FC = () => {
         flexDirection={"row"}
         justifyContent={"space-around"}
         alignItems={"center"}
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          "@media (max-width: 976px)": {
+            display: "column",
+            flexDirection: "column",
+            justifyContent: "center",
+          },
+        }}
         pb={2}
         gap={2}
       >

@@ -63,7 +63,16 @@ const AdultChildrenPicker: React.FC = () => {
   return (
     <Box
       ref={pickerRef}
-      sx={{ width: "50%", display: "flex", alignItems: "center" }}
+      sx={{
+        width: "50%",
+        display: "flex",
+        alignItems: "center",
+        "@media (max-width: 976px)": {
+          width: "100%",
+          marginTop: "10px",
+          justifyContent: "center",
+        },
+      }}
     >
       <div className="headerSearch">
         <div className="headerSearchItem">

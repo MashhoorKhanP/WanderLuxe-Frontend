@@ -159,11 +159,18 @@ const HotelListScreen: React.FC = () => {
         </Typography>
       </Box>
       <Box
-        display={"flex"}
-        flexDirection={"row"}
-        justifyContent={"space-between"}
         alignItems={"center"}
         pb={2}
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          "@media (max-width: 600px)": {
+            display: "column",
+            flexDirection: "column",
+            justifyContent: "center",
+          },
+        }}
       >
         <SearchBar onSearch={handleSearch} />
         <PriceSlider />

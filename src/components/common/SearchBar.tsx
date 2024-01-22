@@ -26,7 +26,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <Box width={"70%"}>
+    <Box
+      width={"0%"}
+      sx={{
+        "@media (max-width: 600px) , (max-width: 976px)": {
+          width: "100%",
+          justifyContent: "center",
+        },
+      }}
+    >
       <TextField
         label={
           location.pathname === "/view-hotels"
@@ -38,9 +46,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         variant="outlined"
         size="small"
         sx={{
+          "@media (max-width: 600px) , (max-width: 976px)": {
+            width: "100%",
+          },
           width:
             location.pathname === "/view-hotels"
-              ? "50%"
+              ? "250px"
               : location.pathname === "/view-rooms"
               ? "200px"
               : "60%",
