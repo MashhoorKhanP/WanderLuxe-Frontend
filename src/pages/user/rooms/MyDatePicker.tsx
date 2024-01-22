@@ -196,7 +196,7 @@ const MyDatePicker: React.FC<{ isOpen: boolean; onToggle: () => void }> = ({
         open={isOpen}
         anchorEl={null}
         placement="bottom-start"
-        style={{ zIndex: 1000, top: "15%", left: "20%" }}
+        style={{ zIndex: 1000, top: "15%", left: "10%"}}
       >
         <ClickAwayListener onClickAway={handleClickAway}>
           <Paper>
