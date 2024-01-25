@@ -70,7 +70,7 @@ const adminHotelSlice = createSlice({
       } else {
         state.hotelImages = [...state.hotelImages, ...action.payload];
       }
-      /** or if any issue check  [...state.hotelImages, ...action.payload]; */
+      
     },
     deleteHotelImages: (state, action: PayloadAction<string>) => {
       state.hotelImages = state.hotelImages.filter(
