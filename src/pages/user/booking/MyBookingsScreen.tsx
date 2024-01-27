@@ -263,7 +263,7 @@ const MyBookingsScreen: React.FC = () => {
       {completedBookings.length > 0 && (
         <Box p={2}>
           <Typography variant="h6" sx={{ color: "##505050" }} fontWeight="bold">
-            Completed Bookings{" "}
+            Completed/Ongoing Bookings{" "}
             <i className="bi bi-check-circle" style={{ color: "#28a745" }}></i>
           </Typography>
           <ImageList
